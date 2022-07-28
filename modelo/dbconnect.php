@@ -7,7 +7,7 @@
     private $host = 'localhost';
     private $dbname = 'db_deca';
     private $user = 'root';
-    private $password = '';
+    private $password = '12345678';
     private $db;
 
     function __construct()
