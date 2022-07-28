@@ -1,0 +1,43 @@
+<div class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1 class="m-0">Gestion de Inventario</h1>
+      </div><!-- /.col -->
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><a href="">Gestion de Inventario</a></li>
+          <li class="breadcrumb-item active">AdminCP</li>
+        </ol>
+      </div><!-- /.col -->
+    </div><!-- /.row -->
+  </div><!-- /.container-fluid -->
+</div>
+<div id="appInventario" class="content">
+  <div v-if="list == true" class="col-12">
+    <div class="card card-primary">
+      <div class="card-header">Information
+      </div>
+      <div class="card-body">
+        <table id="list" class="table table-bordered table-hover">
+          <thead>
+            <tr class="text-center">
+              <th>Codigo interno</th>
+              <th>Codigo Cliente</th>
+              <th>EAN</th>
+              <th>Nombre producto</th>
+              <th>Cliente / Bodega</th>
+              <th>Categoria</th>
+              <th>Existencia</th>
+              <th>UMB</th>
+              <th>CJ</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody class="text-center">
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

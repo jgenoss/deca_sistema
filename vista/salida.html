@@ -1,0 +1,264 @@
+<div class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1 class="m-0">Gestion de Salidas</h1>
+      </div><!-- /.col -->
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><a href="">Gestion de Salidas</a></li>
+          <li class="breadcrumb-item active">AdminCP</li>
+        </ol>
+      </div><!-- /.col -->
+    </div><!-- /.row -->
+  </div><!-- /.container-fluid -->
+</div>
+<div id="salida" class="content">
+  <div v-if="list == true" class="col-12">
+    <div class="card card-primary">
+      <div class="card-header">Information
+        <button @click="newbutton" data-toggle="modal" data-target="#modal-add" class="btn btn-sm btn-default float-right"><i class="fas fa-plus"></i></button>
+      </div>
+      <div class="card-body">
+        <table id="list" class="table table-bordered table-striped">
+          <thead class="text-center">
+            <tr>
+              <th>tools</th>
+              <th>CLIENTE</th>
+              <th>REFERENCIA</th>
+              <th>FACTURA</th>
+              <th>SERIE</th>
+              <th>TIPO PAGO</th>
+              <th>FECHA</th>
+            </tr>
+          </thead>
+          <tbody class="text-center">
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div v-if="sale == true" class="col-12">
+    <div class="row">
+      <!-- Left col -->
+      <section class="col-lg-7 connectedSortable ui-sortable">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-tittle">
+              Datos del cliente
+            </div>
+          </div>
+          <div class="card-body">
+            <!-- open form -->
+            <form v-on:submit.prevent="submit">
+            <div class="row">
+              <div class="col-lg-2 col-md-2">
+                <div class="form-group">
+                  <label>Cliente(*):</label>
+                  <select  @change="loadInventario(salida.id_cliente)" class="form-control" v-model="salida.id_cliente">
+                    <option v-for="resultCliente in arrayCliente" v-bind:value="resultCliente.id">{{resultCliente.nombre}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-lg-7 col-md-6">
+                <div class="form-group">
+                  <label>Referencia(*):</label>
+                  <input v-model="salida.referencia" type="text" class="form-control" required>
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-4">
+                <div class="form-group">
+                  <label>Factura(*):</label>
+                  <input v-model="salida.factura" type="text" class="form-control" class="form-control" required>
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                  <label>Fecha(*)</label>
+                  <input v-model="salida.fecha" type="date" class="form-control" required>
+                </div>
+              </div>
+              <div class="col-lg-2 col-md-2">
+                <div class="form-group">
+                  <label>Serie(*):</label>
+                  <input v-model="salida.serie" type="text" class="form-control" class="form-control" readonly>
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                  <label>Tipo de pago(*):</label>
+                  <select class="form-control" v-model="salida.tpago" required>
+                    <option value="CONTADO">CONTADO</option>
+                    <option value="CREDITO">CREDITO</option>
+                    <option value="TRANSFERENCIA">TRANSFERENCIA</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-lg-4 col-md-4">
+                <div class="form-group">
+                  <label for="exampleInputFile">Adjustar Archivo(*)</label>
+                  <div class="input-group">
+                    <div class="custom-file">
+                      <input @change="uploadImage" accept="application/pdf" type="file" id="uploadfiles" ref="uploadfiles" class="custom-file-input" required>
+                      <label class="custom-file-label" for="uploadfiles">{{file_name}}</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-12 col-md-12">
+                <div class="form-group">
+                  <label>Observacion(*):</label>
+                  <textarea @keyup.tab="keyNa()" v-model="salida.observacion" type="text" class="form-control" class="form-control" required></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table id="detalles" class="table table-bordered text-nowrap">
+                <thead>
+                  <tr>
+                    <th>Codigo</th>
+                    <th>Descripcion</th>
+                    <th>Cant.</th>
+                    <th>Accion</th>
+                  </tr>
+                </thead>
+                <tbody >
+                  <tr v-for="(resultListP, index) in salida.listp">
+                    <td class="text-center">{{ resultListP.codigo }} </td>
+                    <td><input v-model="resultListP.id" type="hidden"> {{ resultListP.nombre }}</td>
+                    <td class="text-center"><input @input="count(index)" style="width: 60px;" v-model="resultListP.cantidad" type="number" required></td>
+                    <td class="text-center"><button @click="deleteFind(index)" class="btn btn-sm btn-danger" id="del"><i class="fas fa-trash"></i></button></td>
+                  </tr>
+                </tbody>
+              </table>
+              <!-- button -->
+              <button v-if="btnR == true" class="btn btn-primary" type="submit" name="salida">Registrar salida</button>
+            </div>
+            <!-- /form -->
+          </form>
+          </div>
+        </div>
+      </section>
+      <!-- /.Left col -->
+      <!-- right col (We are only adding the ID to make the widgets sortable)-->
+      <section class="col-lg-5 connectedSortable ui-sortable">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-tittle">
+              Lista de Productos
+            </div>
+          </div>
+          <div class="card-body">
+            <table id="invt" class="table table-bordered table-striped">
+              <thead>
+                <th></th>
+                <th>Codigo</th>
+                <th>Nombre</th>
+                <th>#</th>
+                <th>Categoria</th>
+              </thead>
+            </table>
+          </div>
+        </div>
+      </section>
+      <!-- right col -->
+    </div>
+  </div>
+  <div v-if="view == true" class="col-12">
+    <div class="row">
+      <!-- Left col -->
+      <section class="col-lg-7 connectedSortable ui-sortable">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-tittle">
+              Datos del cliente
+              <button @click="cancel" class="btn btn-sm btn-default float-right">Volver</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-lg-2 col-md-2">
+                <div class="form-group">
+                  <label>Cliente(*):</label>
+                  <select class="form-control" v-model="ver.id_cliente" readonly>
+                    <option v-for="resultCliente in arrayCliente" v-bind:value="resultCliente.id">{{resultCliente.nombre}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-lg-10 col-md-10">
+                <div class="form-group">
+                  <label>Referencia(*):</label>
+                  <input v-model="ver.referencia" type="text" class="form-control" readonly>
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-4">
+                <div class="form-group">
+                  <label>Factura(*):</label>
+                  <input v-model="ver.factura" type="text" class="form-control" class="form-control" readonly>
+                </div>
+              </div>
+              <div class="col-lg-4 col-md-4">
+                <div class="form-group">
+                  <label>Fecha de Comprobante(*)</label>
+                  <input v-model="ver.fecha" type="date" class="form-control" readonly>
+                </div>
+              </div>
+              <div class="col-lg-2 col-md-2">
+                <div class="form-group">
+                  <label>N°:</label>
+                  <input v-model="ver.serie" type="text" class="form-control" class="form-control" readonly>
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                  <label>Tipo de pago(*):</label>
+                  <select class="form-control" v-model="ver.tpago" readonly>
+                    <option value="CONTADO">CONTADO</option>
+                    <option value="CREDITO">CREDITO</option>
+                    <option value="TRANSFERENCIA">TRANSFERENCIA</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-lg-12 col-md-12">
+                <div class="form-group">
+                  <label>Observacion(*):</label>
+                  <textarea v-model="ver.observacion" type="text" class="form-control" class="form-control" readonly></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table id="detalles" class="table table-bordered text-nowrap">
+                <thead class="text-center">
+                  <tr>
+                    <th>Codigo</th>
+                    <th>Descripcion</th>
+                    <th>Cant.</th>
+                  </tr>
+                </thead>
+                <tbody class="text-center">
+                  <tr v-for="(resultListP, index) in ver.listp">
+                    <td>{{ resultListP.codigo }} </td>
+                    <td><input v-model="resultListP.id" type="hidden"> {{ resultListP.nombre }}</td>
+                    <td>{{resultListP.cantidad}}</td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <th colspan="2" class="text-right">TOTAL</th>
+                    <th class="text-center">{{ total }}</th>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- /.Left col -->
+      <!-- right col (We are only adding the ID to make the widgets sortable)-->
+      <section class="col-lg-5 connectedSortable ui-sortable">
+        <iframe :src="ver.file" width="100%" height="100%"></iframe>
+      </section>
+      <!-- right col -->
+    </div>
+  </div>
+</div>

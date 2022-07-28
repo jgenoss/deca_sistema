@@ -1,0 +1,169 @@
+<div class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1 class="m-0">Gestion de usuarios</h1>
+      </div><!-- /.col -->
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><a href="">Gestion de usuarios</a></li>
+          <li class="breadcrumb-item active">AdminCP</li>
+        </ol>
+      </div><!-- /.col -->
+    </div><!-- /.row -->
+  </div><!-- /.container-fluid -->
+</div>
+<div id="users" class="content">
+  <div v-if="list == true" class="col-12">
+    <div class="card card-primary">
+      <div class="card-header">Information
+        <button @click="newbutton" data-toggle="modal" data-target="#modal-add" class="btn btn-sm btn-default float-right"><i class="fas fa-plus"></i></button>
+      </div>
+      <div class="card-body">
+        <table id="list" class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>Usuario</th>
+              <th>Nombre</th>
+              <th>Telefono</th>
+              <th>Estado</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody class="text-center">
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+    <!-- /.modal addClien -->
+  <div class="modal fade" id="modal-add">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Nuevo usuario</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form v-on:submit.prevent="newSubmit">
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Usuario</label>
+                <input v-model="data.login" type="text" class="form-control" required>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Contraseña</label>
+                <input v-model="data.password" type="text" class="form-control" required>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Nombre</label>
+                <input v-model="data.name" type="text" class="form-control" required>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Telefono</label>
+                <input v-model="data.phone" type="tel" class="form-control" required>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="form-group">
+                <label>Correo</label>
+                <input v-model="data.email" type="email" class="form-control" required>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Estado</label>
+                <select v-model="data.status" class="form-control" required>
+                  <option disabled value="">seleccione una opcion</option>
+                  <option value="0">Inactivo</option>
+                  <option value="1">Activo</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer justify-content-between">
+          <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fas fa-ban"></i></button>
+          <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i></button>
+        </div>
+        </form>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <div class="modal fade" id="modal-edit">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Editar usuario</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form v-on:submit.prevent="editSubmit">
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Usuario</label>
+                <input v-model="data.login" type="text" class="form-control" required>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Contraseña</label>
+                <input v-model="data.password" type="text" class="form-control" required>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Nombre</label>
+                <input v-model="data.name" type="text" class="form-control" required>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Telefono</label>
+                <input v-model="data.phone" type="tel" class="form-control" required>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="form-group">
+                <label>Correo</label>
+                <input v-model="data.email" type="email" class="form-control" required>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Estado</label>
+                <select v-model="data.status" class="form-control" required>
+                  <option disabled value="">seleccione una opcion</option>
+                  <option value="0">Inactivo</option>
+                  <option value="1">Activo</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer justify-content-between">
+          <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fas fa-ban"></i></button>
+          <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i></button>
+        </div>
+        </form>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+</div>
