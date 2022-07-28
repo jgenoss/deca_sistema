@@ -11,7 +11,7 @@
  Target Server Version : 100424
  File Encoding         : 65001
 
- Date: 28/07/2022 09:49:41
+ Date: 28/07/2022 10:24:37
 */
 
 SET NAMES utf8mb4;
@@ -139,14 +139,14 @@ CREATE TABLE `entrada`  (
   `serie` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
   `archivo` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
   `observacion` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `created_at` date NULL DEFAULT current_timestamp,
+  `created_at` datetime(0) NULL DEFAULT current_timestamp(0),
   PRIMARY KEY (`id_entrada`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of entrada
 -- ----------------------------
-INSERT INTO `entrada` VALUES (1, '3', 'JE RUEDA Y CIA S.A.S', '25-158815', '2022-06-06', '00000001', 'upload_files/1658847172_2022-07-26_ENTRADA.pdf', '7802940049605 - 1 Botella rota + 5 Botellas etiquetas manchadas\n7802940049612 - 11 Botellas etiquetas rasgadas\n7802940049582 - 1 Botella sin corcho\n7802940049629 - 6 Botellas con etiquetas rasgadas', '2022-07-26');
+INSERT INTO `entrada` VALUES (1, '3', 'JE RUEDA Y CIA S.A.S', '25-158815', '2022-06-06', '00000001', 'upload_files/1658847172_2022-07-26_ENTRADA.pdf', '7802940049605 - 1 Botella rota + 5 Botellas etiquetas manchadas\n7802940049612 - 11 Botellas etiquetas rasgadas\n7802940049582 - 1 Botella sin corcho\n7802940049629 - 6 Botellas con etiquetas rasgadas', '2022-07-26 00:00:00');
 
 -- ----------------------------
 -- Table structure for entrada_detalle
@@ -157,7 +157,7 @@ CREATE TABLE `entrada_detalle`  (
   `id_serie` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
   `id_producto` int(11) NULL DEFAULT NULL,
   `cantidad` int(11) NULL DEFAULT NULL,
-  `created_at` date NULL DEFAULT current_timestamp,
+  `created_at` datetime(0) NULL DEFAULT current_timestamp(0),
   `update_at` datetime(0) NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0),
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
@@ -165,16 +165,16 @@ CREATE TABLE `entrada_detalle`  (
 -- ----------------------------
 -- Records of entrada_detalle
 -- ----------------------------
-INSERT INTO `entrada_detalle` VALUES (1, '00000001', 25, 48, '2022-07-26', NULL);
-INSERT INTO `entrada_detalle` VALUES (2, '00000001', 26, 36, '2022-07-26', NULL);
-INSERT INTO `entrada_detalle` VALUES (3, '00000001', 27, 36, '2022-07-26', NULL);
-INSERT INTO `entrada_detalle` VALUES (4, '00000001', 28, 48, '2022-07-26', NULL);
-INSERT INTO `entrada_detalle` VALUES (5, '00000001', 29, 48, '2022-07-26', NULL);
-INSERT INTO `entrada_detalle` VALUES (6, '00000001', 30, 72, '2022-07-26', NULL);
-INSERT INTO `entrada_detalle` VALUES (7, '00000001', 31, 120, '2022-07-26', NULL);
-INSERT INTO `entrada_detalle` VALUES (8, '00000001', 32, 36, '2022-07-26', NULL);
-INSERT INTO `entrada_detalle` VALUES (9, '00000001', 33, 36, '2022-07-26', NULL);
-INSERT INTO `entrada_detalle` VALUES (10, '00000001', 34, 120, '2022-07-26', NULL);
+INSERT INTO `entrada_detalle` VALUES (1, '00000001', 25, 48, '2022-07-26 00:00:00', NULL);
+INSERT INTO `entrada_detalle` VALUES (2, '00000001', 26, 36, '2022-07-26 00:00:00', NULL);
+INSERT INTO `entrada_detalle` VALUES (3, '00000001', 27, 36, '2022-07-26 00:00:00', NULL);
+INSERT INTO `entrada_detalle` VALUES (4, '00000001', 28, 48, '2022-07-26 00:00:00', NULL);
+INSERT INTO `entrada_detalle` VALUES (5, '00000001', 29, 48, '2022-07-26 00:00:00', NULL);
+INSERT INTO `entrada_detalle` VALUES (6, '00000001', 30, 72, '2022-07-26 00:00:00', NULL);
+INSERT INTO `entrada_detalle` VALUES (7, '00000001', 31, 120, '2022-07-26 00:00:00', NULL);
+INSERT INTO `entrada_detalle` VALUES (8, '00000001', 32, 36, '2022-07-26 00:00:00', NULL);
+INSERT INTO `entrada_detalle` VALUES (9, '00000001', 33, 36, '2022-07-26 00:00:00', NULL);
+INSERT INTO `entrada_detalle` VALUES (10, '00000001', 34, 120, '2022-07-26 00:00:00', NULL);
 
 -- ----------------------------
 -- Table structure for inventario
@@ -417,19 +417,19 @@ CREATE TABLE `salida`  (
   `archivo` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
   `tpago` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `observacion` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `created_at` date NULL DEFAULT current_timestamp,
+  `created_at` datetime(0) NULL DEFAULT current_timestamp(0),
   PRIMARY KEY (`id_salida`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of salida
 -- ----------------------------
-INSERT INTO `salida` VALUES (1, '3', 'DECA SOLUCIONES LOGISTICA Y SERVCIOS S.A.S', 'JE-3995', '2022-06-21', '00000001', 'upload_files/1658847583_2022-07-26_SALIDA.pdf', 'CREDITO', 'N/A', '2022-07-26');
-INSERT INTO `salida` VALUES (2, '3', 'VALDES VALENCIA NELIS BEATRIZ', 'JE-4013', '2022-06-29', '00000002', 'upload_files/1658851763_2022-07-26_SALIDA.pdf', 'CREDITO', 'N/A', '2022-07-26');
-INSERT INTO `salida` VALUES (3, '3', 'ESCOBAR LONDOÑO OLGA PATRICIA', 'JE-4028', '2022-07-01', '00000003', 'upload_files/1658851921_2022-07-26_SALIDA.pdf', 'CREDITO', 'N/A', '2022-07-26');
-INSERT INTO `salida` VALUES (4, '3', 'SCORDAMAGLIA PAOLO', 'JE-4031', '2022-07-01', '00000004', 'upload_files/1658853042_2022-07-26_SALIDA.pdf', 'CREDITO', 'N/A', '2022-07-26');
-INSERT INTO `salida` VALUES (5, '3', 'BASILEA COMIDA FRANCESA Y MEDITERRANEA', 'JE-4032', '2022-07-01', '00000005', 'upload_files/1658853265_2022-07-26_SALIDA.pdf', 'CREDITO', 'N/A', '2022-07-26');
-INSERT INTO `salida` VALUES (6, '3', 'SUNSET MARINA S.A.S', 'JE-4040', '2022-07-06', '00000006', 'upload_files/1658854845_2022-07-26_SALIDA.pdf', 'CREDITO', 'N/A', '2022-07-26');
+INSERT INTO `salida` VALUES (1, '3', 'DECA SOLUCIONES LOGISTICA Y SERVCIOS S.A.S', 'JE-3995', '2022-06-21', '00000001', 'upload_files/1658847583_2022-07-26_SALIDA.pdf', 'CREDITO', 'N/A', '2022-07-26 00:00:00');
+INSERT INTO `salida` VALUES (2, '3', 'VALDES VALENCIA NELIS BEATRIZ', 'JE-4013', '2022-06-29', '00000002', 'upload_files/1658851763_2022-07-26_SALIDA.pdf', 'CREDITO', 'N/A', '2022-07-26 00:00:00');
+INSERT INTO `salida` VALUES (3, '3', 'ESCOBAR LONDOÑO OLGA PATRICIA', 'JE-4028', '2022-07-01', '00000003', 'upload_files/1658851921_2022-07-26_SALIDA.pdf', 'CREDITO', 'N/A', '2022-07-26 00:00:00');
+INSERT INTO `salida` VALUES (4, '3', 'SCORDAMAGLIA PAOLO', 'JE-4031', '2022-07-01', '00000004', 'upload_files/1658853042_2022-07-26_SALIDA.pdf', 'CREDITO', 'N/A', '2022-07-26 00:00:00');
+INSERT INTO `salida` VALUES (5, '3', 'BASILEA COMIDA FRANCESA Y MEDITERRANEA', 'JE-4032', '2022-07-01', '00000005', 'upload_files/1658853265_2022-07-26_SALIDA.pdf', 'CREDITO', 'N/A', '2022-07-26 00:00:00');
+INSERT INTO `salida` VALUES (6, '3', 'SUNSET MARINA S.A.S', 'JE-4040', '2022-07-06', '00000006', 'upload_files/1658854845_2022-07-26_SALIDA.pdf', 'CREDITO', 'N/A', '2022-07-26 00:00:00');
 
 -- ----------------------------
 -- Table structure for salida_detalle
@@ -440,7 +440,7 @@ CREATE TABLE `salida_detalle`  (
   `id_serie` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
   `id_producto` int(11) NULL DEFAULT NULL,
   `cantidad` int(11) NULL DEFAULT NULL,
-  `created_at` date NULL DEFAULT current_timestamp,
+  `created_at` datetime(0) NULL DEFAULT current_timestamp(0),
   `update_at` datetime(0) NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0),
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 19 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
@@ -448,24 +448,24 @@ CREATE TABLE `salida_detalle`  (
 -- ----------------------------
 -- Records of salida_detalle
 -- ----------------------------
-INSERT INTO `salida_detalle` VALUES (1, '00000001', 30, 1, '2022-07-26', NULL);
-INSERT INTO `salida_detalle` VALUES (2, '00000001', 31, 1, '2022-07-26', NULL);
-INSERT INTO `salida_detalle` VALUES (3, '00000001', 34, 1, '2022-07-26', NULL);
-INSERT INTO `salida_detalle` VALUES (4, '00000002', 34, 6, '2022-07-26', NULL);
-INSERT INTO `salida_detalle` VALUES (5, '00000002', 31, 6, '2022-07-26', NULL);
-INSERT INTO `salida_detalle` VALUES (6, '00000002', 30, 6, '2022-07-26', NULL);
-INSERT INTO `salida_detalle` VALUES (7, '00000002', 28, 3, '2022-07-26', NULL);
-INSERT INTO `salida_detalle` VALUES (8, '00000002', 26, 3, '2022-07-26', NULL);
-INSERT INTO `salida_detalle` VALUES (9, '00000003', 31, 6, '2022-07-26', NULL);
-INSERT INTO `salida_detalle` VALUES (10, '00000004', 31, 4, '2022-07-26', NULL);
-INSERT INTO `salida_detalle` VALUES (11, '00000004', 30, 2, '2022-07-26', NULL);
-INSERT INTO `salida_detalle` VALUES (12, '00000005', 31, 2, '2022-07-26', NULL);
-INSERT INTO `salida_detalle` VALUES (13, '00000005', 34, 1, '2022-07-26', NULL);
-INSERT INTO `salida_detalle` VALUES (14, '00000005', 30, 1, '2022-07-26', NULL);
-INSERT INTO `salida_detalle` VALUES (15, '00000005', 28, 1, '2022-07-26', NULL);
-INSERT INTO `salida_detalle` VALUES (16, '00000005', 26, 1, '2022-07-26', NULL);
-INSERT INTO `salida_detalle` VALUES (17, '00000005', 25, 1, '2022-07-26', NULL);
-INSERT INTO `salida_detalle` VALUES (18, '00000006', 31, 16, '2022-07-26', NULL);
+INSERT INTO `salida_detalle` VALUES (1, '00000001', 30, 1, '2022-07-26 00:00:00', NULL);
+INSERT INTO `salida_detalle` VALUES (2, '00000001', 31, 1, '2022-07-26 00:00:00', NULL);
+INSERT INTO `salida_detalle` VALUES (3, '00000001', 34, 1, '2022-07-26 00:00:00', NULL);
+INSERT INTO `salida_detalle` VALUES (4, '00000002', 34, 6, '2022-07-26 00:00:00', NULL);
+INSERT INTO `salida_detalle` VALUES (5, '00000002', 31, 6, '2022-07-26 00:00:00', NULL);
+INSERT INTO `salida_detalle` VALUES (6, '00000002', 30, 6, '2022-07-26 00:00:00', NULL);
+INSERT INTO `salida_detalle` VALUES (7, '00000002', 28, 3, '2022-07-26 00:00:00', NULL);
+INSERT INTO `salida_detalle` VALUES (8, '00000002', 26, 3, '2022-07-26 00:00:00', NULL);
+INSERT INTO `salida_detalle` VALUES (9, '00000003', 31, 6, '2022-07-26 00:00:00', NULL);
+INSERT INTO `salida_detalle` VALUES (10, '00000004', 31, 4, '2022-07-26 00:00:00', NULL);
+INSERT INTO `salida_detalle` VALUES (11, '00000004', 30, 2, '2022-07-26 00:00:00', NULL);
+INSERT INTO `salida_detalle` VALUES (12, '00000005', 31, 2, '2022-07-26 00:00:00', NULL);
+INSERT INTO `salida_detalle` VALUES (13, '00000005', 34, 1, '2022-07-26 00:00:00', NULL);
+INSERT INTO `salida_detalle` VALUES (14, '00000005', 30, 1, '2022-07-26 00:00:00', NULL);
+INSERT INTO `salida_detalle` VALUES (15, '00000005', 28, 1, '2022-07-26 00:00:00', NULL);
+INSERT INTO `salida_detalle` VALUES (16, '00000005', 26, 1, '2022-07-26 00:00:00', NULL);
+INSERT INTO `salida_detalle` VALUES (17, '00000005', 25, 1, '2022-07-26 00:00:00', NULL);
+INSERT INTO `salida_detalle` VALUES (18, '00000006', 31, 16, '2022-07-26 00:00:00', NULL);
 
 -- ----------------------------
 -- Table structure for upload
