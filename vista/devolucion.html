@@ -13,7 +13,7 @@
     </div><!-- /.row -->
   </div><!-- /.container-fluid -->
 </div>
-<div id="salida" class="content">
+<div id="devolucion" class="content">
   <div v-if="list == true" class="col-12">
     <div class="card card-primary">
       <div class="card-header">Information
@@ -110,10 +110,11 @@
                   </tr>
                 </thead>
                 <tbody class="text-center">
-                  <tr v-for="(resultListP, index) in ver.listp">
-                    <td>{{ resultListP.codigo }} </td>
-                    <td><input v-model="resultListP.id" type="hidden"> {{ resultListP.nombre }}</td>
-                    <td>{{resultListP.cantidad}}</td>
+                  <tr v-for="(rtnL, index) in ver.listp">
+                    <td>{{ rtnL.codigo }} </td>
+                    <td><input v-model="rtnL.id" type="hidden"> {{ rtnL.nombre }}</td>
+                    <td>{{rtnL.cantidad}}</td>
+                    <td class="text-center"><button @click="addFind(rtnL.id,rtnL.codigo,rtnL.nombre,rtnL.cantidad)" class="btn btn-sm btn-info" id="del"><i class="fas fa-arrow-circle-right"></i></button></td>
                   </tr>
                 </tbody>
                 <tfoot>
@@ -196,18 +197,13 @@
                   </tr>
                 </thead>
                 <tbody class="text-center">
-                  <tr v-for="(resultListP, index) in ver.listp">
-                    <td>{{ resultListP.codigo }} </td>
-                    <td><input v-model="resultListP.id" type="hidden"> {{ resultListP.nombre }}</td>
-                    <td>{{resultListP.cantidad}}</td>
+                  <tr v-for="(rtnL, index) in devolucion.listp">
+                    <td>{{ rtnL.codigo }} </td>
+                    <td><input v-model="rtnL.id" type="hidden"> {{ rtnL.nombre }}</td>
+                    <td class="text-center"><input @input="count(index)" style="width: 60px;" v-model="rtnL.cantidad" type="number" required></td>
+                    <td class="text-center"><button @click="deleteFind(index)" class="btn btn-sm btn-danger" id="del"><i class="fas fa-trash"></i></button></td>
                   </tr>
                 </tbody>
-                <tfoot>
-                  <tr>
-                    <th colspan="2" class="text-right">TOTAL</th>
-                    <th class="text-center">{{ total }}</th>
-                  </tr>
-                </tfoot>
               </table>
             </div>
           </div>

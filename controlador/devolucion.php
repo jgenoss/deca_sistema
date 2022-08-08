@@ -117,8 +117,10 @@ require_once '../modelo/salida.php';
     case 'valiDate':
       {
         if (isset($_POST)) {
-          $rtn = Consult($db->sql("SELECT * FROM inventario WHERE id_producto =".$_POST['id']));
-          if ($_POST['cantidad'] > $rtn->cantidad) {
+          $id_serie = $_POST['sr'];
+          $id_producto = $_POST['list']['id'];
+          $rtn = Consult($db->sql("SELECT * FROM salida_detalle WHERE id_producto = '$id_producto'  AND id_serie ='$id_serie'"));
+          if ($_POST['list']['cantidad'] > $rtn->cantidad) {
             setJson(array(
                 'tittle' => 'ERROR',
                 'message' => 'La cantidad es mayor a la existencia',
@@ -126,7 +128,7 @@ require_once '../modelo/salida.php';
                 'max' => $rtn->cantidad
               )
             );
-          }else if ($_POST['cantidad'] <= 0) {
+          }else if ($_POST['list']['cantidad'] <= 0) {
             setJson(array(
                 'tittle' => 'ERROR',
                 'message' => 'Por favor introdusca una cantidad valida',

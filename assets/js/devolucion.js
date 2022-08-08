@@ -1,11 +1,11 @@
 new Vue({
-  el:'#salida',
+  el:'#devolucion',
   data(){
     return{
       codigo:'',
       total:0,
       file_name:'Selecione un document',
-      resultListP:{
+      rtnL:{
         id:'',
         codigo:'',
         nombre:'',
@@ -16,7 +16,7 @@ new Vue({
         id:'',
         nombre:''
       },
-      salida:{
+      devolucion:{
         id_cliente:'',
         referencia:'',
         factura:'',
@@ -56,38 +56,38 @@ new Vue({
 
   methods:{
     keyNa(){
-      this.salida.observacion = "N/A";
+      this.devolucion.observacion = "N/A";
     },
     getConsecutivo(){
-      axios.post('controlador/salida.php?op=getConsecutivo').then(resp =>{
+      axios.post('controlador/devolucion.php?op=getConsecutivo').then(resp =>{
         this.generadNumber(resp.data.next);
-        //this.salida.serie = resp.data.next;
+        //this.devolucion.serie = resp.data.next;
       });
     },
     generadNumber(num){
       if (parseInt(num) < 10) {
-        this.salida.serie = `0000000${num}`;
+        this.devolucion.serie = `0000000${num}`;
       }else if (parseInt(num) < 100) {
-        this.salida.serie = `000000${num}`;
+        this.devolucion.serie = `000000${num}`;
       }else if (parseInt(num) < 1000) {
-        this.salida.serie = `00000${num}`;
+        this.devolucion.serie = `00000${num}`;
       }else if (parseInt(num) < 10000) {
-        this.salida.serie = `0000${num}`;
+        this.devolucion.serie = `0000${num}`;
       }else if (parseInt(num) < 100000) {
-        this.salida.serie = `000${num}`;
+        this.devolucion.serie = `000${num}`;
       }else {
         this.sweetalert2("ATENCION","CONTACTE CON EL PROGRAMADOR","error");
-        this.salida.serie = `andale hagale un aumento de sueldo`;
+        this.devolucion.serie = `andale hagale un aumento de sueldo`;
       }
     },
     count(index){
-      axios.post('controlador/salida.php?op=valiDate',this.salida.listp[index]).then(resp =>{
+      axios.post('controlador/devolucion.php?op=valiDate',{sr:this.ver.serie,list:this.devolucion.listp[index]}).then(resp =>{
         if (resp.data.type == "error") {
           this.sweetalert2(resp.data.tittle,resp.data.message,resp.data.type);
-          this.salida.listp[index].cantidad = resp.data.max;
+          this.devolucion.listp[index].cantidad = resp.data.max;
         }else if (resp.data.max == "0") {
           this.sweetalert2(resp.data.tittle,resp.data.message,resp.data.type);
-          this.salida.listp[index].cantidad = resp.data.max;
+          this.devolucion.listp[index].cantidad = resp.data.max;
         }
       });
     },
@@ -95,7 +95,7 @@ new Vue({
       this.listaInventario(index);
     },
     submit:function () {
-      if (!this.salida.listp.length) {
+      if (!this.devolucion.listp.length) {
         this.sweetalert2("info","Agregue un producto","info");
       }else {
         Swal.fire({
@@ -109,7 +109,7 @@ new Vue({
           confirmButtonText: 'Si!'
         }).then((result) => {
           if (result.isConfirmed) {
-            axios.post('controlador/salida.php?op=regSalida',this.salida).then(resp =>{
+            axios.post('controlador/devolucion.php?op=regSalida',this.devolucion).then(resp =>{
               if (resp.data.type == "success") {
                 this.sweetalert2(resp.data.tittle,resp.data.message,resp.data.type);
                 this.cancel();
@@ -127,7 +127,7 @@ new Vue({
       const reader = new FileReader();
       reader.onload = function(e) {
         thisJq.file_name = file.name;
-        thisJq.salida.file = e.target.result;
+        thisJq.devolucion.file = e.target.result;
       };
       reader.onerror = function(error) {
         alert(error);
@@ -143,7 +143,7 @@ new Vue({
           "aProcessing": true, //Activamos el procesamiento del datatables
           "aServerSide": true, //Paginacion y filtrado realizados por el servidor
           "ajax": {
-            "url": 'controlador/salida.php?op=getSalidas',
+            "url": 'controlador/devolucion.php?op=getSalidas',
             "type": "POST",
             "error": function(e) {console.log(e);}
           },
@@ -162,7 +162,7 @@ new Vue({
           "aProcessing": true, //Activamos el procesamiento del datatables
           "aServerSide": true, //Paginacion y filtrado realizados por el servidor
           "ajax": {
-            "url": `controlador/salida.php?op=getInventario&id=${type}`,
+            "url": `controlador/devolucion.php?op=getInventario&id=${type}`,
             "type": "POST",
             "error": function(e) {console.log(e);}
           },
@@ -181,7 +181,7 @@ new Vue({
       this.view = false;
     },
     getCliente(){
-      axios.post('controlador/salida.php?op=getClientes').then(resp =>{
+      axios.post('controlador/devolucion.php?op=getClientes').then(resp =>{
         this.arrayCliente = resp.data;
       });
     },
@@ -190,7 +190,7 @@ new Vue({
       $(function () {
         $(document).on("click", "#view", function() {
           let id = $(this).val();
-          axios.post('controlador/salida.php?op=getSalidaId',{id:id}).then(resp =>{
+          axios.post('controlador/devolucion.php?op=getSalidaId',{id:id}).then(resp =>{
             thisJq.ver = resp.data;
             thisJq.total = resp.data.total;
             $("#css").attr("class","sidebar-mini layout-fixed sidebar-collapse");
@@ -208,7 +208,7 @@ new Vue({
       });
     },
     addFind: function (id,codigo,nombre) {
-      this.salida.listp.push({
+      this.devolucion.listp.push({
         id:id,
         codigo:codigo,
         nombre:nombre,
@@ -217,10 +217,10 @@ new Vue({
     },
     deleteFind: function (index) {
       console.log(index);
-      this.salida.listp.splice(index, 1);
+      this.devolucion.listp.splice(index, 1);
     },
     getProductId:function (id) {
-      axios.post('controlador/salida.php?op=getProductId',{id:id}).then(resp =>{
+      axios.post('controlador/devolucion.php?op=getProductId',{id:id}).then(resp =>{
         this.agregarDetalle(resp.data.id,resp.data.producto,resp.data.codigo);
       });
     },
@@ -241,15 +241,15 @@ new Vue({
 			)
 		},
     limpiarInputs:function() {
-      this.salida.id_cliente='',
-      this.salida.referencia='',
-      this.salida.factura='',
-      this.salida.fecha='',
-      this.salida.file='',
-      this.salida.serie='',
-      this.salida.observacion='',
-      this.salida.tpago='',
-      this.salida.listp = [];
+      this.devolucion.id_cliente='',
+      this.devolucion.referencia='',
+      this.devolucion.factura='',
+      this.devolucion.fecha='',
+      this.devolucion.file='',
+      this.devolucion.serie='',
+      this.devolucion.observacion='',
+      this.devolucion.tpago='',
+      this.devolucion.listp = [];
       this.file_name='Selecione un document';
     }
   }
