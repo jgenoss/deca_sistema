@@ -137,6 +137,8 @@ new Vue({
     tabla() {
       $(function() {
         $("#list").DataTable({
+          dom:'Bfrtip',
+          "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
           "responsive": true,
           "autoWidth": false,
           "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],

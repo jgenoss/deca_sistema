@@ -1,40 +1,43 @@
 <?php
-  require ("fpdf.php");
-  // require ("invoice.php");
-  require ("../modelo/dbconnect.php");
-  //customer and invoice details
-  $info=[
-    "customer"=>"Ram Kumar",
-    "address"=>"4th cross,Car Street,",
-    "city"=>"Salem 636204.",
-    "invoice_no"=>"1000001",
-    "invoice_date"=>"30-11-2021",
-    "total_amt"=>"5200.00",
-    "words"=>"Rupees Five Thousand Two Hundred Only",
-  ];
+  if(!isset($_GET['id'])){
+    exit();
+  } else if(isset($_GET['id'])){
+    require ("fpdf.php");
+    // require ("invoice.php");
+    require ("../modelo/dbconnect.php");
+    require ("../includes/config.php");
+    //customer and invoice details
 
+    $db = new dbconnect();
 
-  //invoice Products
-  $products_info=[
-    [
-      "name"=>"Keyboard",
-      "price"=>"500.00",
-      "qty"=>2,
-      "total"=>"1000.00"
-    ],
-    [
-      "name"=>"Mouse",
-      "price"=>"400.00",
-      "qty"=>3,
-      "total"=>"1200.00"
-    ],
-    [
-      "name"=>"UPS",
-      "price"=>"3000.00",
-      "qty"=>1,
-      "total"=>"3000.00"
-    ],
-  ];
+    $rtn[0] = Consult($db->sql("SELECT * FROM salida WHERE id_salida = ".$_GET['id']));
+    $rtn[1] = Consult($db->sql("SELECT * FROM clientes WHERE id_cliente = ".$rtn[0]->id_cliente));
+    $rtn[2] = AllConsult($db->sql("SELECT p.*,sd.* FROM salida_detalle AS sd INNER JOIN producto AS p ON sd.id_producto = p.id_producto WHERE sd.id_serie=".$rtn[0]->serie));
+
+    $total=0;
+
+    foreach ($rtn[2] as $key) {
+      $total += $key->cantidad;
+      $products[] = array(
+        'id' => $key->id_producto,
+        'codigo' => $key->ean,
+        'nombre' => $key->nombre,
+        'cantidad' => $key->cantidad,
+        'umb' => $key->umb
+      );
+    }
+    $info = array(
+      'total' => $total,
+      'cliente' => $rtn[1]->empresa,
+      'referencia' => $rtn[0]->referencia,
+      'factura' => $rtn[0]->factura,
+      'fecha' => $rtn[0]->fecha_de_comprobante,
+      'file' => $rtn[0]->archivo,
+      'serie' => $rtn[0]->serie,
+      'observacion' => $rtn[0]->observacion,
+      'tpago' => $rtn[0]->tpago,
+      'listp' => $products
+    );
 
   class PDF extends FPDF
   {
@@ -45,10 +48,10 @@
       $this->Image("../assets/img/logo.png",10,10,50,0,"PNG");
 
       //center
-      $this->SetY(10);
-      $this->SetFont('Courier','',8);
-      // direccion
+      $this->SetFont('Arial','B',12);
       $this->Cell(0,3,"DECA SOLUCIONES LOGISTICA",0,1,'C');
+      $this->SetY(15);
+      $this->SetFont('Courier','',8);
       $this->Cell(0,3,"Cra 29 No. 42-37,",0,1,'C');
       $this->Cell(0,3,"SECTOR SANTA CRUZ.",0,1,'C');
       $this->Cell(0,3,"BODEGA 1A de la MZ 3",0,1,'C');
@@ -58,95 +61,103 @@
       $this->SetY(10);
       $this->SetFont('Courier','',12);
       // $this->Cell(0,3,"FACTURA ELECTRONICA",0,1,'R');
-      $this->SetY(17);
-      $this->SetX(-57);
-      $this->SetFillColor(255);
-      // $this->RoundedRect(x, y, w, h, r, style);
-      $this->RoundedRect(150, 15, 50, 8, 3, 'DF');
-      $this->SetFont('Courier','B',17);
-      $this->Cell(0,3,"DC-00000001",0,1);
+
       //Display Horizontal line
       // $this->Line(0,48,210,48);
-      $this->SetY(29);
+      $this->SetY(30);
       $this->SetFont('Arial','B',12);
       $this->Cell(0,3,"REPORTE DE SALIDA",0,1,'C');
     }
 
-    function body($info,$products_info){
+    function body($info){
+
+      $this->SetY(12,5);
+      $this->SetX(-57);
+      $this->SetFillColor(255);
+      $this->RoundedRect(150, 10, 50, 8, 3, 'DF');
+      $this->SetFont('Courier','B',17);
+      $this->Cell(0,3,"DC-".$info['serie'],0,1);
       // CLIENTE
-      $this->SetY(38);
+      $this->SetY(40);
       $this->SetX(10);
       $this->SetFillColor(255);
       $this->SetFont('Courier','',9);
-      $this->RoundedRect(10, 35, 135, 15, 2, 'DF');
-      $this->Cell(20,3,"CLIENTE:",0,0,'L');
-      $this->Cell(0,3,"ESTO ES SOLO UNA PRUEBA DE MI CONOCIMIENTO",0,0,'');
-      $this->Line(10,43,145,43);
-      // DIRECCION
-      $this->SetY(45);
-      $this->SetX(10);
-      $this->SetFont('Courier','',9);
-      $this->Cell(25,3,"DIRECCION:",0,0,'L');
-      $this->Cell(0,3,"ESTO ES SOLO UNA PRUEBA DE MI CONOCIMIENTO",0,0,'');
-      // FECHA
-      $this->SetY(37);
-      $this->SetX(168);
-      $this->SetFillColor(255);
-      $this->SetFont('Courier','',10);
-      $this->RoundedRect(160, 35, 30, 15, 2, 'DF');
-      $this->Cell(0,5,"FECHA:",0,0);
-      $this->SetY(44);
-      $this->SetX(163);
-      $this->Cell(0,5,"2022-07-27",0,0);
-      $this->Line(190,43,160,43);
+      // $this->RoundedRect(10, 35, 135, 15, 2, 'DF');
+      $this->Cell(20,7,"CLIENTE:",1);
+      $this->Cell(120,7,$info['cliente'],1);
+      $this->Cell(50,7,"FECHA Y HORA DE FACTURA",1);
+      $this->Ln();
+      $this->Cell(20,7,"DIRECCION:",1);
+      $this->Cell(120,7,"S/D",1);
+      $this->Cell(50,7,"GENERADO: ".date("Y-m-d"),1);
+      $this->Ln();
+      $this->Cell(20,7,"CIUDAD:",1);
+      $this->Cell(120,7,"",1);
+      $this->Cell(50,7,"EXPEDICION: ".$info['fecha'],1);
+      $this->Ln();
+
+      $this->SetY(75);
+      $this->SetFont('Courier','B',9);
+      $this->Cell(0,3,"OBSERVACION",0,1,'C');
+      $this->SetY(80);
+      $this->Cell(190,7,"N/A",0,1,"L");
+      $this->SetY(80);
+      $this->Cell(190,15,"",1);
+
 
       //Display Table headings
-      $this->SetY(95);
+      $this->SetY(100);
       $this->SetX(10);
       $this->SetFont('Arial','B',12);
-      $this->Cell(80,9,"DESCRIPTION",1,0);
-      $this->Cell(40,9,"PRICE",1,0,"C");
-      $this->Cell(30,9,"QTY",1,0,"C");
-      $this->Cell(40,9,"TOTAL",1,1,"C");
-      $this->SetFont('Arial','',12);
+      $this->Cell(35,7,"Codigo",1,0,"C");
+      $this->Cell(125,7,"Descripcion",1,0,"C");
+      $this->Cell(15,7,"Umb",1,0,"C");
+      $this->Cell(15,7,"Cant.",1,1,"C");
+
 
       //Display table product rows
-      foreach($products_info as $row){
-        $this->Cell(80,9,$row["name"],"LR",0);
-        $this->Cell(40,9,$row["price"],"R",0,"R");
-        $this->Cell(30,9,$row["qty"],"R",0,"C");
-        $this->Cell(40,9,$row["total"],"R",1,"R");
+      $this->SetFont('Courier','',10);
+      foreach($info['listp'] as $row){
+        $this->Cell(35,8,$row["codigo"],"LR",0,"C");
+        $this->Cell(125,8,$row["nombre"],"LR",0,"L");
+        $this->Cell(15,8,$row["umb"],"LR",0,"C");
+        $this->Cell(15,8,$row["cantidad"],"LR",1,"C");
       }
       //Display table empty rows
-      for($i=0;$i<12-count($products_info);$i++)
+      for($i=0;$i<15-count($info['listp']);$i++)
       {
-        $this->Cell(80,9,"","LR",0);
-        $this->Cell(40,9,"","R",0,"R");
-        $this->Cell(30,9,"","R",0,"C");
-        $this->Cell(40,9,"","R",1,"R");
+        $this->Cell(35,8,"","LR",0);
+        $this->Cell(125,8,"","LR",0,"C");
+        $this->Cell(15,8,"","LR",0,"C");
+        $this->Cell(15,8,"","LR",1,"C");
       }
       //Display table total row
-      $this->SetFont('Arial','B',12);
-      $this->Cell(150,9,"TOTAL",1,0,"R");
-      $this->Cell(40,9,$info["total_amt"],1,1,"R");
+      $this->SetFont('Arial','B',10);
+      $this->Cell(175,7,"TOTAL",1,0,"R");
+      $this->Cell(15,7,$info['total'],1,1,"C");
 
       $this->SetFont('Arial','',12);
-      $this->Cell(0,9,$info["words"],0,1);
+      $this->Cell(0,7,"",0,1);
 
     }
     function Footer(){
 
       //set footer position
-      $this->SetY(-50);
-      $this->SetFont('Arial','B',12);
-      $this->Cell(0,10,"for ABC COMPUTERS",0,1,"R");
-      $this->Ln(15);
-      $this->SetFont('Arial','',12);
-      $this->Cell(0,10,"Authorized Signature",0,1,"R");
-      $this->SetFont('Arial','',10);
+      $this->SetY(-35);
+      // $this->SetFont('Arial','B',12);
+      // $this->Cell(0,10,"for ABC COMPUTERS",0,1,"R");
+      // $this->Ln(15);
+      // $this->SetFont('Arial','',12);
+      // $this->Cell(0,10,"Authorized Signature",0,1,"R");
 
+      $this->SetFont('Arial','',10);
       //Display Footer Text
-      $this->Cell(0,10,"This is a computer generated invoice",0,1,"C");
+      $this->Cell(0,10,"Esta es una factura generada por computadora.",0,1,"C");
+      $this->SetY(-15);
+      // Arial italic 8
+      $this->SetFont('Arial','I',8);
+      // Número de página
+      $this->Cell(0,10,'Page '.$this->PageNo().'/{nb}',0,0,'C');
 
     }
     function RoundedRect($x, $y, $w, $h, $r, $style = '')
@@ -210,7 +221,10 @@
   }
   //Create A4 Page with Portrait
   $pdf=new PDF("P","mm","A4");
+  $pdf->AliasNbPages();
   $pdf->AddPage();
-  $pdf->body($info,$products_info);
+  $pdf->body($info);
   $pdf->Output();
+
+}
 ?>
