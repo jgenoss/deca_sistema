@@ -75,6 +75,16 @@ function ClearInput($val)
  $search = array("'",' ','"','/',',','.','+','-','<','>','$','%','?','¿','!','\n');
  return str_replace($search, '',$val);
 }
+function limitar_cadena($cadena, $limite, $sufijo){
+	// Si la longitud es mayor que el límite...
+	if(strlen($cadena) > $limite){
+		// Entonces corta la cadena y ponle el sufijo
+		return substr($cadena, 0, $limite) . $sufijo;
+	}
+	
+	// Si no, entonces devuelve la cadena normal
+	return $cadena;
+}
 if (true) {
   function webengineConfigs() {
      $webengineConfigs = file_get_contents(''.dirname(__FILE__).'/web.json');
