@@ -32,7 +32,9 @@ require_once '../modelo/salida.php';
           $rtn = AllConsult($sl->getSalida());
           $A = array();
           foreach ($rtn as $row) {
-            $button='<button id="view" value="'.$row->id_salida.'" class="btn btn-sm btn-warning"><i class="fas fa-eye"></i></button>';
+            $url = "fpdf/rp_salida.php?id=";
+            $button='<button id="view" value="'.$row->id_salida.'" class="btn btn-sm btn-warning"><i class="fas fa-eye"></i></button>
+            <a class="btn btn-sm btn-info" target="_blank" href="'.$url.$row->id_salida.'" ><i class="fa-solid fa-print"></i></a>';
             $A[] = array(
               '0' => $button,
               '1' => $row->empresa,

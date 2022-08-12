@@ -51,7 +51,7 @@
       $this->SetFont('Arial','B',12);
       $this->Cell(0,3,"DECA SOLUCIONES LOGISTICA",0,1,'C');
       $this->SetY(15);
-      $this->SetFont('Courier','',8);
+      $this->SetFont('Arial','',8);
       $this->Cell(0,3,"Cra 29 No. 42-37,",0,1,'C');
       $this->Cell(0,3,"SECTOR SANTA CRUZ.",0,1,'C');
       $this->Cell(0,3,"BODEGA 1A de la MZ 3",0,1,'C');
@@ -59,7 +59,7 @@
 
       //Factura
       $this->SetY(10);
-      $this->SetFont('Courier','',12);
+      $this->SetFont('Arial','',12);
       // $this->Cell(0,3,"FACTURA ELECTRONICA",0,1,'R');
 
       //Display Horizontal line
@@ -71,42 +71,69 @@
 
     function body($info){
 
-      $this->SetY(12,5);
-      $this->SetX(-57);
-      $this->SetFillColor(255);
-      $this->RoundedRect(150, 10, 50, 8, 3, 'DF');
-      $this->SetFont('Courier','B',17);
-      $this->Cell(0,3,"DC-".$info['serie'],0,1);
+      $this->SetY(10);
+      $this->SetX(-55);
+      // $this->SetFillColor(255);
+      // $this->RoundedRect(150, 10, 50, 8, 3, 'DF');
+      $this->SetFont('Arial','B',17);
+      // NUMERO DE COMPROBANTE
+      $this->Cell(0,10,"DC-".$info['serie'],1,1,"C");
+
+      // NUMERO DE FACTURA
+      $this->SetY(25);
+      $this->SetX(-60);
+      $this->SetFont('Arial','',10);
+
+      $this->Ln();
+
       // CLIENTE
       $this->SetY(40);
       $this->SetX(10);
       $this->SetFillColor(255);
-      $this->SetFont('Courier','',9);
+      $this->SetFont('Arial','',9);
       // $this->RoundedRect(10, 35, 135, 15, 2, 'DF');
-      $this->Cell(20,7,"CLIENTE:",1);
-      $this->Cell(120,7,$info['cliente'],1);
-      $this->Cell(50,7,"FECHA Y HORA DE FACTURA",1);
+      $this->Cell(20,7,"CLIENTE",1);
+      $this->Cell(110,7,str_limit($info['cliente'],'50','...'),1);
       $this->Ln();
-      $this->Cell(20,7,"DIRECCION:",1);
-      $this->Cell(120,7,"S/D",1);
-      $this->Cell(50,7,"GENERADO: ".date("Y-m-d"),1);
+      $this->Cell(20,7,"DIRECCION",1);
+      $this->Cell(110,7,"S/D",1);
       $this->Ln();
-      $this->Cell(20,7,"CIUDAD:",1);
-      $this->Cell(120,7,"",1);
-      $this->Cell(50,7,"EXPEDICION: ".$info['fecha'],1);
+      $this->Cell(20,7,"CIUDAD",1);
+      $this->Cell(110,7,"",1);
       $this->Ln();
 
-      $this->SetY(75);
-      $this->SetFont('Courier','B',9);
+      $this->SetY(26);
+      $this->SetX(-65);
+      $this->Cell(55,7,"FECHA Y HORA DE FACTURA",1,1,'C');
+      $this->SetX(-65);
+      $this->Cell(22,7,"EXPEDICION",1,0);
+      $this->Cell(0,7,$info['fecha'],1,1,'C');
+      $this->SetX(-65);
+      $this->Cell(22,7,"GENERADO",1,0);
+      $this->Cell(0,7,date("Y-m-d"),1,1,'C');
+      $this->SetX(-65);
+      $this->Cell(22,7,"FACTURA",1,0);
+      $this->Cell(0,7,$info['factura'],1,1,'C');
+      $this->SetX(-65);
+      $this->Cell(25,7,"TIPO DE PAGO",1,0);
+      $this->Cell(0,7,$info['tpago'],1,1,'C');
+
+      $this->SetY(65);
+      $this->SetFont('Arial','B',9);
       $this->Cell(0,3,"OBSERVACION",0,1,'C');
-      $this->SetY(80);
-      $this->Cell(190,7,"N/A",0,1,"L");
-      $this->SetY(80);
-      $this->Cell(190,15,"",1);
-
-
+      $this->SetY(70);
+      // $this->Cell(190,7,$info['observacion']
+      $obs = explode("\n",$info['observacion']);
+      $this->SetFont('Arial','',7);
+      foreach ($obs as $row) {
+        $this->Cell(190,4,$row,0,1,"L");
+      }
+      $this->SetY(70);
+      $suma = (count($obs) < 4 )? 0 : count($obs);
+      // CELDA DE CUADRO
+      $this->Cell(190,16+$suma,"",1);
       //Display Table headings
-      $this->SetY(100);
+      $this->SetY(90+$suma);
       $this->SetX(10);
       $this->SetFont('Arial','B',12);
       $this->Cell(35,7,"Codigo",1,0,"C");
@@ -116,10 +143,10 @@
 
 
       //Display table product rows
-      $this->SetFont('Courier','',10);
+      $this->SetFont('Arial','',10);
       foreach($info['listp'] as $row){
         $this->Cell(35,8,$row["codigo"],"LR",0,"C");
-        $this->Cell(125,8,$row["nombre"],"LR",0,"L");
+        $this->Cell(125,8,str_limit($row["nombre"],'55','...'),"LR",0,"L");
         $this->Cell(15,8,$row["umb"],"LR",0,"C");
         $this->Cell(15,8,$row["cantidad"],"LR",1,"C");
       }
