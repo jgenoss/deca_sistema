@@ -31,8 +31,10 @@ require_once '../modelo/entrada.php';
         if (isset($_GET)) {
           $rtn = AllConsult($ent->getentrada());
           $A = array();
+          $url = "fpdf/rp_entrada.php?id=";
           foreach ($rtn as $row) {
-            $button='<button id="view" value="'.$row->id_entrada.'" class="btn btn-sm btn-warning"><i class="fas fa-eye"></i></button>';
+            $button='<button id="view" value="'.$row->id_entrada.'" class="btn btn-sm btn-warning"><i class="fas fa-eye"></i></button>
+            <a class="btn btn-sm btn-info" target="_blank" href="'.$url.$row->id_entrada.'" ><i class="fa-solid fa-print"></i></a>';
             $A[] = array(
               '0' => $button,
               '1' => $row->empresa,

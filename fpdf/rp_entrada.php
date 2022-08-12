@@ -10,9 +10,9 @@
 
     $db = new dbconnect();
 
-    $rtn[0] = Consult($db->sql("SELECT * FROM salida WHERE id_salida = ".$_GET['id']));
+    $rtn[0] = Consult($db->sql("SELECT * FROM entrada WHERE id_entrada = ".$_GET['id']));
     $rtn[1] = Consult($db->sql("SELECT * FROM clientes WHERE id_cliente = ".$rtn[0]->id_cliente));
-    $rtn[2] = AllConsult($db->sql("SELECT p.*,sd.* FROM salida_detalle AS sd INNER JOIN producto AS p ON sd.id_producto = p.id_producto WHERE sd.id_serie=".$rtn[0]->serie));
+    $rtn[2] = AllConsult($db->sql("SELECT p.*,sd.* FROM entrada_detalle AS sd INNER JOIN producto AS p ON sd.id_producto = p.id_producto WHERE sd.id_serie=".$rtn[0]->serie));
 
     $total=0;
 
@@ -32,10 +32,8 @@
       'referencia' => $rtn[0]->referencia,
       'factura' => $rtn[0]->factura,
       'fecha' => $rtn[0]->fecha_de_comprobante,
-      'file' => $rtn[0]->archivo,
       'serie' => $rtn[0]->serie,
       'observacion' => $rtn[0]->observacion,
-      'tpago' => $rtn[0]->tpago,
       'listp' => $products
     );
 
@@ -66,7 +64,7 @@
       // $this->Line(0,48,210,48);
       $this->SetY(30);
       $this->SetFont('Arial','B',12);
-      $this->Cell(0,3,"REPORTE DE SALIDA",0,1,'C');
+      $this->Cell(0,3,"REPORTE DE ENTRADA",0,1,'C');
     }
 
     function body($info){
@@ -102,7 +100,7 @@
       $this->Cell(110,7,"",1);
       $this->Ln();
 
-      $this->SetY(26);
+      $this->SetY(36);
       $this->SetX(-65);
       $this->Cell(55,7,"FECHA Y HORA DE FACTURA",1,1,'C');
       $this->SetX(-65);
@@ -114,9 +112,6 @@
       $this->SetX(-65);
       $this->Cell(22,7,"FACTURA",1,0);
       $this->Cell(0,7,$info['factura'],1,1,'C');
-      $this->SetX(-65);
-      $this->Cell(25,7,"TIPO DE PAGO",1,0);
-      $this->Cell(0,7,$info['tpago'],1,1,'C');
 
       $this->SetY(65);
       $this->SetFont('Arial','B',9);
