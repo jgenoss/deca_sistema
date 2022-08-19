@@ -5,6 +5,7 @@ new Vue({
       codigo:'',
       total:0,
       file_name:'Selecione un document',
+      file:'',
       resultListP:{
         id:'',
         codigo:'',
@@ -133,6 +134,19 @@ new Vue({
         alert(error);
       };
       reader.readAsDataURL(file);
+    },
+    onChangeFileUpload(){
+      thisJq = this;
+      file = this.$refs.uploadfiles0.files[0];
+      this.file_name = file.name;
+      this.file = file;
+    },
+    submitUpload() {
+      const formData = new FormData();
+      formData.append('file',this.file)
+      axios.post('controlador/salida.php?op=uploadFile',formData).then(resp =>{
+        this.salida.listp = resp.data;
+      });
     },
     tabla() {
       $(function() {

@@ -90,10 +90,10 @@
       $this->SetY(40);
       $this->SetX(10);
       $this->SetFillColor(255);
-      $this->SetFont('Arial','',9);
+      $this->SetFont('Arial','',8);
       // $this->RoundedRect(10, 35, 135, 15, 2, 'DF');
       $this->Cell(20,7,"CLIENTE",1);
-      $this->Cell(110,7,str_limit($info['cliente'],'50','...'),1);
+      $this->Cell(110,7,str_limit($info['cliente']." / ".$info['referencia'],'60','...'),1);
       $this->Ln();
       $this->Cell(20,7,"DIRECCION",1);
       $this->Cell(110,7,"S/D",1);
@@ -159,9 +159,15 @@
         $this->Cell(15,8,"","LR",1,"C");
       }
       //Display table total row
+      $total = $info['total'];
+      $div = round($total/12);
+      $rtn = ($div < 1)? 1: $div;
+
       $this->SetFont('Arial','B',10);
-      $this->Cell(175,7,"TOTAL",1,0,"R");
+      $this->Cell(175,7,"TOTAL UNIDADES",1,0,"R");
       $this->Cell(15,7,$info['total'],1,1,"C");
+      $this->Cell(175,7,"TOTAL CAJAS",1,0,"R");
+      $this->Cell(15,7,$rtn,1,1,"C");
 
       $this->SetFont('Arial','',12);
       $this->Cell(0,7,"",0,1);

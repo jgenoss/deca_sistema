@@ -184,12 +184,68 @@ require_once '../modelo/salida.php';
         }
       }
       break;
-    case 'Upload':
-      {
-
-        var_dump($_FILES['files']);
-      }
-      break;
+      case 'uploadFile':
+          {
+            require_once('../spreadSheetReader/php-excel-reader/excel_reader2.php');
+            require_once('../spreadSheetReader/SpreadsheetReader.php');
+            if (isset($_REQUEST)) {
+              $file = $_FILES['file'];
+              $file_name = file_get_contents($file['tmp_name']);
+              // $file2 = explode("\n", $file1);
+              // $file3 = array_filter($file2);
+                $targetPath = '../upload_files/'.$file['name'];
+                move_uploaded_file($file['tmp_name'], $targetPath);
+                $Reader = new SpreadsheetReader($targetPath);
+                unlink('../upload_files/'.$targetPath);
+                $sheetCount = count($Reader->sheets());
+                for($i=0;$i<$sheetCount;$i++)
+                {
+                  $Reader->ChangeSheet($i);
+                  foreach ($Reader as $key => $row)
+                  {
+                    $A[$key] = array(
+                      'codigo' => (isset($row[0]))? $row[0]:'',
+                      'nombre' => (isset($row[1]))? str_limit($row[1],55,'...'):'',
+                      'cantidad' => (isset($row[2]))? $row[2]:''
+                    );
+                    $cantidad = 0;
+                    if (array_key_exists($A[$key]['codigo'],$A)) {
+                      $B[] = array(
+                        'codigo' => $row['codigo'],
+                        'nombre' => $row['nombre'],
+                        'cantidad' => $cantidad += $row['cantidad']
+                      );
+                    }else {
+                      $B[] = array(
+                        'codigo' => $row['codigo'],
+                        'nombre' => $row['nombre'],
+                        'cantidad' => $row['cantidad']
+                      );
+                    }
+                  }
+                }
+                setJson($A);
+                // try {
+                //   foreach ($A as $key) {
+                //     if (empty($key['ean']) || empty($key['nombre'])||empty($key['cantidad'])) {
+                //       throw new Exception('formato mal estructurado');
+                //       break;
+                //     } elseif (!empty($key['ean']) || !empty($key['nombre']) || !empty($key['cantidad'])) {
+                //       $L[] = array(
+                //         'codigo' => $key['ean'],
+                //         'nombre' => $key['nombre'],
+                //         'cantidad' => $key['cantidad']
+                //       );
+                //     }
+                //   }
+                //   // setJson($L);
+                //   // setMsg("Info",'Cargue Procesado con exito',"success");
+                // } catch (Exception $e) {
+                //   setMsg("Error",$e->getMessage(),"error");
+                // }
+            }
+          }
+        break;
     default:
       die("NULL");
       break;
