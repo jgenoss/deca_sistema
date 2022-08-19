@@ -145,7 +145,7 @@ new Vue({
       const formData = new FormData();
       formData.append('file',this.file)
       axios.post('controlador/salida.php?op=uploadFile',formData).then(resp =>{
-        this.salida.listp = resp.data;
+        // this.salida.listp = resp.data;
       });
     },
     tabla() {

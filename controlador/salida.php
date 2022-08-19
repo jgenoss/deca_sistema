@@ -198,8 +198,9 @@ require_once '../modelo/salida.php';
                 $Reader = new SpreadsheetReader($targetPath);
                 unlink('../upload_files/'.$targetPath);
                 $sheetCount = count($Reader->sheets());
-                $A[] = array();
-                $B[] = array();
+                $A = array();
+                $B = array();
+                $c = array();
                 for($i=0;$i<$sheetCount;$i++)
                 {
                   $Reader->ChangeSheet($i);
@@ -210,23 +211,22 @@ require_once '../modelo/salida.php';
                       'nombre' => (isset($row[1]))? str_limit($row[1],55,'...'):'',
                       'cantidad' => (isset($row[2]))? $row[2]:''
                     );
-                    $cantidad = 0;
-                    if (array_key_exists($A[$key]['codigo'],$A)) {
-                      $B[] = array(
-                        'codigo' => $row['codigo'],
-                        'nombre' => $row['nombre'],
-                        'cantidad' => $cantidad += $row['cantidad']
-                      );
-                    }else {
-                      $B[] = array(
-                        'codigo' => $row['codigo'],
-                        'nombre' => $row['nombre'],
-                        'cantidad' => $row['cantidad']
-                      );
-                    }
                   }
                 }
-                setJson($A);
+                foreach ($A as $key => $value) {
+                  if (in_array($key[$value['codigo']],$A)) {
+                    $B[] = array(
+                      'codigo' => $value['codigo'],
+                      'nombre' => $value['nombre'],
+                      'cantidad' => $rtn += $value['cantidad']
+                    );
+                  }else {
+                    $C[] = array(
+                      'cantidad' => $rtn = $value['cantidad']
+                    );
+                  }
+                }
+                var_dump($B);
                 // try {
                 //   foreach ($A as $key) {
                 //     if (empty($key['ean']) || empty($key['nombre'])||empty($key['cantidad'])) {
