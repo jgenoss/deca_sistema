@@ -198,6 +198,8 @@ require_once '../modelo/salida.php';
                 $Reader = new SpreadsheetReader($targetPath);
                 unlink('../upload_files/'.$targetPath);
                 $sheetCount = count($Reader->sheets());
+                $A[] = array();
+                $B[] = array();
                 for($i=0;$i<$sheetCount;$i++)
                 {
                   $Reader->ChangeSheet($i);
