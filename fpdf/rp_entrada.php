@@ -153,10 +153,15 @@
         $this->Cell(15,8,"","LR",0,"C");
         $this->Cell(15,8,"","LR",1,"C");
       }
+      $total = $info['total'];
+      $div = round($total/12);
+      $rtn = ($div < 1)? 1: $div;
       //Display table total row
       $this->SetFont('Arial','B',10);
-      $this->Cell(175,7,"TOTAL",1,0,"R");
+      $this->Cell(175,7,"TOTAL UNIDADES",1,0,"R");
       $this->Cell(15,7,$info['total'],1,1,"C");
+      $this->Cell(175,7,"TOTAL CAJAS",1,0,"R");
+      $this->Cell(15,7,$rtn,1,1,"C");
 
       $this->SetFont('Arial','',12);
       $this->Cell(0,7,"",0,1);
