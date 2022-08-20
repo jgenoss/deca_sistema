@@ -253,7 +253,7 @@
     }
   }
   //Create A4 Page with Portrait
-  $pdf=new PDF("P","mm","A4");
+  $pdf=new PDF("P","mm","letter");
   $pdf->AliasNbPages();
   $pdf->AddPage();
   $pdf->body($info);

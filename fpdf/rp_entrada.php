@@ -170,7 +170,7 @@
     function Footer(){
 
       //set footer position
-      $this->SetY(-35);
+      $this->SetY(-25);
       // $this->SetFont('Arial','B',12);
       // $this->Cell(0,10,"for ABC COMPUTERS",0,1,"R");
       // $this->Ln(15);
@@ -180,7 +180,7 @@
       $this->SetFont('Arial','',10);
       //Display Footer Text
       $this->Cell(0,10,"Esta es una factura generada por computadora.",0,1,"C");
-      $this->SetY(-15);
+      $this->SetY(-20);
       // Arial italic 8
       $this->SetFont('Arial','I',8);
       // Número de página
@@ -247,7 +247,7 @@
     }
   }
   //Create A4 Page with Portrait
-  $pdf=new PDF("P","mm","A4");
+  $pdf=new PDF("P","mm","letter");
   $pdf->AliasNbPages();
   $pdf->AddPage();
   $pdf->body($info);
