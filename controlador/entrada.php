@@ -37,7 +37,7 @@ require_once '../modelo/entrada.php';
             <a class="btn btn-sm btn-info" target="_blank" href="'.$url.$row->id_entrada.'" ><i class="fa-solid fa-print"></i></a>';
             $A[] = array(
               '0' => $button,
-              '1' => $row->empresa,
+              '1' => $row->nombre,
               '2' => $row->referencia,
               '3' => $row->factura,
               '4' => $row->serie,

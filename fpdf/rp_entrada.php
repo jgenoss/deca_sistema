@@ -11,7 +11,7 @@
     $db = new dbconnect();
 
     $rtn[0] = Consult($db->sql("SELECT * FROM entrada WHERE id_entrada = ".$_GET['id']));
-    $rtn[1] = Consult($db->sql("SELECT * FROM clientes WHERE id_cliente = ".$rtn[0]->id_cliente));
+    $rtn[1] = Consult($db->sql("SELECT * FROM bodega WHERE id_bodega = ".$rtn[0]->id_cliente));
     $rtn[2] = AllConsult($db->sql("SELECT p.*,sd.* FROM entrada_detalle AS sd INNER JOIN producto AS p ON sd.id_producto = p.id_producto WHERE sd.id_serie=".$rtn[0]->serie));
 
     $total=0;
@@ -28,7 +28,7 @@
     }
     $info = array(
       'total' => $total,
-      'cliente' => $rtn[1]->empresa,
+      'cliente' => $rtn[1]->nombre,
       'referencia' => $rtn[0]->referencia,
       'factura' => $rtn[0]->factura,
       'fecha' => $rtn[0]->fecha_de_comprobante,

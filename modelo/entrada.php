@@ -21,7 +21,7 @@ class entrada
     return $this->db->sql(
       "SELECT
         s.id_entrada,
-      	cl.empresa,
+      	cl.nombre,
       	s.factura,
       	s.created_at,
       	s.referencia,
@@ -29,7 +29,7 @@ class entrada
       	s.observacion
       FROM
       	entrada AS s
-      	INNER JOIN clientes AS cl ON s.id_cliente = cl.id_cliente");
+      	INNER JOIN bodega AS cl ON s.id_cliente = cl.id_bodega");
   }
   public function getInventario($val)
   {
