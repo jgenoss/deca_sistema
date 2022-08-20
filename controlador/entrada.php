@@ -175,6 +175,65 @@ require_once '../modelo/entrada.php';
         }
       }
       break;
+      case 'uploadFile':
+          {
+            require_once('../spreadSheetReader/php-excel-reader/excel_reader2.php');
+            require_once('../spreadSheetReader/SpreadsheetReader.php');
+            if (isset($_REQUEST)) {
+              $file = $_FILES['file'];
+              $file_name = file_get_contents($file['tmp_name']);
+              // $file2 = explode("\n", $file1);
+              // $file3 = array_filter($file2);
+                $targetPath = '../upload_files/'.$file['name'];
+                move_uploaded_file($file['tmp_name'], $targetPath);
+                $Reader = new SpreadsheetReader($targetPath);
+                unlink('../upload_files/'.$targetPath);
+                $sheetCount = count($Reader->sheets());
+                $A = array();
+                for($i=0;$i<$sheetCount;$i++)
+                {
+                  $Reader->ChangeSheet($i);
+                  foreach ($Reader as $key => $row)
+                  {
+                    $A[] = array(
+                      'codigo' => (isset($row[0]))? $row[0]:'',
+                      'cantidad' => (isset($row[1]))? $row[1]:''
+                    );
+                  }
+                }
+                try {
+                  foreach ($A as $key) {
+                    if (empty($key['codigo']) || empty($key['cantidad'])) {
+                      throw new Exception('formato mal estructurado');
+                      break;
+                    } elseif (!empty($key['codigo']) || !empty($key['cantidad'])) {
+                      $ean = $key['codigo'];
+                       $rtn = Consult($db->sql("SELECT * FROM producto WHERE ean='$ean'"));
+                      // var_dump($rtn);
+                      if ($rtn) {
+                        $L[] = array(
+                          'id' =>$rtn->id_producto,
+                          'codigo' => $rtn->ean,
+                          'nombre' => $rtn->nombre,
+                          'fecha_v' => '',
+                          'fv' => false,
+                          'cantidad' => $key['cantidad']
+                        );
+                      }
+                    }
+                  }
+                  setJson(array(
+                    'tittle' => "Info",
+                    'message' => "Cargue Masivo Procesado con exito",
+                    'type' => "success",
+                    'listp' => $L,
+                  ));
+                } catch (Exception $e) {
+                  setMsg("Error",$e->getMessage(),"error");
+                }
+            }
+          }
+        break;
     default:
       die("NULL");
       break;
