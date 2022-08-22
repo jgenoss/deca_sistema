@@ -14,22 +14,34 @@ class entrada
   }
   public function getCliente()
   {
+    return $this->db->sql("SELECT * FROM clientes WHERE habilitado = 1");
+  }
+  public function getBodega()
+  {
     return $this->db->sql("SELECT * FROM bodega WHERE status = 1");
   }
   public function getentrada()
   {
     return $this->db->sql(
       "SELECT
-        s.id_entrada,
-      	cl.nombre,
-      	s.factura,
-      	s.created_at,
-      	s.referencia,
-      	s.serie,
-      	s.observacion
-      FROM
-      	entrada AS s
-      	INNER JOIN bodega AS cl ON s.id_cliente = cl.id_bodega");
+        	ent.id_entrada,
+        	ent.id_cliente,
+        	ent.id_bodega,
+        	ent.referencia,
+        	ent.factura,
+        	ent.tipo_comprobante,
+        	ent.fecha_de_comprobante,
+        	ent.direccion,
+        	ent.serie,
+        	ent.archivo,
+        	ent.observacion,
+        	ent.created_at,
+        	cl.empresa,
+        	bg.nombre
+        FROM
+        	entrada AS ent
+        	INNER JOIN clientes AS cl ON ent.id_cliente = cl.id_cliente
+        	INNER JOIN bodega AS bg ON ent.id_bodega = bg.id_bodega");
   }
   public function getInventario($val)
   {
@@ -78,20 +90,20 @@ class entrada
   }
   public function setentrada($val,$id_session)
   {
-    $query = $this->db->sql("INSERT INTO entrada ( id_cliente, referencia, factura, fecha_de_comprobante, serie, observacion, archivo)VALUES('$val[0]','$val[1]','$val[2]','$val[3]','$val[4]','$val[5]','$val[6]')");
+    $query = $this->db->sql("INSERT INTO entrada ( id_cliente,id_bodega, referencia, factura,tipo_comprobante, fecha_de_comprobante, serie, observacion, archivo)VALUES('$val[0]','$val[1]','$val[2]','$val[3]','$val[4]','$val[5]','$val[6]','$val[7]','$val[8]')");
     if ($query) {
-      for ($i=0; $i < count($val[7]); $i++) {
+      for ($i=0; $i < count($val[10]); $i++) {
 
-        $id = $val[7][$i]['id'];
-        $cantidad = $val[7][$i]['cantidad'];
-        $fv = $val[7][$i]['fv'];
-        $fecha_v = $val[7][$i]['fecha_v'];
+        $id = $val[10][$i]['id'];
+        $cantidad = $val[10][$i]['cantidad'];
+        $fv = $val[10][$i]['fv'];
+        $fecha_v = $val[10][$i]['fecha_v'];
 
-        $query = $this->db->sql("INSERT INTO entrada_detalle(id_serie,id_producto,cantidad)VALUES('$val[4]','$id','$cantidad')");
+        $query = $this->db->sql("INSERT INTO entrada_detalle(id_serie,id_producto,cantidad)VALUES('$val[6]','$id','$cantidad')");
         if ($fv) {
-          $this->db->sql("INSERT INTO inventario_detallado (id_producto,id_usuario,cantidad,id_serie,fv,fecha_ven)VALUES('$id','$id_session','$cantidad','$val[4]','$fv','$fecha_v')");
+          $this->db->sql("INSERT INTO inventario_detallado (id_producto,id_usuario,cantidad,id_serie,fv,fecha_ven)VALUES('$id','$id_session','$cantidad','$val[6]','$fv','$fecha_v')");
         }else {
-          $this->db->sql("INSERT INTO inventario_detallado (id_producto,id_usuario,cantidad,id_serie,fv)VALUES('$id','$id_session','$cantidad','$val[4]','$fv')");
+          $this->db->sql("INSERT INTO inventario_detallado (id_producto,id_usuario,cantidad,id_serie,fv)VALUES('$id','$id_session','$cantidad','$val[6]','$fv')");
         }
         $rtn = $this->db->Consult($this->db->sql("SELECT * FROM inventario WHERE id_producto=".$id));
         if($rtn){

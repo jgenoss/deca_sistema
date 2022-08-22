@@ -18,6 +18,21 @@ require_once '../modelo/entrada.php';
           $A = array();
           foreach ($rtn as $row) {
             $A[] = array(
+              'id' => $row->id_cliente,
+              'nombre' => $row->empresa
+            );
+          }
+          setJson($A);
+        }
+      }
+      break;
+    case 'getBodega':
+      {
+        if (isset($_GET)) {
+          $rtn = AllConsult($ent->getBodega());
+          $A = array();
+          foreach ($rtn as $row) {
+            $A[] = array(
               'id' => $row->id_bodega,
               'nombre' => $row->nombre
             );
@@ -37,7 +52,7 @@ require_once '../modelo/entrada.php';
             <a class="btn btn-sm btn-info" target="_blank" href="'.$url.$row->id_entrada.'" ><i class="fa-solid fa-print"></i></a>';
             $A[] = array(
               '0' => $button,
-              '1' => $row->nombre,
+              '1' => $row->empresa." / ".$row->nombre,
               '2' => $row->referencia,
               '3' => $row->factura,
               '4' => $row->serie,
@@ -63,8 +78,7 @@ require_once '../modelo/entrada.php';
             $A[] = array(
               '0' => $button,
               '1' => '<span class="badge badge-primary">'.$row->codigo_1.'</span> <span class="badge badge-info">'.$row->codigo_2.'</span> <span class="badge badge-warning">'.$row->ean.'</span>',
-              '2' => $row->pNombre,
-              '3' => $row->cNombre,
+              '2' => $row->pNombre
             );
           }
           setJson(array(
@@ -95,16 +109,19 @@ require_once '../modelo/entrada.php';
         if (isset($_POST)) {
           $A = array(
             '0' => $_POST['id_cliente'],
-            '1' => $_POST['referencia'],
-            '2' => $_POST['factura'],
-            '3' => $_POST['fecha'],
-            '4' => $_POST['serie'],
-            '5' => $_POST['observacion'],
-            '6' => $_POST['file'],
-            '7' => $_POST['listp']
+            '1' => $_POST['id_bodega'],
+            '2' => $_POST['referencia'],
+            '3' => $_POST['factura'],
+            '4' => $_POST['tipo_comprobante'],
+            '5' => $_POST['fecha'],
+            '6' => $_POST['serie'],
+            '7' => $_POST['observacion'],
+            '8' => $_POST['direccion'],
+            '9' => $_POST['file'],
+            '10' => $_POST['listp']
           );
           try {
-            $A[6] = $ent->ConvertFilePDF($A[6]);
+            $A[9] = $ent->ConvertFilePDF($A[9]);
             $ent->setentrada($A,$_SESSION['START'][1]);
             setMsg("Info",'entrada Procesada con exito',"success");
           } catch (Exception $e) {
@@ -163,12 +180,15 @@ require_once '../modelo/entrada.php';
           $A = array(
             'total' => $total,
             'id_cliente' => $rtn->id_cliente,
+            'id_bodega' => $rtn->id_bodega,
             'referencia' => $rtn->referencia,
             'factura' => $rtn->factura,
+            'tipo_comprobante' => $rtn->tipo_comprobante,
             'fecha' => $rtn->fecha_de_comprobante,
             'file' => $rtn->archivo,
             'serie' => $rtn->serie,
             'observacion' => $rtn->observacion,
+            'direccion' => $rtn->direccion,
             'listp' => $L
           );
           setJson($A);

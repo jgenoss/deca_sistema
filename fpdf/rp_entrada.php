@@ -11,12 +11,13 @@
     $db = new dbconnect();
 
     $rtn[0] = Consult($db->sql("SELECT * FROM entrada WHERE id_entrada = ".$_GET['id']));
-    $rtn[1] = Consult($db->sql("SELECT * FROM bodega WHERE id_bodega = ".$rtn[0]->id_cliente));
-    $rtn[2] = AllConsult($db->sql("SELECT p.*,sd.* FROM entrada_detalle AS sd INNER JOIN producto AS p ON sd.id_producto = p.id_producto WHERE sd.id_serie=".$rtn[0]->serie));
+    $rtn[1] = Consult($db->sql("SELECT * FROM clientes WHERE id_cliente = ".$rtn[0]->id_cliente));
+    $rtn[2] = Consult($db->sql("SELECT * FROM bodega WHERE id_bodega = ".$rtn[0]->id_bodega));
+    $rtn[3] = AllConsult($db->sql("SELECT p.*,sd.* FROM entrada_detalle AS sd INNER JOIN producto AS p ON sd.id_producto = p.id_producto WHERE sd.id_serie=".$rtn[0]->serie));
 
     $total=0;
 
-    foreach ($rtn[2] as $key) {
+    foreach ($rtn[3] as $key) {
       $total += $key->cantidad;
       $products[] = array(
         'id' => $key->id_producto,
@@ -28,12 +29,15 @@
     }
     $info = array(
       'total' => $total,
-      'cliente' => $rtn[1]->nombre,
+      'cliente' => $rtn[1]->empresa,
+      'bodega' => $rtn[2]->nombre,
       'referencia' => $rtn[0]->referencia,
       'factura' => $rtn[0]->factura,
+      'tipo_comprobante' => $rtn[0]->tipo_comprobante,
       'fecha' => $rtn[0]->fecha_de_comprobante,
       'serie' => $rtn[0]->serie,
       'observacion' => $rtn[0]->observacion,
+      'direccion' => $rtn[0]->direccion,
       'listp' => $products
     );
 
@@ -90,14 +94,16 @@
       $this->SetFillColor(255);
       $this->SetFont('Arial','',9);
       // $this->RoundedRect(10, 35, 135, 15, 2, 'DF');
-      $this->Cell(20,7,"CLIENTE",1);
-      $this->Cell(110,7,str_limit($info['cliente'],'50','...'),1);
+      $this->Cell(20,7,"CLIENTE:",1);
+      $this->Cell(40,7,str_limit($info['cliente'],'20','...'),1);
+      $this->Cell(20,7,"BODEGA:",1);
+      $this->Cell(50,7,str_limit($info['bodega'],'20','...'),1);
       $this->Ln();
-      $this->Cell(20,7,"DIRECCION",1);
-      $this->Cell(110,7,"S/D",1);
+      $this->Cell(25,7,"REFERENCIA:",1);
+      $this->Cell(105,7,str_limit($info['referencia'],'50','...'),1);
       $this->Ln();
-      $this->Cell(20,7,"CIUDAD",1);
-      $this->Cell(110,7,"",1);
+      $this->Cell(25,7,"DIRECCION:",1);
+      $this->Cell(105,7,str_limit($info['direccion'],'55','...'),1);
       $this->Ln();
 
       $this->SetY(36);
@@ -110,7 +116,7 @@
       $this->Cell(22,7,"GENERADO",1,0);
       $this->Cell(0,7,date("Y-m-d"),1,1,'C');
       $this->SetX(-65);
-      $this->Cell(22,7,"FACTURA",1,0);
+      $this->Cell(22,7,$info['tipo_comprobante'],1,0);
       $this->Cell(0,7,$info['factura'],1,1,'C');
 
       $this->SetY(65);

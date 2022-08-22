@@ -21,25 +21,36 @@ new Vue({
         id:'',
         nombre:''
       },
+      arrayBodega:[],
+      resultBodega:{
+        id:'',
+        nombre:''
+      },
       entrada:{
         id_cliente:'',
+        id_bodega:'',
         referencia:'',
         factura:'',
+        tipo_comprobante:'',
         fecha:'',
         file:'',
         serie:'',
         observacion:'',
+        direccion:'',
         listp:[]
       },
       ver:{
         total:0,
         id_cliente:'',
+        id_bodega:'',
         referencia:'',
         factura:'',
+        tipo_comprobante:'',
         fecha:'',
         file:'',
         serie:'',
         observacion:'',
+        direccion:'',
         listp:[]
       },
       fila:'',
@@ -54,6 +65,7 @@ new Vue({
     this.tabla();
     this.init();
     this.getCliente();
+    this.getBodega();
     this.getConsecutivo();
   },
 
@@ -203,6 +215,11 @@ new Vue({
         this.arrayCliente = resp.data;
       });
     },
+    getBodega(){
+      axios.post('controlador/entrada.php?op=getBodega').then(resp =>{
+        this.arrayBodega = resp.data;
+      });
+    },
     init(){
       const thisJq = this;
       $(function () {
@@ -245,6 +262,7 @@ new Vue({
     },
     newbutton:function () {
       this.getCliente();
+      this.getBodega();
       this.getConsecutivo();
       this.limpiarInputs();
       $("#css").attr("class","sidebar-mini layout-fixed sidebar-collapse");
