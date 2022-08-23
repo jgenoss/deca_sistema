@@ -178,8 +178,8 @@ new Vue({
             "error": function(e) {console.log(e);}
           },
           "bDestroy": true,
-          "iDisplayLength": 10, //Paginacion
-          "order": [[1, "desc"]]
+          "iDisplayLength": 20, //Paginacion
+          "order": [[1, "asc"]]
         });
       });
     },
@@ -197,7 +197,7 @@ new Vue({
             "error": function(e) {console.log(e);}
           },
           "bDestroy": true,
-          "iDisplayLength": 10, //Paginacion
+          "iDisplayLength": 20, //Paginacion
           "order": [[1, "desc"]]
         });
       });

@@ -35,6 +35,7 @@
       'file' => $rtn[0]->archivo,
       'serie' => $rtn[0]->serie,
       'observacion' => $rtn[0]->observacion,
+      'direccion' => $rtn[0]->direccion,
       'tpago' => $rtn[0]->tpago,
       'listp' => $products
     );
@@ -93,13 +94,13 @@
       $this->SetFont('Arial','',8);
       // $this->RoundedRect(10, 35, 135, 15, 2, 'DF');
       $this->Cell(20,7,"CLIENTE",1);
-      $this->Cell(110,7,str_limit($info['cliente']." / ".$info['referencia'],'60','...'),1);
+      $this->Cell(110,7,str_limit(utf8_decode($info['cliente']),'60','...'),1);
       $this->Ln();
-      $this->Cell(20,7,"DIRECCION",1);
-      $this->Cell(110,7,"S/D",1);
+      $this->Cell(25,7,"REFERENCIA:",1);
+      $this->Cell(105,7,str_limit(utf8_decode($info['referencia']),'50','...'),1);
       $this->Ln();
-      $this->Cell(20,7,"CIUDAD",1);
-      $this->Cell(110,7,"",1);
+      $this->Cell(25,7,"DIRECCION:",1);
+      $this->Cell(105,7,str_limit(utf8_decode($info['direccion']),'55','...'),1);
       $this->Ln();
 
       $this->SetY(26);
@@ -123,7 +124,7 @@
       $this->Cell(0,3,"OBSERVACION",0,1,'C');
       $this->SetY(70);
       // $this->Cell(190,7,$info['observacion']
-      $obs = explode("\n",$info['observacion']);
+      $obs = explode("\n",utf8_decode($info['observacion']));
       $this->SetFont('Arial','',7);
       foreach ($obs as $row) {
         $this->Cell(190,4,$row,0,1,"L");
@@ -146,7 +147,7 @@
       $this->SetFont('Arial','',10);
       foreach($info['listp'] as $row){
         $this->Cell(35,8,$row["codigo"],"LR",0,"C");
-        $this->Cell(125,8,str_limit($row["nombre"],'55','...'),"LR",0,"L");
+        $this->Cell(125,8,str_limit(utf8_decode($row["nombre"]),'55','...'),"LR",0,"L");
         $this->Cell(15,8,$row["umb"],"LR",0,"C");
         $this->Cell(15,8,$row["cantidad"],"LR",1,"C");
       }
@@ -176,7 +177,7 @@
     function Footer(){
 
       //set footer position
-      $this->SetY(-35);
+      $this->SetY(-20);
       // $this->SetFont('Arial','B',12);
       // $this->Cell(0,10,"for ABC COMPUTERS",0,1,"R");
       // $this->Ln(15);
@@ -256,8 +257,9 @@
   $pdf=new PDF("P","mm","letter");
   $pdf->AliasNbPages();
   $pdf->AddPage();
+  $pdf->SetAutoPageBreak(true, 20);
   $pdf->body($info);
-  $pdf->Output();
+  $pdf->Output("I","SALIDA(".$info['referencia'].").pdf");
 
 }
 ?>

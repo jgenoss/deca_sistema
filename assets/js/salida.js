@@ -25,6 +25,7 @@ new Vue({
         file:'',
         serie:'',
         observacion:'',
+        direccion:'',
         tpago:'',
         listp:[]
       },
@@ -36,6 +37,7 @@ new Vue({
         file:'',
         serie:'',
         observacion:'',
+        direccion:'',
         tpago:'',
         listp:[]
       },
@@ -145,7 +147,12 @@ new Vue({
       const formData = new FormData();
       formData.append('file',this.file)
       axios.post('controlador/salida.php?op=uploadFile',formData).then(resp =>{
-        // this.salida.listp = resp.data;
+        if (resp.data.type == "success") {
+          this.sweetalert2(resp.data.tittle,resp.data.message,resp.data.type);
+          this.salida.listp = resp.data.listp;
+        }else {
+          this.sweetalert2(resp.data.tittle,resp.data.message,resp.data.type);
+        }
       });
     },
     tabla() {
@@ -164,7 +171,7 @@ new Vue({
             "error": function(e) {console.log(e);}
           },
           "bDestroy": true,
-          "iDisplayLength": 10, //Paginacion
+          "iDisplayLength": 20, //Paginacion
           "order": [[1, "desc"]]
         });
       });
@@ -183,7 +190,7 @@ new Vue({
             "error": function(e) {console.log(e);}
           },
           "bDestroy": true,
-          "iDisplayLength": 10, //Paginacion
+          "iDisplayLength": 20, //Paginacion
           "order": [[1, "desc"]]
         });
       });

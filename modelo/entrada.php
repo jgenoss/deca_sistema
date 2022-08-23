@@ -90,7 +90,7 @@ class entrada
   }
   public function setentrada($val,$id_session)
   {
-    $query = $this->db->sql("INSERT INTO entrada ( id_cliente,id_bodega, referencia, factura,tipo_comprobante, fecha_de_comprobante, serie, observacion, archivo)VALUES('$val[0]','$val[1]','$val[2]','$val[3]','$val[4]','$val[5]','$val[6]','$val[7]','$val[8]')");
+    $query = $this->db->sql("INSERT INTO entrada (id_cliente, id_bodega, referencia, factura,tipo_comprobante, fecha_de_comprobante, serie, observacion,direccion, archivo)VALUES('$val[0]','$val[1]','$val[2]','$val[3]','$val[4]','$val[5]','$val[6]','$val[7]','$val[8]','$val[9]')");
     if ($query) {
       for ($i=0; $i < count($val[10]); $i++) {
 

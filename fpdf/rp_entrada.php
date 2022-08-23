@@ -21,6 +21,10 @@
       $total += $key->cantidad;
       $products[] = array(
         'id' => $key->id_producto,
+        'codigo_0' => $key->ean,
+        'codigo_1' => $key->codigo_1,
+        'codigo_2' => $key->codigo_2,
+        'codigo' => $key->ean,
         'codigo' => $key->ean,
         'nombre' => $key->nombre,
         'cantidad' => $key->cantidad,
@@ -40,7 +44,11 @@
       'direccion' => $rtn[0]->direccion,
       'listp' => $products
     );
-
+  if ($info['cliente'] == "ALTIPAL") {
+    $page = "L";
+  }else {
+    $page = "P";
+  }
   class PDF extends FPDF
   {
     function Header(){
@@ -68,7 +76,7 @@
       // $this->Line(0,48,210,48);
       $this->SetY(30);
       $this->SetFont('Arial','B',12);
-      $this->Cell(0,3,"REPORTE DE ENTRADA",0,1,'C');
+      $this->Cell(0,10,"REPORTE DE ENTRADA",0,1,'C');
     }
 
     function body($info){
@@ -132,43 +140,84 @@
       $this->SetY(70);
       $suma = (count($obs) < 4 )? 0 : count($obs);
       // CELDA DE CUADRO
-      $this->Cell(190,16+$suma,"",1);
+      if ($info['observacion'] == "N/A") {
+        $y=85;
+        $this->Cell(190,10+$suma,"",1,'C');
+      }else {
+        $y=90;
+        $this->Cell(190,16+$suma,"",1,'C');
+      }
       //Display Table headings
-      $this->SetY(90+$suma);
+
+      $this->SetY($y+$suma);
       $this->SetX(10);
-      $this->SetFont('Arial','B',12);
-      $this->Cell(35,7,"Codigo",1,0,"C");
-      $this->Cell(125,7,"Descripcion",1,0,"C");
-      $this->Cell(15,7,"Umb",1,0,"C");
-      $this->Cell(15,7,"Cant.",1,1,"C");
+      $this->SetFont('Arial','B',10);
+      if ($info['cliente'] == "ALTIPAL") {
+        $this->Cell(35,7,"COVA",1,0,"C");
+        $this->Cell(35,7,"COAR",1,0,"C");
+        $this->Cell(35,7,"EAN",1,0,"C");
+        $this->Cell(125,7,"Descripcion",1,0,"C");
+        $this->Cell(15,7,"Umb",1,0,"C");
+        $this->Cell(15,7,"Cant.",1,1,"C");
+      }else {
+        $this->Cell(35,7,"EAN",1,0,"C");
+        $this->Cell(125,7,"Descripcion",1,0,"C");
+        $this->Cell(15,7,"Umb",1,0,"C");
+        $this->Cell(15,7,"Cant.",1,"C");
+      }
 
 
       //Display table product rows
       $this->SetFont('Arial','',10);
       foreach($info['listp'] as $row){
-        $this->Cell(35,8,$row["codigo"],"LR",0,"C");
-        $this->Cell(125,8,str_limit($row["nombre"],'55','...'),"LR",0,"L");
-        $this->Cell(15,8,$row["umb"],"LR",0,"C");
-        $this->Cell(15,8,$row["cantidad"],"LR",1,"C");
+        if ($info['cliente'] == "ALTIPAL") {
+          $this->Cell(35,6,$row["codigo_1"],"LR",0,"C");
+          $this->Cell(35,6,$row["codigo_2"],"R",0,"C");
+          $this->Cell(35,6,$row["codigo_0"],"R",0,"C");
+          $this->Cell(125,6,str_limit($row["nombre"],'55','...'),"R",0,"L");
+          $this->Cell(15,6,$row["umb"],"R",0,"C");
+          $this->Cell(15,6,$row["cantidad"],"R",1,"C");
+        }else {
+          $this->Cell(35,6,$row["codigo_0"],"LR",0,"C");
+          $this->Cell(125,6,str_limit($row["nombre"],'55','...'),"R",0,"L");
+          $this->Cell(15,6,$row["umb"],"R",0,"C");
+          $this->Cell(15,6,$row["cantidad"],"R",1,"C");
+        }
       }
       //Display table empty rows
-      for($i=0;$i<15-count($info['listp']);$i++)
+      $filas = ($info['cliente'] == "ALTIPAL")? 5:15;
+      for($i=0;$i<$filas-count($info['listp']);$i++)
       {
-        $this->Cell(35,8,"","LR",0);
-        $this->Cell(125,8,"","LR",0,"C");
-        $this->Cell(15,8,"","LR",0,"C");
-        $this->Cell(15,8,"","LR",1,"C");
+        if ($info['cliente'] == "ALTIPAL") {
+          $this->Cell(35,6,"","LR",0);
+          $this->Cell(35,6,"","R",0);
+          $this->Cell(35,6,"","R",0);
+          $this->Cell(125,6,"","R",0,"C");
+          $this->Cell(15,6,"","R",0,"C");
+          $this->Cell(15,6,"","R",1,"C");
+        }else {
+          $this->Cell(35,6,"","LR",0);
+          $this->Cell(125,6,"","R",0,"C");
+          $this->Cell(15,6,"","R",0,"C");
+          $this->Cell(15,6,"","R",1,"C");
+        }
       }
       $total = $info['total'];
       $div = round($total/12);
       $rtn = ($div < 1)? 1: $div;
       //Display table total row
       $this->SetFont('Arial','B',10);
-      $this->Cell(175,7,"TOTAL UNIDADES",1,0,"R");
-      $this->Cell(15,7,$info['total'],1,1,"C");
-      $this->Cell(175,7,"TOTAL CAJAS",1,0,"R");
-      $this->Cell(15,7,$rtn,1,1,"C");
-
+      if ($info['cliente'] == "ALTIPAL") {
+        $this->Cell(245,7,"TOTAL UNIDADES",1,0,"R");
+        $this->Cell(15,7,$info['total'],1,1,"C");
+        $this->Cell(245,7,"TOTAL CAJAS",1,0,"R");
+        $this->Cell(15,7,$rtn,1,1,"C");
+      }else {
+        $this->Cell(175,7,"TOTAL UNIDADES",1,0,"R");
+        $this->Cell(15,7,$info['total'],1,1,"C");
+        $this->Cell(175,7,"TOTAL CAJAS",1,0,"R");
+        $this->Cell(15,7,$rtn,1,1,"C");
+      }
       $this->SetFont('Arial','',12);
       $this->Cell(0,7,"",0,1);
 
@@ -253,7 +302,8 @@
     }
   }
   //Create A4 Page with Portrait
-  $pdf=new PDF("P","mm","letter");
+
+  $pdf=new PDF($page,"mm","letter");
   $pdf->AliasNbPages();
   $pdf->AddPage();
   $pdf->body($info);

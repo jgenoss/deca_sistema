@@ -102,12 +102,13 @@ require_once '../modelo/salida.php';
             '3' => $_POST['fecha'],
             '4' => $_POST['serie'],
             '5' => $_POST['observacion'],
-            '6' => $_POST['tpago'],
-            '7' => $_POST['file'],
-            '8' => $_POST['listp']
+            '6' => $_POST['direccion'],
+            '7' => $_POST['tpago'],
+            '8' => $_POST['file'],
+            '9' => $_POST['listp']
           );
           try {
-            $A[7] = $sl->ConvertFilePDF($A[7]);
+            $A[8] = $sl->ConvertFilePDF($A[8]);
             $sl->setSalida($A);
             setMsg("Info",'Salida Procesada con exito',"success");
           } catch (Exception $e) {
@@ -177,6 +178,7 @@ require_once '../modelo/salida.php';
             'file' => $rtn->archivo,
             'serie' => $rtn->serie,
             'observacion' => $rtn->observacion,
+            'direccion' => $rtn->direccion,
             'tpago' => $rtn->tpago,
             'listp' => $L
           );
@@ -185,68 +187,78 @@ require_once '../modelo/salida.php';
       }
       break;
       case 'uploadFile':
-          {
-            require_once('../spreadSheetReader/php-excel-reader/excel_reader2.php');
-            require_once('../spreadSheetReader/SpreadsheetReader.php');
-            if (isset($_REQUEST)) {
-              $file = $_FILES['file'];
-              $file_name = file_get_contents($file['tmp_name']);
-              // $file2 = explode("\n", $file1);
-              // $file3 = array_filter($file2);
-                $targetPath = '../upload_files/'.$file['name'];
-                move_uploaded_file($file['tmp_name'], $targetPath);
-                $Reader = new SpreadsheetReader($targetPath);
-                unlink('../upload_files/'.$targetPath);
-                $sheetCount = count($Reader->sheets());
-                $A = array();
-                $B = array();
-                $c = array();
-                for($i=0;$i<$sheetCount;$i++)
+        {
+          require_once('../spreadSheetReader/php-excel-reader/excel_reader2.php');
+          require_once('../spreadSheetReader/SpreadsheetReader.php');
+          if (isset($_REQUEST)) {
+            $file = $_FILES['file'];
+            $file_name = file_get_contents($file['tmp_name']);
+            // $file2 = explode("\n", $file1);
+            // $file3 = array_filter($file2);
+              $targetPath = '../upload_files/'.$file['name'];
+              move_uploaded_file($file['tmp_name'], $targetPath);
+              $Reader = new SpreadsheetReader($targetPath);
+              unlink('../upload_files/'.$targetPath);
+              $sheetCount = count($Reader->sheets());
+              $A = array();
+              for($i=0;$i<$sheetCount;$i++)
+              {
+                $Reader->ChangeSheet($i);
+                foreach ($Reader as $key => $row)
                 {
-                  $Reader->ChangeSheet($i);
-                  foreach ($Reader as $key => $row)
-                  {
-                    $A[$key] = array(
-                      'codigo' => (isset($row[0]))? $row[0]:'',
-                      'nombre' => (isset($row[1]))? str_limit($row[1],55,'...'):'',
-                      'cantidad' => (isset($row[2]))? $row[2]:''
-                    );
+                  $A[] = array(
+                    'COVA' => (isset($row[0]))? $row[0]:'',
+                    'COAR' => (isset($row[1]))? $row[1]:'',
+                    'EAN' => (isset($row[2]))? $row[2]:'',
+                    'CANTIDAD' => (isset($row[3]))? $row[3]:''
+                  );
+                }
+              }
+              try {
+                foreach ($A as $key) {
+                  if (empty($key['COVA']) || empty($key['COAR'])|| empty($key['CANTIDAD'])) {
+                    throw new Exception('formato mal estructurado'."<br/>".
+                    "COVA:".$key['COVA']."<br/>".
+                    "COAR:".$key['COAR']."<br/>".
+                    "EAN:".$key['EAN']."<br/>".
+                    "CANTIDAD:".$key['CANTIDAD']);
+                    break;
+                  } elseif (!empty($key['COVA']) || !empty($key['COAR'])|| !empty($key['EAN'])|| !empty($key['CANTIDAD'])) {
+
+                    $COVA = $key['COVA'];
+                    $COAR = $key['COAR'];
+                    $EAN = $key['EAN'];
+                    $CANTIDAD = $key['CANTIDAD'];
+
+                    $rtn = Consult($db->sql("SELECT * FROM producto WHERE ean='$EAN' OR codigo_1='$COVA' OR codigo_2='$COAR'"));
+                    if (!$rtn) {
+                      throw new Exception('ESTE ARTICULO NO EXISTE'."<br/>".
+                      "COVA:".$key['COVA']."<br/>".
+                      "COAR:".$key['COAR']."<br/>".
+                      "EAN:".$key['EAN']."<br/>".
+                      "CANTIDAD:".$key['CANTIDAD']);
+                      break;
+                    }elseif ($rtn) {
+                      $L[] = array(
+                        'id' =>$rtn->id_producto,
+                        'codigo' => $rtn->ean,
+                        'nombre' => $rtn->nombre,
+                        'cantidad' => $key['CANTIDAD']
+                      );
+                    }
                   }
                 }
-                foreach ($A as $key => $value) {
-                  if (in_array($key[$value['codigo']],$A)) {
-                    $B[] = array(
-                      'codigo' => $value['codigo'],
-                      'nombre' => $value['nombre'],
-                      'cantidad' => $rtn += $value['cantidad']
-                    );
-                  }else {
-                    $C[] = array(
-                      'cantidad' => $rtn = $value['cantidad']
-                    );
-                  }
-                }
-                var_dump($B);
-                // try {
-                //   foreach ($A as $key) {
-                //     if (empty($key['ean']) || empty($key['nombre'])||empty($key['cantidad'])) {
-                //       throw new Exception('formato mal estructurado');
-                //       break;
-                //     } elseif (!empty($key['ean']) || !empty($key['nombre']) || !empty($key['cantidad'])) {
-                //       $L[] = array(
-                //         'codigo' => $key['ean'],
-                //         'nombre' => $key['nombre'],
-                //         'cantidad' => $key['cantidad']
-                //       );
-                //     }
-                //   }
-                //   // setJson($L);
-                //   // setMsg("Info",'Cargue Procesado con exito',"success");
-                // } catch (Exception $e) {
-                //   setMsg("Error",$e->getMessage(),"error");
-                // }
-            }
+                setJson(array(
+                  'tittle' => "Info",
+                  'message' => "Cargue Masivo Procesado con exito",
+                  'type' => "success",
+                  'listp' => $L,
+                ));
+              } catch (Exception $e) {
+                setMsg("Error",$e->getMessage(),"error");
+              }
           }
+        }
         break;
     default:
       die("NULL");
