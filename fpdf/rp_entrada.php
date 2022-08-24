@@ -15,9 +15,10 @@
     $rtn[2] = Consult($db->sql("SELECT * FROM bodega WHERE id_bodega = ".$rtn[0]->id_bodega));
     $rtn[3] = AllConsult($db->sql("SELECT p.*,sd.* FROM entrada_detalle AS sd INNER JOIN producto AS p ON sd.id_producto = p.id_producto WHERE sd.id_serie=".$rtn[0]->serie));
 
-    $total=0;
 
+    $total=0;
     foreach ($rtn[3] as $key) {
+      $rtn[4] = Consult($db->sql("SELECT p.*,sd.* FROM inventario_detallado AS sd INNER JOIN producto AS p ON sd.id_producto = p.id_producto WHERE sd.id_producto=".$key->id_producto));
       $total += $key->cantidad;
       $products[] = array(
         'id' => $key->id_producto,
@@ -27,9 +28,11 @@
         'codigo' => $key->ean,
         'codigo' => $key->ean,
         'nombre' => $key->nombre,
+        'fecha_ven' => ($rtn[4]->fv == 1)? "FV: ".$rtn[4]->fecha_ven:'',
         'cantidad' => $key->cantidad,
         'umb' => $key->umb
       );
+
     }
     $info = array(
       'total' => $total,
@@ -105,7 +108,7 @@
       $this->Cell(20,7,"CLIENTE:",1);
       $this->Cell(40,7,str_limit($info['cliente'],'20','...'),1);
       $this->Cell(20,7,"BODEGA:",1);
-      $this->Cell(50,7,str_limit($info['bodega'],'20','...'),1);
+      $this->Cell(50,7,str_limit($info['bodega'],'25','...'),1);
       $this->Ln();
       $this->Cell(25,7,"REFERENCIA:",1);
       $this->Cell(105,7,str_limit($info['referencia'],'50','...'),1);
@@ -174,7 +177,7 @@
           $this->Cell(35,6,$row["codigo_1"],"LR",0,"C");
           $this->Cell(35,6,$row["codigo_2"],"R",0,"C");
           $this->Cell(35,6,$row["codigo_0"],"R",0,"C");
-          $this->Cell(125,6,str_limit($row["nombre"],'55','...'),"R",0,"L");
+          $this->Cell(125,6,str_limit($row["nombre"]." ".$row['fecha_ven'],'70','...'),"R",0,"L");
           $this->Cell(15,6,$row["umb"],"R",0,"C");
           $this->Cell(15,6,$row["cantidad"],"R",1,"C");
         }else {
@@ -307,7 +310,7 @@
   $pdf->AliasNbPages();
   $pdf->AddPage();
   $pdf->body($info);
-  $pdf->Output();
+  $pdf->Output("I","ENTRADA(".$info['referencia'].").pdf");
 
 }
 ?>
