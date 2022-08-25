@@ -5,7 +5,7 @@ require_once '../includes/config.php';
 $_POST = json_decode(file_get_contents("php://input"), true);
 
 require_once '../modelo/dbconnect.php';
-require_once '../modelo/salida.php';
+require_once '../modelo/devolucion.php';
 
   $sl = new salida();
   $db = new dbconnect();
@@ -35,6 +35,30 @@ require_once '../modelo/salida.php';
             $button='<button id="view" value="'.$row->id_salida.'" class="btn btn-warning"><i class="fas fa-eye"></i></button>';
             $A[] = array(
               ($row->id_salida)?$button:$button,
+              $row->empresa,
+              $row->referencia,
+              $row->factura,
+              $row->created_at,
+            );
+          }
+          setJson(array(
+            "sEcho"=> 1,
+            "iTotalRecords" => count($A),
+            "iTotalDisplayRecords" => count($A),
+            "data" => $A
+          ));
+        }
+      }
+      break;
+    case 'getDevolucion':
+      {
+        if (isset($_GET)) {
+          $rtn = AllConsult($sl->getDevolucion());
+          $A = array();
+          foreach ($rtn as $row) {
+            $button='<button id="view" value="'.$row->id_devolucion.'" class="btn btn-warning"><i class="fas fa-eye"></i></button>';
+            $A[] = array(
+              ($row->id_devolucion)?$button:$button,
               $row->empresa,
               $row->referencia,
               $row->factura,
@@ -106,7 +130,7 @@ require_once '../modelo/salida.php';
           try {
             $A[7] = $sl->ConvertFilePDF($A[7]);
             $sl->setDevolucion($A);
-            setMsg("Info",'Salida Procesada con exito',"success");
+            setMsg("Info",'Devolucion Procesada con exito',"success");
           } catch (Exception $e) {
             setMsg("Error",$e->getMessage(),"error");
           }

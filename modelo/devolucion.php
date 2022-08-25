@@ -32,6 +32,22 @@ class salida
       	salida AS s
       	INNER JOIN clientes AS cl ON s.id_cliente = cl.id_cliente WHERE devolucion = 0");
   }
+  public function getDevolucion()
+  {
+    return $this->db->sql(
+      "SELECT
+        s.id_devolucion,
+      	cl.empresa,
+      	s.factura,
+      	s.created_at,
+      	s.referencia,
+      	s.serie,
+      	s.tpago,
+      	s.observacion
+      FROM
+      	devolucion AS s
+      	INNER JOIN clientes AS cl ON s.id_cliente = cl.id_cliente");
+  }
   public function getInventario($val)
   {
     return $this->db->sql(
@@ -80,14 +96,16 @@ class salida
   }
   public function setDevolucion($val)
   {
-    $query = $this->db->sql("INSERT INTO devolucion ( id_cliente, referencia, factura, fecha_de_comprobante, serie, observacion, tpago, archivo)VALUES('$val[0]','$val[1]','$val[2]','$val[3]','$val[4]','$val[5]','$val[6]','$val[7]')");
+    $query = $this->db->sql("INSERT INTO devolucion ( id_cliente, referencia, factura, fecha_de_comprobante, serie, observacion, tpago, archivo ,id_salida)VALUES('$val[0]','$val[1]','$val[2]','$val[3]','$val[4]','$val[5]','$val[6]','$val[7]','$val[9]')");
     if ($query) {
       for ($i=0; $i < count($val[8]); $i++) {
         $id = $val[8][$i]['id'];
         $cantidad = $val[8][$i]['cantidad'];
+        $id_salida = $val[9];
+
         $query = $this->db->sql("INSERT INTO devolucion_detalle(id_serie,id_producto,cantidad)VALUES('$val[4]','$id','$cantidad')");
-        $query = $this->db->sql("UPDATE inventario SET cantidad=cantidad+'$cantidad'  WHERE id_producto =".$id);
-        $query = $this->db->sql("UPDATE salida SET devolucion = 1 observacion='$val[5]' WHERE id_salida =".$val[9]);
+        $query = $this->db->sql("UPDATE inventario SET cantidad=cantidad+'$cantidad'  WHERE id_producto ='$id'");
+        $query = $this->db->sql("UPDATE salida SET devolucion = 1, observacion='$val[5]' WHERE id_salida ='$id_salida'");
       }
     }
     return $query;

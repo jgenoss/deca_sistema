@@ -159,6 +159,21 @@ new Vue({
           "iDisplayLength": 10, //Paginacion
           "order": [[1, "asc"]]
         });
+        $("#listDevolucion").DataTable({
+          "responsive": true,
+          "autoWidth": false,
+          "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+          "aProcessing": true, //Activamos el procesamiento del datatables
+          "aServerSide": true, //Paginacion y filtrado realizados por el servidor
+          "ajax": {
+            "url": 'controlador/devolucion.php?op=getDevolucion',
+            "type": "POST",
+            "error": function(e) {console.log(e);}
+          },
+          "bDestroy": true,
+          "iDisplayLength": 10, //Paginacion
+          "order": [[1, "asc"]]
+        });
       });
     },
     cancel:function () {

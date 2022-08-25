@@ -38,7 +38,7 @@ require_once '../modelo/salida.php';
             $A[] = array(
               '0' => $button,
               '1' => $row->empresa,
-              '2' => $row->referencia,
+              '2' => ($row->devolucion==1)?'<span class="badge badge-warning">'.$row->referencia.'</span>':$row->referencia,
               '3' => $row->factura,
               '4' => $row->serie,
               '5' => $row->tpago,
