@@ -123,12 +123,10 @@ require_once '../modelo/devolucion.php';
             '4' => $_POST['serie'],
             '5' => $_POST['observacion'],
             '6' => $_POST['tpago'],
-            '7' => $_POST['file'],
-            '8' => $_POST['listp'],
-            '9' => $_POST['id_salida'],
+            '7' => $_POST['id_salida'],
+            '8' => $_POST['listp']
           );
           try {
-            $A[7] = $sl->ConvertFilePDF($A[7]);
             $sl->setDevolucion($A);
             setMsg("Info",'Devolucion Procesada con exito',"success");
           } catch (Exception $e) {
