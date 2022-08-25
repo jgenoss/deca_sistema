@@ -30,7 +30,7 @@ class salida
       	s.observacion
       FROM
       	salida AS s
-      	INNER JOIN clientes AS cl ON s.id_cliente = cl.id_cliente");
+      	INNER JOIN clientes AS cl ON s.id_cliente = cl.id_cliente WHERE devolucion = 0");
   }
   public function getInventario($val)
   {
@@ -87,6 +87,7 @@ class salida
         $cantidad = $val[8][$i]['cantidad'];
         $query = $this->db->sql("INSERT INTO devolucion_detalle(id_serie,id_producto,cantidad)VALUES('$val[4]','$id','$cantidad')");
         $query = $this->db->sql("UPDATE inventario SET cantidad=cantidad+'$cantidad'  WHERE id_producto =".$id);
+        $query = $this->db->sql("UPDATE salida SET devolucion = 1 observacion='$val[5]' WHERE id_salida =".$val[9]);
       }
     }
     return $query;

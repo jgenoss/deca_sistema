@@ -11,12 +11,19 @@ new Vue({
         nombre:'',
         cantidad:0
       },
+      rtnLD:{
+        id:'',
+        codigo:'',
+        nombre:'',
+        cantidad:0
+      },
       arrayCliente:[],
       resultCliente:{
         id:'',
         nombre:''
       },
       devolucion:{
+        id_salida:'',
         id_cliente:'',
         referencia:'',
         factura:'',
@@ -28,6 +35,7 @@ new Vue({
         listp:[]
       },
       ver:{
+        id_salida:'',
         id_cliente:'',
         referencia:'',
         factura:'',
@@ -153,25 +161,6 @@ new Vue({
         });
       });
     },
-    listaInventario(type) {
-      $(function() {
-        $("#invt").DataTable({
-          "responsive": true,
-          "autoWidth": false,
-          "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
-          "aProcessing": true, //Activamos el procesamiento del datatables
-          "aServerSide": true, //Paginacion y filtrado realizados por el servidor
-          "ajax": {
-            "url": `controlador/devolucion.php?op=getInventario&id=${type}`,
-            "type": "POST",
-            "error": function(e) {console.log(e);}
-          },
-          "bDestroy": true,
-          "iDisplayLength": 10, //Paginacion
-          "order": [[1, "desc"]]
-        });
-      });
-    },
     cancel:function () {
       $("#css").attr("class","sidebar-mini layout-fixed");
       this.tabla();
@@ -192,6 +181,14 @@ new Vue({
           let id = $(this).val();
           axios.post('controlador/devolucion.php?op=getSalidaId',{id:id}).then(resp =>{
             thisJq.ver = resp.data;
+            thisJq.devolucion.id_salida = resp.data.id_salida;
+            thisJq.devolucion.id_cliente = resp.data.id_cliente;
+            thisJq.devolucion.referencia = resp.data.referencia;
+            thisJq.devolucion.factura = resp.data.factura;
+            thisJq.devolucion.fecha = resp.data.fecha;
+            thisJq.devolucion.serie = resp.data.serie;
+            thisJq.devolucion.observacion = resp.data.observacion;
+            thisJq.devolucion.tpago = resp.data.tpago;
             thisJq.total = resp.data.total;
             $("#css").attr("class","sidebar-mini layout-fixed sidebar-collapse");
             thisJq.view = true;
@@ -241,6 +238,7 @@ new Vue({
 			)
 		},
     limpiarInputs:function() {
+      this.devolucion.id_salida='',
       this.devolucion.id_cliente='',
       this.devolucion.referencia='',
       this.devolucion.factura='',

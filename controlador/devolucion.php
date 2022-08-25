@@ -100,7 +100,8 @@ require_once '../modelo/salida.php';
             '5' => $_POST['observacion'],
             '6' => $_POST['tpago'],
             '7' => $_POST['file'],
-            '8' => $_POST['listp']
+            '8' => $_POST['listp'],
+            '9' => $_POST['id_salida'],
           );
           try {
             $A[7] = $sl->ConvertFilePDF($A[7]);
@@ -168,6 +169,7 @@ require_once '../modelo/salida.php';
           }
           $A = array(
             'total' => $total,
+            'id_salida' => $rtn->id_salida,
             'id_cliente' => $rtn->id_cliente,
             'referencia' => $rtn->referencia,
             'factura' => $rtn->factura,
