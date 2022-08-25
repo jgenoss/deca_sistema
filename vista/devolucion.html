@@ -15,26 +15,50 @@
 </div>
 <div id="devolucion" class="content">
   <div v-if="list == true" class="col-12">
-    <div class="card card-primary">
-      <div class="card-header">Information
-        <button @click="newbutton" data-toggle="modal" data-target="#modal-add" class="btn btn-sm btn-default float-right"><i class="fas fa-plus"></i></button>
+    <div class="row">
+      <div class="col-lg-6 col-md-6">
+        <div class="card card-primary">
+          <div class="card-header">Information de Salida
+            <button @click="newbutton" data-toggle="modal" data-target="#modal-add" class="btn btn-sm btn-default float-right"><i class="fas fa-plus"></i></button>
+          </div>
+          <div class="card-body">
+            <table id="list" class="table table-bordered table-striped">
+              <thead class="text-center">
+                <tr>
+                  <th>tools</th>
+                  <th>CLIENTE</th>
+                  <th>REFERENCIA</th>
+                  <th>FACTURA</th>
+                  <th>FECHA</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
-      <div class="card-body">
-        <table id="list" class="table table-bordered table-striped">
-          <thead class="text-center">
-            <tr>
-              <th>tools</th>
-              <th>CLIENTE</th>
-              <th>REFERENCIA</th>
-              <th>FACTURA</th>
-              <th>SERIE</th>
-              <th>TIPO PAGO</th>
-              <th>FECHA</th>
-            </tr>
-          </thead>
-          <tbody class="text-center">
-          </tbody>
-        </table>
+      <div class="col-lg-6 col-md-6">
+        <div class="card card-warning">
+          <div class="card-header">Information de Devolucion
+            <button @click="newbutton" data-toggle="modal" data-target="#modal-add" class="btn btn-sm btn-default float-right"><i class="fas fa-plus"></i></button>
+          </div>
+          <div class="card-body">
+            <table id="listDevolucion" class="table table-bordered table-striped">
+              <thead class="text-center">
+                <tr>
+                  <th></th>
+                  <th>CLIENTE</th>
+                  <th>REFERENCIA</th>
+                  <th>FACTURA</th>
+                  <th>FECHA</th>
+                </tr>
+              </thead>
+              <tbody class="text-center">
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   </div>

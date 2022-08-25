@@ -149,7 +149,7 @@ new Vue({
           },
           "bDestroy": true,
           "iDisplayLength": 10, //Paginacion
-          "order": [[1, "desc"]]
+          "order": [[1, "asc"]]
         });
       });
     },

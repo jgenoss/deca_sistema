@@ -51,12 +51,12 @@ require_once '../modelo/entrada.php';
             $button='<button id="view" value="'.$row->id_entrada.'" class="btn btn-sm btn-warning"><i class="fas fa-eye"></i></button>
             <a class="btn btn-sm btn-info" target="_blank" href="'.$url.$row->id_entrada.'" ><i class="fa-solid fa-print"></i></a>';
             $A[] = array(
-              '0' => $button,
-              '1' => $row->empresa." / ".$row->nombre,
-              '2' => $row->referencia,
-              '3' => $row->factura,
-              '4' => $row->serie,
-              '5' => $row->created_at,
+              ($row->created_at)?$button:$button,
+              $row->empresa." / ".$row->nombre,
+              $row->referencia,
+              $row->factura,
+              $row->serie,
+              $row->created_at,
             );
           }
           setJson(array(

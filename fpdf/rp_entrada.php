@@ -18,17 +18,13 @@
 
     $total=0;
     foreach ($rtn[3] as $key) {
-      $rtn[4] = Consult($db->sql("SELECT p.*,sd.* FROM inventario_detallado AS sd INNER JOIN producto AS p ON sd.id_producto = p.id_producto WHERE sd.id_producto=".$key->id_producto));
       $total += $key->cantidad;
       $products[] = array(
         'id' => $key->id_producto,
         'codigo_0' => $key->ean,
         'codigo_1' => $key->codigo_1,
         'codigo_2' => $key->codigo_2,
-        'codigo' => $key->ean,
-        'codigo' => $key->ean,
-        'nombre' => $key->nombre,
-        'fecha_ven' => ($rtn[4]->fv == 1)? "FV: ".$rtn[4]->fecha_ven:'',
+        'nombre' => utf8_decode($key->nombre),
         'cantidad' => $key->cantidad,
         'umb' => $key->umb
       );
@@ -177,7 +173,7 @@
           $this->Cell(35,6,$row["codigo_1"],"LR",0,"C");
           $this->Cell(35,6,$row["codigo_2"],"R",0,"C");
           $this->Cell(35,6,$row["codigo_0"],"R",0,"C");
-          $this->Cell(125,6,str_limit($row["nombre"]." ".$row['fecha_ven'],'70','...'),"R",0,"L");
+          $this->Cell(125,6,str_limit($row["nombre"],'70','...'),"R",0,"L");
           $this->Cell(15,6,$row["umb"],"R",0,"C");
           $this->Cell(15,6,$row["cantidad"],"R",1,"C");
         }else {

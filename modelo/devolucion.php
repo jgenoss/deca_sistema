@@ -78,15 +78,15 @@ class salida
       	AND i.id_inventario = '$val'"
     );
   }
-  public function setSalida($val)
+  public function setDevolucion($val)
   {
-    $query = $this->db->sql("INSERT INTO salida ( id_cliente, referencia, factura, fecha_de_comprobante, serie, observacion, tpago, archivo)VALUES('$val[0]','$val[1]','$val[2]','$val[3]','$val[4]','$val[5]','$val[6]','$val[7]')");
+    $query = $this->db->sql("INSERT INTO devolucion ( id_cliente, referencia, factura, fecha_de_comprobante, serie, observacion, tpago, archivo)VALUES('$val[0]','$val[1]','$val[2]','$val[3]','$val[4]','$val[5]','$val[6]','$val[7]')");
     if ($query) {
       for ($i=0; $i < count($val[8]); $i++) {
         $id = $val[8][$i]['id'];
         $cantidad = $val[8][$i]['cantidad'];
-        $query = $this->db->sql("INSERT INTO salida_detalle(id_serie,id_producto,cantidad)VALUES('$val[4]','$id','$cantidad')");
-        $query = $this->db->sql("UPDATE inventario SET cantidad=cantidad-'$cantidad'  WHERE id_producto =".$id);
+        $query = $this->db->sql("INSERT INTO devolucion_detalle(id_serie,id_producto,cantidad)VALUES('$val[4]','$id','$cantidad')");
+        $query = $this->db->sql("UPDATE inventario SET cantidad=cantidad+'$cantidad'  WHERE id_producto =".$id);
       }
     }
     return $query;

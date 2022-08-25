@@ -32,15 +32,13 @@ require_once '../modelo/salida.php';
           $rtn = AllConsult($sl->getSalida());
           $A = array();
           foreach ($rtn as $row) {
-            $button='<button id="view" value="'.$row->id_salida.'" class="btn btn-sm btn-warning"><i class="fas fa-eye"></i></button>';
+            $button='<button id="view" value="'.$row->id_salida.'" class="btn btn-warning"><i class="fas fa-eye"></i></button>';
             $A[] = array(
-              '0' => $button,
-              '1' => $row->empresa,
-              '2' => $row->referencia,
-              '3' => $row->factura,
-              '4' => $row->serie,
-              '5' => $row->tpago,
-              '6' => $row->created_at,
+              ($row->id_salida)?$button:$button,
+              $row->empresa,
+              $row->referencia,
+              $row->factura,
+              $row->created_at,
             );
           }
           setJson(array(
@@ -106,7 +104,7 @@ require_once '../modelo/salida.php';
           );
           try {
             $A[7] = $sl->ConvertFilePDF($A[7]);
-            $sl->setSalida($A);
+            $sl->setDevolucion($A);
             setMsg("Info",'Salida Procesada con exito',"success");
           } catch (Exception $e) {
             setMsg("Error",$e->getMessage(),"error");
