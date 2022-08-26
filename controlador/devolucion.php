@@ -84,9 +84,7 @@ require_once '../modelo/devolucion.php';
             $A[] = array(
               '0' => $button,
               '1' => '<span class="badge badge-primary">'.$row->codigo_1.'</span> <span class="badge badge-info">'.$row->codigo_2.'</span> <span class="badge badge-warning">'.$row->ean.'</span>',
-              '2' => $row->pNombre,
-              '3' => $row->cantidad,
-              '4' => $row->cNombre,
+              '2' => $row->pNombre
             );
           }
           setJson(array(

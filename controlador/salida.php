@@ -198,7 +198,7 @@ require_once '../modelo/salida.php';
               $targetPath = '../upload_files/'.$file['name'];
               move_uploaded_file($file['tmp_name'], $targetPath);
               $Reader = new SpreadsheetReader($targetPath);
-              unlink('../upload_files/'.$targetPath);
+              unlink($targetPath);
               $sheetCount = count($Reader->sheets());
               $A = array();
               for($i=0;$i<$sheetCount;$i++)
@@ -219,8 +219,9 @@ require_once '../modelo/salida.php';
                 foreach ($A as $key) {
                   if (empty($key['COVA']) || empty($key['COAR'])|| empty($key['CANTIDAD'])) {
                     throw new Exception('formato mal estructurado'."<br/>".
-                    "COVA:".$key['COVA']."<br/>".
                     "COAR:".$key['COAR']."<br/>".
+                    "COVA:".$key['COVA']."<br/>".
+                    "REFERENCIA:".$key['REFERENCIA']."<br/>".
                     "EAN:".$key['EAN']."<br/>".
                     "CANTIDAD:".$key['CANTIDAD']);
                     break;
@@ -234,8 +235,8 @@ require_once '../modelo/salida.php';
                     $rtn = Consult($db->sql("SELECT * FROM producto WHERE ean='$EAN' OR codigo_1='$COVA' OR codigo_2='$COAR'"));
                     if (!$rtn) {
                       throw new Exception('ESTE ARTICULO NO EXISTE'."<br/>".
-                      "COVA: ".$key['COVA']."<br/>".
                       "COAR: ".$key['COAR']."<br/>".
+                      "COVA: ".$key['COVA']."<br/>".
                       "REFERENCIA: ".$key['REFERENCIA']."<br/>".
                       "EAN: ".$key['EAN']."<br/>".
                       "CANTIDAD: ".$key['CANTIDAD']);

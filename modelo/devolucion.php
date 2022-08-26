@@ -52,25 +52,29 @@ class salida
   {
     return $this->db->sql(
       "SELECT
-      	p.ean,
-      	p.codigo,
-      	p.codigo_1,
-      	p.codigo_2,
-        i.id_producto,
-      	i.id_inventario,
-      	p.nombre AS pNombre,
-      	i.cantidad,
-      	c.nombre AS cNombre
-      FROM
-      	inventario AS i
-      	INNER JOIN producto AS p ON i.id_producto = p.id_producto
-      	INNER JOIN categoria AS c ON p.id_categoria = c.id_categoria
-      	INNER JOIN bodega AS b ON p.id_bodega = b.id_bodega
-      	INNER JOIN clientes AS cl ON b.id_cliente = cl.id_cliente
-      WHERE
-      	i.STATUS = 1
-      	AND cantidad > 0
-      	AND cl.id_cliente = $val"
+        	p.ean, 
+        	p.id_producto,
+        	p.codigo,
+        	p.codigo_1,
+        	p.codigo_2,
+        	p.nombre AS pNombre,
+        	c.nombre AS cNombre
+        FROM
+        	producto AS p
+        	INNER JOIN
+        	categoria AS c
+        	ON
+        		p.id_categoria = c.id_categoria
+        	INNER JOIN
+        	bodega AS b
+        	ON
+        		p.id_bodega = b.id_bodega
+        	INNER JOIN
+        	clientes AS cl
+        	ON
+        		b.id_cliente = cl.id_cliente
+        WHERE
+        	cl.id_cliente = $val"
     );
   }
   public function getProductId($val)
@@ -99,7 +103,7 @@ class salida
     $query = $this->db->sql("INSERT INTO devolucion ( id_cliente, referencia, factura, fecha_de_comprobante, serie, observacion, tpago ,id_salida)VALUES('$val[0]','$val[1]','$val[2]','$val[3]','$val[4]','$val[5]','$val[6]','$val[7]')");
     if ($query) {
       for ($i=0; $i < count($val[8]); $i++) {
-        
+
         $id = $val[8][$i]['id'];
         $cantidad = $val[8][$i]['cantidad'];
         $id_salida = $val[7];
