@@ -232,8 +232,9 @@ require_once '../modelo/salida.php';
                     $EAN = $key['EAN'];
                     $CANTIDAD = $key['CANTIDAD'];
 
-                    $rtn = Consult($db->sql("SELECT * FROM producto WHERE ean='$EAN' OR codigo_1='$COVA' OR codigo_2='$COAR'"));
-                    if (!$rtn) {
+                    $rtn1 = Consult($db->sql("SELECT * FROM producto WHERE ean='$EAN' OR codigo_1='$COVA' OR codigo_2='$COAR'"));
+                    $rtn2 = Consult($db->sql("SELECT * FROM inventario WHERE id_producto=".$rtn1->id_producto));
+                    if (!$rtn1) {
                       throw new Exception('ESTE ARTICULO NO EXISTE'."<br/>".
                       "COAR: ".$key['COAR']."<br/>".
                       "COVA: ".$key['COVA']."<br/>".
@@ -241,13 +242,23 @@ require_once '../modelo/salida.php';
                       "EAN: ".$key['EAN']."<br/>".
                       "CANTIDAD: ".$key['CANTIDAD']);
                       break;
-                    }elseif ($rtn) {
-                      $L[] = array(
-                        'id' =>$rtn->id_producto,
-                        'codigo' => $rtn->ean,
-                        'nombre' => $rtn->nombre,
-                        'cantidad' => $key['CANTIDAD']
-                      );
+                    }elseif (!$rtn2) {
+                      throw new Exception('NO EXISTE EN INVENTARIO'."<br/>".
+                      "COAR: ".$key['COAR']."<br/>".
+                      "COVA: ".$key['COVA']."<br/>".
+                      "REFERENCIA: ".$key['REFERENCIA']."<br/>".
+                      "EAN: ".$key['EAN']."<br/>".
+                      "CANTIDAD: ".$key['CANTIDAD']);
+                      break;
+                    }elseif ($rtn1) {
+                      if ($rtn2) {
+                        $L[] = array(
+                          'id' => $rtn1->id_producto,
+                          'codigo' => $rtn1->ean,
+                          'nombre' => $rtn1->nombre,
+                          'cantidad' => $key['CANTIDAD']
+                        );
+                      }
                     }
                   }
                 }
