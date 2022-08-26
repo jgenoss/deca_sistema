@@ -556,7 +556,7 @@
 							$this -> SharedStrings -> next('si');
 							$this -> SSForwarded = true;
 							$this -> SharedStringIndex++;
-							continue;
+							break;
 						}
 						else
 						{

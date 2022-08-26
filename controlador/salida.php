@@ -207,10 +207,11 @@ require_once '../modelo/salida.php';
                 foreach ($Reader as $key => $row)
                 {
                   $A[] = array(
-                    'COVA' => (isset($row[0]))? $row[0]:'',
-                    'COAR' => (isset($row[1]))? $row[1]:'',
-                    'EAN' => (isset($row[2]))? $row[2]:'',
-                    'CANTIDAD' => (isset($row[3]))? $row[3]:''
+                    'COAR' => (isset($row[0]))? $row[0]:'',
+                    'COVA' => (isset($row[1]))? $row[1]:'',
+                    'REFERENCIA' => (isset($row[2]))? $row[2]:'',
+                    'EAN' => (isset($row[3]))? $row[3]:'',
+                    'CANTIDAD' => (isset($row[4]))? $row[4]:''
                   );
                 }
               }
@@ -233,10 +234,11 @@ require_once '../modelo/salida.php';
                     $rtn = Consult($db->sql("SELECT * FROM producto WHERE ean='$EAN' OR codigo_1='$COVA' OR codigo_2='$COAR'"));
                     if (!$rtn) {
                       throw new Exception('ESTE ARTICULO NO EXISTE'."<br/>".
-                      "COVA:".$key['COVA']."<br/>".
-                      "COAR:".$key['COAR']."<br/>".
-                      "EAN:".$key['EAN']."<br/>".
-                      "CANTIDAD:".$key['CANTIDAD']);
+                      "COVA: ".$key['COVA']."<br/>".
+                      "COAR: ".$key['COAR']."<br/>".
+                      "REFERENCIA: ".$key['REFERENCIA']."<br/>".
+                      "EAN: ".$key['EAN']."<br/>".
+                      "CANTIDAD: ".$key['CANTIDAD']);
                       break;
                     }elseif ($rtn) {
                       $L[] = array(
