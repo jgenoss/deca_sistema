@@ -18,9 +18,7 @@
     <div class="row">
       <div class="col-lg-6 col-md-6">
         <div class="card card-primary">
-          <div class="card-header">Information de Salida
-            <button @click="newbutton" data-toggle="modal" data-target="#modal-add" class="btn btn-sm btn-default float-right"><i class="fas fa-plus"></i></button>
-          </div>
+          <div class="card-header">Information de Salida</div>
           <div class="card-body">
             <table id="list" class="table table-bordered table-striped">
               <thead class="text-center">
@@ -243,4 +241,139 @@
       <!-- right col -->
     </div>
   </div>
+  <!-- modulo de devoluciones sin referencia -->
+  <div v-if="sale == true" class="col-12">
+    <div class="row">
+      <!-- Left col -->
+      <section class="col-lg-7 connectedSortable ui-sortable">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-tittle">
+              Datos del cliente
+              <button @click="cancel" class="btn btn-sm btn-default float-right">Volver</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <!-- open form -->
+            <form v-on:submit.prevent="submit">
+            <div class="row">
+              <div class="col-lg-2 col-md-2">
+                <div class="form-group">
+                  <label>Cliente(*):</label>
+                  <select  @change="loadInventario(devolucion.id_cliente)" class="form-control" v-model="devolucion.id_cliente">
+                    <option v-for="resultCliente in arrayCliente" v-bind:value="resultCliente.id">{{resultCliente.nombre}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-lg-7 col-md-6">
+                <div class="form-group">
+                  <label>Referencia(*):</label>
+                  <input v-model="devolucion.referencia" type="text" class="form-control" required>
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-4">
+                <div class="form-group">
+                  <label>Factura(*):</label>
+                  <input v-model="devolucion.factura" type="text" class="form-control" class="form-control" required>
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                  <label>Fecha(*)</label>
+                  <input v-model="devolucion.fecha" type="date" class="form-control" required>
+                </div>
+              </div>
+              <div class="col-lg-2 col-md-2">
+                <div class="form-group">
+                  <label>Serie(*):</label>
+                  <input v-model="devolucion.serie" type="text" class="form-control" class="form-control" readonly>
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                  <label>Tipo de pago(*):</label>
+                  <select class="form-control" v-model="devolucion.tpago" required>
+                    <option value="CONTADO">CONTADO</option>
+                    <option value="CREDITO">CREDITO</option>
+                    <option value="TRANSFERENCIA">TRANSFERENCIA</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-lg-4 col-md-4">
+                <div class="form-group">
+                  <label for="exampleInputFile">Adjustar Archivo(*)</label>
+                  <div class="input-group">
+                    <div class="custom-file">
+                      <input @change="uploadImage" accept="application/pdf" type="file" id="uploadfiles" ref="uploadfiles" class="custom-file-input" required>
+                      <label class="custom-file-label" for="uploadfiles">{{file_name}}</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-12 col-md-12">
+                <div class="form-group">
+                  <label>Direccion(*):</label>
+                  <input v-model="devolucion.direccion" type="text" class="form-control" class="form-control" required>
+                </div>
+              </div>
+              <div class="col-lg-12 col-md-12">
+                <div class="form-group">
+                  <label>Observacion(*):</label>
+                  <textarea @keyup.tab="keyNa()" v-model="devolucion.observacion" type="text" class="form-control" class="form-control" required></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table id="detalles" class="table table-bordered text-nowrap">
+                <thead>
+                  <tr>
+                    <th>Codigo</th>
+                    <th>Descripcion</th>
+                    <th>Cant.</th>
+                    <th>Accion</th>
+                  </tr>
+                </thead>
+                <tbody >
+                  <tr v-for="(resultListP, index) in devolucion.listp">
+                    <td class="text-center">{{ resultListP.codigo }} </td>
+                    <td><input v-model="resultListP.id" type="hidden"> {{ resultListP.nombre }}</td>
+                    <td class="text-center"><input @input="count(index)" style="width: 60px;" v-model="resultListP.cantidad" type="number" required></td>
+                    <td class="text-center"><button @click="deleteFind(index)" class="btn btn-sm btn-danger" id="del"><i class="fas fa-trash"></i></button></td>
+                  </tr>
+                </tbody>
+              </table>
+              <!-- button -->
+              <button v-if="btnR == true" class="btn btn-primary" type="submit" name="salida">Registrar salida</button>
+            </div>
+            <!-- /form -->
+          </form>
+          </div>
+        </div>
+      </section>
+      <!-- /.Left col -->
+      <!-- right col (We are only adding the ID to make the widgets sortable)-->
+      <section class="col-lg-5 connectedSortable ui-sortable">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-tittle">
+              Lista de Productos
+            </div>
+          </div>
+          <div class="card-body">
+            <table id="invt" class="table table-bordered table-striped">
+              <thead>
+                <th></th>
+                <th>Codigo</th>
+                <th>Nombre</th>
+                <th>#</th>
+                <th>Categoria</th>
+              </thead>
+            </table>
+          </div>
+        </div>
+      </section>
+      <!-- right col -->
+    </div>
+  </div>
+  <!-- fin de modulo de devoluciones sin referencia -->
 </div>

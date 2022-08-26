@@ -32,7 +32,7 @@ require_once '../modelo/devolucion.php';
           $rtn = AllConsult($sl->getSalida());
           $A = array();
           foreach ($rtn as $row) {
-            $button='<button id="view" value="'.$row->id_salida.'" class="btn btn-warning"><i class="fas fa-eye"></i></button>';
+            $button='<button id="view" value="'.$row->id_salida.'" class="btn btn-warning"><i class="fas fa-undo"></i></button>';
             $A[] = array(
               ($row->id_salida)?$button:$button,
               $row->empresa,
@@ -113,7 +113,6 @@ require_once '../modelo/devolucion.php';
       break;
     case 'regSalida':
       {
-
         if (isset($_POST)) {
           $A = array(
             '0' => $_POST['id_cliente'],
@@ -124,7 +123,8 @@ require_once '../modelo/devolucion.php';
             '5' => $_POST['observacion'],
             '6' => $_POST['tpago'],
             '7' => $_POST['id_salida'],
-            '8' => $_POST['listp']
+            '8' => $_POST['listp'],
+            '9' => (!empty($_POST['file']))? $sl->ConvertFilePDF($A[9]):'',
           );
           try {
             $sl->setDevolucion($A);
