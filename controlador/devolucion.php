@@ -32,7 +32,7 @@ require_once '../modelo/devolucion.php';
           $rtn = AllConsult($sl->getSalida());
           $A = array();
           foreach ($rtn as $row) {
-            $button='<button id="view" value="'.$row->id_salida.'" class="btn btn-warning"><i class="fas fa-undo"></i></button>';
+            $button='<button id="dev" value="'.$row->id_salida.'" class="btn btn-warning"><i class="fas fa-undo"></i></button>';
             $A[] = array(
               ($row->id_salida)?$button:$button,
               $row->empresa,
@@ -122,10 +122,10 @@ require_once '../modelo/devolucion.php';
             '6' => $_POST['tpago'],
             '7' => $_POST['id_salida'],
             '8' => $_POST['listp'],
-            '9' => (!empty($_POST['file']))? $sl->ConvertFilePDF($A[9]):'',
+            '9' => (!empty($_POST['file']))? $sl->ConvertFilePDF($_POST['file']):'',
           );
           try {
-            $sl->setDevolucion($A);
+            $sl->setDevolucion($A,$_SESSION['START'][1]);
             setMsg("Info",'Devolucion Procesada con exito',"success");
           } catch (Exception $e) {
             setMsg("Error",$e->getMessage(),"error");
@@ -162,7 +162,7 @@ require_once '../modelo/devolucion.php';
     case 'getConsecutivo':
       {
         if (isset($_GET)) {
-          $rtn = Consult($db->sql("SELECT MAX(serie) as next  FROM salida"));
+          $rtn = Consult($db->sql("SELECT MAX(serie) as next  FROM devolucion"));
           if ($rtn) {
             setJson(array('next' => $rtn->next+1));
           }else {
@@ -186,6 +186,41 @@ require_once '../modelo/devolucion.php';
               'nombre' => $key->nombre,
               'cantidad' => $key->cantidad
             );
+          }
+          $A = array(
+            'total' => $total,
+            'id_salida' => $rtn->id_salida,
+            'id_cliente' => $rtn->id_cliente,
+            'referencia' => $rtn->referencia,
+            'factura' => $rtn->factura,
+            'fecha' => $rtn->fecha_de_comprobante,
+            'file' => $rtn->archivo,
+            'serie' => $rtn->serie,
+            'observacion' => $rtn->observacion,
+            'tpago' => $rtn->tpago,
+            'listp' => $L
+          );
+          setJson($A);
+        }
+      }
+      break;
+    case 'getDevolucionId':
+      {
+        if (isset($_POST['id'])) {
+          $rtn = Consult($db->sql("SELECT * FROM devolucion WHERE id_devolucion = ".$_POST['id']));
+          $L = array();
+          if ($rtn) {
+            $rtn0 = AllConsult($sl->getDevolucionDetallada($rtn->serie));
+            $total=0;
+            foreach ($rtn0 as $key) {
+              $total += $key->cantidad;
+              $L[] = array(
+                'id' => $key->id_producto,
+                'codigo' => $key->ean,
+                'nombre' => $key->nombre,
+                'cantidad' => $key->cantidad
+              );
+            }
           }
           $A = array(
             'total' => $total,

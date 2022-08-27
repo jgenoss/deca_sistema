@@ -46,6 +46,18 @@ new Vue({
         tpago:'',
         listp:[]
       },
+      salida:{
+        id_salida:'',
+        id_cliente:'',
+        referencia:'',
+        factura:'',
+        fecha:'',
+        file:'',
+        serie:'',
+        observacion:'',
+        tpago:'',
+        listp:[]
+      },
       fila:'',
       Modulo:'',
       list:true,
@@ -202,6 +214,7 @@ new Vue({
       this.list = true;
       this.sale = false;
       this.view = false;
+      this.form = false;
     },
     getCliente(){
       axios.post('controlador/devolucion.php?op=getClientes').then(resp =>{
@@ -213,8 +226,19 @@ new Vue({
       $(function () {
         $(document).on("click", "#view", function() {
           let id = $(this).val();
-          axios.post('controlador/devolucion.php?op=getSalidaId',{id:id}).then(resp =>{
+          axios.post('controlador/devolucion.php?op=getDevolucionId',{id:id}).then(resp =>{
             thisJq.ver = resp.data;
+            thisJq.total = resp.data.total;
+            $("#css").attr("class","sidebar-mini layout-fixed sidebar-collapse");
+            thisJq.view = true;
+            thisJq.form = false;
+            thisJq.list = false;
+          });
+        });
+        $(document).on("click", "#dev", function() {
+          let id = $(this).val();
+          axios.post('controlador/devolucion.php?op=getSalidaId',{id:id}).then(resp =>{
+            thisJq.salida = resp.data;
             thisJq.devolucion.id_salida = resp.data.id_salida;
             thisJq.devolucion.id_cliente = resp.data.id_cliente;
             thisJq.devolucion.referencia = resp.data.referencia;
@@ -225,7 +249,8 @@ new Vue({
             thisJq.devolucion.tpago = resp.data.tpago;
             thisJq.total = resp.data.total;
             $("#css").attr("class","sidebar-mini layout-fixed sidebar-collapse");
-            thisJq.view = true;
+            thisJq.sale = true;
+            thisJq.form = false;
             thisJq.list = false;
           });
         });
@@ -262,7 +287,7 @@ new Vue({
       $("#css").attr("class","sidebar-mini layout-fixed sidebar-collapse");
       this.Modulo = 'Nuevo Cliente';
       this.list = false;
-      this.sale = true;
+      this.form = true;
     },
     sweetalert2:function(tittle,message,type) {
 			Swal.fire(

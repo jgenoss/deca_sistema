@@ -98,9 +98,9 @@ class salida
       	AND i.id_inventario = '$val'"
     );
   }
-  public function setDevolucion($val)
+  public function setDevolucion($val,$id_session)
   {
-    $query = $this->db->sql("INSERT INTO devolucion ( id_cliente, referencia, factura, fecha_de_comprobante, serie, observacion, tpago ,id_salida)VALUES('$val[0]','$val[1]','$val[2]','$val[3]','$val[4]','$val[5]','$val[6]','$val[7]')");
+    $query = $this->db->sql("INSERT INTO devolucion ( id_cliente, referencia, factura, fecha_de_comprobante, serie, observacion, tpago ,id_salida,archivo)VALUES('$val[0]','$val[1]','$val[2]','$val[3]','$val[4]','$val[5]','$val[6]','$val[7]','$val[9]')");
     if ($query) {
       for ($i=0; $i < count($val[8]); $i++) {
 
@@ -109,12 +109,11 @@ class salida
         $id_salida = $val[7];
 
         $query = $this->db->sql("INSERT INTO devolucion_detalle(id_serie,id_producto,cantidad)VALUES('$val[4]','$id','$cantidad')");
-
+        $query = $this->db->sql("UPDATE inventario SET cantidad=cantidad+'$cantidad'  WHERE id_producto ='$id'");
         if ($this->db->sql("SELECT * FROM salida WHERE id_salida ='$id_salida'")) {
           $query = $this->db->sql("UPDATE salida SET devolucion = 1, observacion='$val[5]' WHERE id_salida ='$id_salida'");
         }
-        $rtn = $this->db->Consult($this->db->sql("SELECT * FROM inventario WHERE id_producto=".$id));
-        if($rtn){
+        if($this->db->Consult($this->db->sql("SELECT * FROM inventario WHERE id_producto=".$id))){
           $this->db->sql("UPDATE inventario SET cantidad=cantidad+'$cantidad' WHERE id_producto =".$id);
         }else {
           $this->db->sql("INSERT INTO inventario (id_producto,id_usuario,cantidad)VALUES('$id','$id_session','$cantidad')");
@@ -142,10 +141,25 @@ class salida
         WHERE
         	sd.id_serie =$val");
   }
+  public function getDevolucionDetallada($val)
+  {
+    return $this->db->sql(
+      "SELECT
+        	sd.id_producto,
+        	p.ean,
+        	sd.cantidad,
+        	sd.id,
+        	p.nombre
+        FROM
+        	devolucion_detalle AS sd
+        	INNER JOIN producto AS p ON sd.id_producto = p.id_producto
+        WHERE
+        	sd.id_serie =$val");
+  }
   public function ConvertFilePDF($b64)
   {
     $bin = base64_decode(str_replace('data:application/pdf;base64,','', $b64), true);
-    $namefile = time().'_'.date("Y-m-d").'_SALIDA'.'.pdf';
+    $namefile = time().'_'.date("Y-m-d").'_DEVOLUCION'.'.pdf';
     $ext = '../';
     $file_dir = 'upload_files/';
     try {
