@@ -239,12 +239,83 @@ require_once '../modelo/devolucion.php';
         }
       }
       break;
-    case 'Upload':
-      {
+      case 'uploadFile':
+        {
+          require_once('../spreadSheetReader/php-excel-reader/excel_reader2.php');
+          require_once('../spreadSheetReader/SpreadsheetReader.php');
+          if (isset($_REQUEST)) {
+            $file = $_FILES['file'];
+            $file_name = file_get_contents($file['tmp_name']);
+            // $file2 = explode("\n", $file1);
+            // $file3 = array_filter($file2);
+              $targetPath = '../upload_files/'.$file['name'];
+              move_uploaded_file($file['tmp_name'], $targetPath);
+              $Reader = new SpreadsheetReader($targetPath);
+              unlink($targetPath);
+              $sheetCount = count($Reader->sheets());
+              $A = array();
+              for($i=0;$i<$sheetCount;$i++)
+              {
+                $Reader->ChangeSheet($i);
+                foreach ($Reader as $key => $row)
+                {
+                  $A[] = array(
+                    'COVA' => (isset($row[0]))? $row[0]:'',
+                    'COAR' => (isset($row[1]))? $row[1]:'',
+                    'REFERENCIA' => (isset($row[2]))? $row[2]:'',
+                    'CANTIDAD' => (isset($row[3]))? $row[3]:''
+                  );
+                }
+              }
+              try {
+                foreach ($A as $key) {
+                  if (empty($key['COVA']) || empty($key['COAR'])|| empty($key['CANTIDAD'])) {
+                    throw new Exception('formato mal estructurado'."<br/>".
+                    "COAR:".$key['COAR']."<br/>".
+                    "COVA:".$key['COVA']."<br/>".
+                    "REFERENCIA:".$key['REFERENCIA']."<br/>".
+                    "CANTIDAD:".$key['CANTIDAD']);
+                    break;
+                  } elseif (!empty($key['COVA']) || !empty($key['COAR'])|| !empty($key['CANTIDAD'])) {
 
-        var_dump($_FILES['files']);
-      }
-      break;
+                    $COVA = $key['COVA'];
+                    $COAR = $key['COAR'];
+                    $CANTIDAD = $key['CANTIDAD'];
+
+                    $rtn1 = Consult($db->sql("SELECT * FROM producto WHERE codigo_1='$COVA' OR codigo_2='$COAR'"));
+                    if ($rtn1) {
+                      $id_producto = $rtn1->id_producto;
+                      if (!$rtn1) {
+                        throw new Exception('ESTE ARTICULO NO EXISTE'."<br/>".
+                        "COAR: ".$key['COAR']."<br/>".
+                        "COVA: ".$key['COVA']."<br/>".
+                        "REFERENCIA: ".$key['REFERENCIA']."<br/>".
+                        "CANTIDAD: ".$key['CANTIDAD']);
+                        break;
+                      }elseif ($rtn1) {
+                        $L[] = array(
+                          'id' => $rtn1->id_producto,
+                          'codigo' => $rtn1->ean,
+                          'nombre' => $rtn1->nombre,
+                          'cantidad' => str_replace("-","",$key['CANTIDAD'])
+                        );
+                      }
+                    }
+
+                  }
+                }
+                setJson(array(
+                  'tittle' => "Info",
+                  'message' => "Cargue Masivo Procesado con exito",
+                  'type' => "success",
+                  'listp' => $L,
+                ));
+              } catch (Exception $e) {
+                setMsg("Error",$e->getMessage(),"error");
+              }
+          }
+        }
+        break;
     default:
       die("NULL");
       break;

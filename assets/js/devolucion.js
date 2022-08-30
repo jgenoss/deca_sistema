@@ -173,6 +173,27 @@ new Vue({
       };
       reader.readAsDataURL(file);
     },
+    onChangeFileUpload(){
+      thisJq = this;
+      file = this.$refs.uploadfiles0.files[0];
+      this.file_name = file.name;
+      this.file = file;
+    },
+    submitUpload() {
+      const formData = new FormData();
+      formData.append('file',this.file)
+      axios.post('controlador/devolucion.php?op=uploadFile',formData).then(resp =>{
+        if (resp.data.type == "success") {
+          this.sweetalert2(resp.data.tittle,resp.data.message,resp.data.type);
+          this.devolucion.listp = resp.data.listp;
+          // this.limpiarInputs();
+          this.devolucion.file='',
+          this.file_name='Selecione un document';
+        }else {
+          this.sweetalert2(resp.data.tittle,resp.data.message,resp.data.type);
+        }
+      });
+    },
     tabla() {
       $(function() {
         $("#list").DataTable({
