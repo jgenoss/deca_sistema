@@ -162,7 +162,7 @@
         $this->Cell(35,7,"EAN",1,0,"C");
         $this->Cell(125,7,"Descripcion",1,0,"C");
         $this->Cell(15,7,"Umb",1,0,"C");
-        $this->Cell(15,7,"Cant.",1,"C");
+        $this->Cell(15,7,"Cant.",1,1,"C");
       }
 
 

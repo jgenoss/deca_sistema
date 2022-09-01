@@ -109,6 +109,28 @@ require_once '../modelo/salida.php';
           );
           try {
             $A[8] = $sl->ConvertFilePDF($A[8]);
+            // for ($i=0; $i < count($A[9]); $i++) {
+            //   $id = $A[9][$i]['id'];
+            //   $cantidad = $A[9][$i]['cantidad'];
+            //
+            //   $rtn = $db->sql("SELECT * FROM inventario WHERE id_producto = $id");
+            //   if ($rtn) {
+            //     if ($A[9][$i]['cantidad'] > $rtn->cantidad) {
+            //       throw new Exception('La cantidad es mayor a la existencia');
+            //       break;
+            //     }elseif ($rtn->cantidad >= $value['cantidad']) {
+            //       $query = $db->sql("INSERT INTO salida ( id_cliente, referencia, factura, fecha_de_comprobante, serie, observacion,direccion, tpago, archivo)VALUES('$A[0]','$A[1]','$A[2]','$A[3]','$A[4]','$A[5]','$A[6]','$A[7]','$A[8]')");
+            //       if ($query) {
+            //         $cantidad = $A[9][$i]['cantidad'];
+            //         $db->sql("INSERT INTO salida_detalle(id_serie,id_producto,cantidad)VALUES('$A[4]','$id','$cantidad')");
+            //         $db->sql("UPDATE inventario SET cantidad=cantidad-'$cantidad'  WHERE id_producto =".$id);
+            //       }
+            //     }
+            //   }elseif (!$rtn) {
+            //     throw new Exception('No hay existencia de este producto en el inventario');
+            //     break;
+            //   }
+            // }
             $sl->setSalida($A);
             setMsg("Info",'Salida Procesada con exito',"success");
           } catch (Exception $e) {
@@ -232,7 +254,7 @@ require_once '../modelo/salida.php';
                     $EAN = $key['EAN'];
                     $CANTIDAD = $key['CANTIDAD'];
 
-                    $rtn1 = Consult($db->sql("SELECT * FROM producto WHERE ean='$EAN' OR codigo_1='$COVA' OR codigo_2='$COAR'"));
+                    $rtn1 = Consult($db->sql("SELECT * FROM producto WHERE ean='$EAN' OR codigo_1='$COVA'"));
                     $rtn2 = Consult($db->sql("SELECT * FROM inventario WHERE id_producto=".$rtn1->id_producto));
                     if (!$rtn1) {
                       throw new Exception('ESTE ARTICULO NO EXISTE'."<br/>".

@@ -270,11 +270,7 @@ require_once '../modelo/devolucion.php';
               try {
                 foreach ($A as $key) {
                   if (empty($key['COVA']) || empty($key['COAR'])|| empty($key['CANTIDAD'])) {
-                    throw new Exception('formato mal estructurado'."<br/>".
-                    "COAR:".$key['COAR']."<br/>".
-                    "COVA:".$key['COVA']."<br/>".
-                    "REFERENCIA:".$key['REFERENCIA']."<br/>".
-                    "CANTIDAD:".$key['CANTIDAD']);
+                    throw new Exception('formato mal estructurado');
                     break;
                   } elseif (!empty($key['COVA']) || !empty($key['COAR'])|| !empty($key['CANTIDAD'])) {
 
@@ -282,7 +278,7 @@ require_once '../modelo/devolucion.php';
                     $COAR = $key['COAR'];
                     $CANTIDAD = $key['CANTIDAD'];
 
-                    $rtn1 = Consult($db->sql("SELECT * FROM producto WHERE codigo_1='$COVA' OR codigo_2='$COAR'"));
+                    $rtn1 = Consult($db->sql("SELECT * FROM producto WHERE codigo_1='$COVA'"));
                     if ($rtn1) {
                       $id_producto = $rtn1->id_producto;
                       if (!$rtn1) {
