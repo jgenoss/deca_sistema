@@ -18,7 +18,6 @@ require_once '../modelo/inventario.php';
             $button = '<button id="edit" value="'.$row->id_inventario.'" data-toggle="modal" data-target="#modal-edit" class="btn btn-primary"><i class="fas fa-edit"></i></button>';
             $A[] = array(
               $button,
-              $row->codigo,
               '<span class="badge badge-primary">'.$row->codigo_1.'</span> <span class="badge badge-info">'.$row->codigo_2.'</span>',
               $row->ean,
               $row->pNombre,
