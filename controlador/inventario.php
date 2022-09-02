@@ -15,12 +15,14 @@ require_once '../modelo/inventario.php';
           $rtn = AllConsult($inv->listarInventario());
           $A = array();
           foreach ($rtn as $row) {
+            $button = '<button id="edit" value="'.$row->id_inventario.'" data-toggle="modal" data-target="#modal-edit" class="btn btn-primary"><i class="fas fa-edit"></i></button>';
             $A[] = array(
+              $button,
               $row->codigo,
               '<span class="badge badge-primary">'.$row->codigo_1.'</span> <span class="badge badge-info">'.$row->codigo_2.'</span>',
               $row->ean,
               $row->pNombre,
-              $row->empresa." / ".$row->bNombre,
+              $row->bNombre,
               $row->cNombre,
               $row->cantidad,
               $row->umb,
@@ -36,6 +38,32 @@ require_once '../modelo/inventario.php';
             "iTotalDisplayRecords" => count($A),
             "data" => $A
           ));
+        }
+      }
+      break;
+    case 'getInventarioaId':
+      {
+        if (isset($_POST)) {
+          $rtn = Consult($inv->getInventarioaId($_POST['id']));
+            $A = array(
+              'id_inventario' => $rtn->id_inventario,
+              'id_producto' => $rtn->id_producto,
+              'cantidad' => $rtn->cantidad,
+              'nombre' => $rtn->nombre
+            );
+          setJson($A);
+        }
+      }
+      break;
+    case 'edit':
+      {
+        if (isset($_POST)) {
+          try {
+            $inv->editInventario(array($_POST['id_inventario'],$_POST['cantidad']));
+            setMsg('Exito','Existencia modificada con exito','success');
+          }catch (Exception $e) {
+            setMsg("Error",$e->getMessage(),"error");
+          }
         }
       }
       break;

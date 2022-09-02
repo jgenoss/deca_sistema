@@ -15,6 +15,7 @@ class inventario
   {
     return $this->db->sql(
       "SELECT
+        i.id_inventario,
       	p.codigo,
       	p.codigo_1,
       	p.codigo_2,
@@ -37,6 +38,24 @@ class inventario
       ORDER BY
       	i.id_inventario ASC"
     );
+  }
+  public function getInventarioaId($id)
+  {
+    return $this->db->sql(
+      "SELECT
+      	i.id_inventario,
+      	i.id_producto,
+      	i.cantidad,
+      	p.nombre
+      FROM
+      	inventario AS i
+      	INNER JOIN producto AS p ON i.id_producto = p.id_producto
+      WHERE
+      	i.id_inventario ='$id'");
+  }
+  public function editInventario($value)
+  {
+    return $this->db->sql("UPDATE inventario SET cantidad='$value[1]' WHERE id_inventario='$value[0]'");
   }
 }
 
