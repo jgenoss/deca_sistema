@@ -159,10 +159,10 @@ new Vue({
       $(function() {
         $("#list").DataTable({
           dom:'Bfrtip',
-          "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+          "buttons": ["copy", "excel", "colvis"],
           "responsive": true,
           "autoWidth": false,
-          "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+          "lengthMenu": [[50, 100, -1], [50, 100, "All"]],
           "aProcessing": true, //Activamos el procesamiento del datatables
           "aServerSide": true, //Paginacion y filtrado realizados por el servidor
           "ajax": {
@@ -171,7 +171,7 @@ new Vue({
             "error": function(e) {console.log(e);}
           },
           "bDestroy": true,
-          "iDisplayLength": 20, //Paginacion
+          "iDisplayLength": 25, //Paginacion
           "order": [[1, "desc"]]
         });
       });
