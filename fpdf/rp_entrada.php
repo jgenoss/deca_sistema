@@ -13,7 +13,19 @@
     $rtn[0] = Consult($db->sql("SELECT * FROM entrada WHERE id_entrada = ".$_GET['id']));
     $rtn[1] = Consult($db->sql("SELECT * FROM clientes WHERE id_cliente = ".$rtn[0]->id_cliente));
     $rtn[2] = Consult($db->sql("SELECT * FROM bodega WHERE id_bodega = ".$rtn[0]->id_bodega));
-    $rtn[3] = AllConsult($db->sql("SELECT p.*,sd.* FROM entrada_detalle AS sd INNER JOIN producto AS p ON sd.id_producto = p.id_producto WHERE sd.id_serie=".$rtn[0]->serie));
+    $rtn[3] = AllConsult($db->sql(
+      "SELECT
+      	p.*,
+      	sd.*,
+      	inv_d.fv,
+      	inv_d.fecha_ven
+      FROM
+      	entrada_detalle AS sd
+      	INNER JOIN producto AS p ON sd.id_producto = p.id_producto
+      	INNER JOIN inventario_detallado AS inv_d ON p.id_producto = inv_d.id_producto
+      	AND sd.id_serie = inv_d.id_serie
+      WHERE
+      	sd.id_serie =".$rtn[0]->serie));
 
 
     $total=0;
@@ -26,7 +38,9 @@
         'codigo_2' => $key->codigo_2,
         'nombre' => utf8_decode($key->nombre),
         'cantidad' => $key->cantidad,
-        'umb' => $key->umb
+        'umb' => $key->umb,
+        'fv' => $key->fv,
+        'fecha_ven' => $key->fecha_ven
       );
 
     }
@@ -101,18 +115,31 @@
       $this->SetFillColor(255);
       $this->SetFont('Arial','',9);
       // $this->RoundedRect(10, 35, 135, 15, 2, 'DF');
-      $this->Cell(20,7,"CLIENTE:",1);
-      $this->Cell(40,7,str_limit($info['cliente'],'20','...'),1);
-      $this->Cell(20,7,"BODEGA:",1);
-      $this->Cell(50,7,str_limit($info['bodega'],'25','...'),1);
-      $this->Ln();
-      $this->Cell(25,7,"REFERENCIA:",1);
-      $this->Cell(105,7,str_limit($info['referencia'],'50','...'),1);
-      $this->Ln();
-      $this->Cell(25,7,"DIRECCION:",1);
-      $this->Cell(105,7,str_limit($info['direccion'],'55','...'),1);
-      $this->Ln();
-
+      if ($info['cliente'] == "ALTIPAL") {
+        $this->Cell(20,7,"CLIENTE:",1);
+        $this->Cell(40,7,str_limit($info['cliente'],'20','...'),1);
+        $this->Cell(20,7,"BODEGA:",1);
+        $this->Cell(70,7,str_limit($info['bodega'],'50','...'),1);
+        $this->Ln();
+        $this->Cell(25,7,"REFERENCIA:",1);
+        $this->Cell(125,7,str_limit($info['referencia'],'50','...'),1);
+        $this->Ln();
+        $this->Cell(25,7,"DIRECCION:",1);
+        $this->Cell(125,7,str_limit($info['direccion'],'55','...'),1);
+        $this->Ln();
+      }else {
+        $this->Cell(20,7,"CLIENTE:",1);
+        $this->Cell(40,7,str_limit($info['cliente'],'20','...'),1);
+        $this->Cell(20,7,"BODEGA:",1);
+        $this->Cell(50,7,str_limit($info['bodega'],'25','...'),1);
+        $this->Ln();
+        $this->Cell(25,7,"REFERENCIA:",1);
+        $this->Cell(105,7,str_limit($info['referencia'],'50','...'),1);
+        $this->Ln();
+        $this->Cell(25,7,"DIRECCION:",1);
+        $this->Cell(105,7,str_limit($info['direccion'],'55','...'),1);
+        $this->Ln();
+      }
       $this->SetY(36);
       $this->SetX(-65);
       $this->Cell(55,7,"FECHA Y HORA DE FACTURA",1,1,'C');
@@ -155,7 +182,8 @@
         $this->Cell(35,7,"COVA",1,0,"C");
         $this->Cell(35,7,"COAR",1,0,"C");
         $this->Cell(35,7,"EAN",1,0,"C");
-        $this->Cell(125,7,"Descripcion",1,0,"C");
+        $this->Cell(105,7,"Descripcion",1,0,"C");
+        $this->Cell(20,7,"FV",1,0,"C");
         $this->Cell(15,7,"Umb",1,0,"C");
         $this->Cell(15,7,"Cant.",1,1,"C");
       }else {
@@ -173,7 +201,8 @@
           $this->Cell(35,6,$row["codigo_1"],"LR",0,"C");
           $this->Cell(35,6,$row["codigo_2"],"R",0,"C");
           $this->Cell(35,6,$row["codigo_0"],"R",0,"C");
-          $this->Cell(125,6,str_limit($row["nombre"],'70','...'),"R",0,"L");
+          $this->Cell(105,6,str_limit($row["nombre"],'70','...'),"R",0,"L");
+          $this->Cell(20,6,($row['fv'] == 1)? $row['fecha_ven']:'N/A',"R",0,"C");
           $this->Cell(15,6,$row["umb"],"R",0,"C");
           $this->Cell(15,6,$row["cantidad"],"R",1,"C");
         }else {
@@ -191,7 +220,8 @@
           $this->Cell(35,6,"","LR",0);
           $this->Cell(35,6,"","R",0);
           $this->Cell(35,6,"","R",0);
-          $this->Cell(125,6,"","R",0,"C");
+          $this->Cell(105,6,"","R",0,"C");
+          $this->Cell(20,6,"","R",0,"C");
           $this->Cell(15,6,"","R",0,"C");
           $this->Cell(15,6,"","R",1,"C");
         }else {

@@ -279,25 +279,21 @@ require_once '../modelo/devolucion.php';
                     $CANTIDAD = $key['CANTIDAD'];
 
                     $rtn1 = Consult($db->sql("SELECT * FROM producto WHERE codigo_1='$COVA'"));
-                    if ($rtn1) {
-                      $id_producto = $rtn1->id_producto;
-                      if (!$rtn1) {
-                        throw new Exception('ESTE ARTICULO NO EXISTE'."<br/>".
-                        "COAR: ".$key['COAR']."<br/>".
-                        "COVA: ".$key['COVA']."<br/>".
-                        "REFERENCIA: ".$key['REFERENCIA']."<br/>".
-                        "CANTIDAD: ".$key['CANTIDAD']);
-                        break;
-                      }elseif ($rtn1) {
-                        $L[] = array(
-                          'id' => $rtn1->id_producto,
-                          'codigo' => $rtn1->ean,
-                          'nombre' => $rtn1->nombre,
-                          'cantidad' => str_replace("-","",$key['CANTIDAD'])
-                        );
-                      }
+                    if (!$rtn1) {
+                      throw new Exception('ESTE ARTICULO NO EXISTE'."<br/>".
+                      "COAR: ".$key['COAR']."<br/>".
+                      "COVA: ".$key['COVA']."<br/>".
+                      "REFERENCIA: ".$key['REFERENCIA']."<br/>".
+                      "CANTIDAD: ".$key['CANTIDAD']);
+                      break;
+                    }elseif ($rtn1) {
+                      $L[] = array(
+                        'id' => $rtn1->id_producto,
+                        'codigo' => $rtn1->ean,
+                        'nombre' => $rtn1->nombre,
+                        'cantidad' => str_replace("-","",$key['CANTIDAD'])
+                      );
                     }
-
                   }
                 }
                 setJson(array(

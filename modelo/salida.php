@@ -28,7 +28,8 @@ class salida
       	s.serie,
       	s.tpago,
       	s.observacion,
-        s.devolucion
+        s.devolucion,
+        s.fecha_de_comprobante
       FROM
       	salida AS s
       	INNER JOIN clientes AS cl ON s.id_cliente = cl.id_cliente");

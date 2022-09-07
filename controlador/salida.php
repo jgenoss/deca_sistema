@@ -42,7 +42,8 @@ require_once '../modelo/salida.php';
               '3' => $row->factura,
               '4' => $row->serie,
               '5' => $row->tpago,
-              '6' => $row->created_at,
+              '6' => $row->fecha_de_comprobante,
+              '7' => $row->created_at,
             );
           }
           setJson(array(
