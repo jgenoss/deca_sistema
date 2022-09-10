@@ -90,7 +90,7 @@
 
       //Display Horizontal line
       // $this->Line(0,48,210,48);
-      $this->SetY(30);
+      $this->SetY(25);
       $this->SetFont('Arial','B',12);
       $this->Cell(0,10,"REPORTE DE ENTRADA",0,1,'C');
     }
@@ -113,7 +113,7 @@
       $this->Ln();
 
       // CLIENTE
-      $this->SetY(40);
+      $this->SetY(34);
       $this->SetX(10);
       $this->SetFillColor(255);
       $this->SetFont('Arial','',9);
@@ -156,24 +156,24 @@
       $this->Cell(22,7,$info['tipo_comprobante'],1,0);
       $this->Cell(0,7,$info['factura'],1,1,'C');
 
-      $this->SetY(65);
+      $this->SetY(56);
       $this->SetFont('Arial','B',9);
       $this->Cell(0,3,"OBSERVACION",0,1,'C');
-      $this->SetY(70);
+      $this->SetY(65);
       // $this->Cell(190,7,$info['observacion']
       $obs = explode("\n",$info['observacion']);
       $this->SetFont('Arial','',7);
       foreach ($obs as $row) {
         $this->Cell(190,4,$row,0,1,"L");
       }
-      $this->SetY(70);
+      $this->SetY(64);
       $suma = (count($obs) < 4 )? 0 : count($obs);
       // CELDA DE CUADRO
       if ($info['observacion'] == "N/A") {
-        $y=85;
+        $y=75;
         $this->Cell(190,10+$suma,"",1,'C');
       }else {
-        $y=90;
+        $y=85;
         $this->Cell(190,16+$suma,"",1,'C');
       }
       //Display Table headings
