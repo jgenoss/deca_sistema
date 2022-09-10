@@ -255,8 +255,7 @@ require_once '../modelo/salida.php';
                     $EAN = $key['EAN'];
                     $CANTIDAD = $key['CANTIDAD'];
 
-                    $rtn1 = Consult($db->sql("SELECT * FROM producto WHERE ean='$EAN' OR codigo_1='$COVA'"));
-                    $rtn2 = Consult($db->sql("SELECT * FROM inventario WHERE id_producto=".$rtn1->id_producto));
+                    $rtn1 = Consult($db->sql("SELECT * FROM producto WHERE codigo_1='$COVA'"));
                     if (!$rtn1) {
                       throw new Exception('ESTE ARTICULO NO EXISTE'."<br/>".
                       "COAR: ".$key['COAR']."<br/>".
@@ -265,22 +264,25 @@ require_once '../modelo/salida.php';
                       "EAN: ".$key['EAN']."<br/>".
                       "CANTIDAD: ".$key['CANTIDAD']);
                       break;
-                    }elseif (!$rtn2) {
-                      throw new Exception('NO EXISTE EN INVENTARIO'."<br/>".
-                      "COAR: ".$key['COAR']."<br/>".
-                      "COVA: ".$key['COVA']."<br/>".
-                      "REFERENCIA: ".$key['REFERENCIA']."<br/>".
-                      "EAN: ".$key['EAN']."<br/>".
-                      "CANTIDAD: ".$key['CANTIDAD']);
-                      break;
                     }elseif ($rtn1) {
-                      if ($rtn2) {
-                        $L[] = array(
-                          'id' => $rtn1->id_producto,
-                          'codigo' => $rtn1->ean,
-                          'nombre' => $rtn1->nombre,
-                          'cantidad' => $key['CANTIDAD']
-                        );
+                      $rtn2 = Consult($db->sql("SELECT * FROM inventario WHERE id_producto=".$rtn1->id_producto));
+                      if (!$rtn2) {
+                        throw new Exception('NO EXISTE EN INVENTARIO'."<br/>".
+                        "COAR: ".$key['COAR']."<br/>".
+                        "COVA: ".$key['COVA']."<br/>".
+                        "REFERENCIA: ".$key['REFERENCIA']."<br/>".
+                        "EAN: ".$key['EAN']."<br/>".
+                        "CANTIDAD: ".$key['CANTIDAD']);
+                        break;
+                      }elseif ($rtn1) {
+                        if ($rtn2) {
+                          $L[] = array(
+                            'id' => $rtn1->id_producto,
+                            'codigo' => $rtn1->ean,
+                            'nombre' => $rtn1->nombre,
+                            'cantidad' => $key['CANTIDAD']
+                          );
+                        }
                       }
                     }
                   }

@@ -29,8 +29,10 @@
 
 
     $total=0;
+    $cajas=0;
     foreach ($rtn[3] as $key) {
       $total += $key->cantidad;
+      $cajas += $key->umb;
       $products[] = array(
         'id' => $key->id_producto,
         'codigo_0' => $key->ean,
@@ -46,6 +48,7 @@
     }
     $info = array(
       'total' => $total,
+      'cajas' => $cajas,
       'cliente' => $rtn[1]->empresa,
       'bodega' => $rtn[2]->nombre,
       'referencia' => $rtn[0]->referencia,
@@ -232,8 +235,13 @@
         }
       }
       $total = $info['total'];
-      $div = round($total/12);
-      $rtn = ($div < 1)? 1: $div;
+      $cajas = $info['cajas'];
+      $div = round($total/$cajas);
+      if ($div < 1) {
+        $rtn = 1;
+      }else {
+        $rtn = $div;
+      }
       //Display table total row
       $this->SetFont('Arial','B',10);
       if ($info['cliente'] == "ALTIPAL") {
