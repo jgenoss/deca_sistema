@@ -15,19 +15,23 @@
     $rtn[2] = AllConsult($db->sql("SELECT p.*,sd.* FROM salida_detalle AS sd INNER JOIN producto AS p ON sd.id_producto = p.id_producto WHERE sd.id_serie=".$rtn[0]->serie));
 
     $total=0;
-
+    $cajas=0;
     foreach ($rtn[2] as $key) {
+      $rtnS = (round($key->cantidad/$key->umb) < 1) ? 1 : round($key->cantidad/$key->umb);
       $total += $key->cantidad;
+      $cajas += $rtnS;
       $products[] = array(
         'id' => $key->id_producto,
         'codigo' => $key->ean,
         'nombre' => $key->nombre,
         'cantidad' => $key->cantidad,
+        'cajas' => $rtnS,
         'umb' => $key->umb
       );
     }
     $info = array(
       'total' => $total,
+      'cajas' => $cajas,
       'cliente' => $rtn[1]->empresa,
       'referencia' => $rtn[0]->referencia,
       'factura' => $rtn[0]->factura,
@@ -160,15 +164,11 @@
         $this->Cell(15,8,"","LR",1,"C");
       }
       //Display table total row
-      $total = $info['total'];
-      $div = round($total/12);
-      $rtn = ($div < 1)? 1: $div;
-
       $this->SetFont('Arial','B',10);
       $this->Cell(175,7,"TOTAL UNIDADES",1,0,"R");
       $this->Cell(15,7,$info['total'],1,1,"C");
       $this->Cell(175,7,"TOTAL CAJAS",1,0,"R");
-      $this->Cell(15,7,$rtn,1,1,"C");
+      $this->Cell(15,7,$info['cajas'],1,0,"C");
 
       $this->SetFont('Arial','',12);
       $this->Cell(0,7,"",0,1);

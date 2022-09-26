@@ -276,12 +276,22 @@ require_once '../modelo/salida.php';
                         break;
                       }elseif ($rtn1) {
                         if ($rtn2) {
-                          $L[] = array(
-                            'id' => $rtn1->id_producto,
-                            'codigo' => $rtn1->ean,
-                            'nombre' => $rtn1->nombre,
-                            'cantidad' => $key['CANTIDAD']
-                          );
+                          if ($rtn2->cantidad > $key['CANTIDAD']) {
+                            $L[] = array(
+                              'id' => $rtn1->id_producto,
+                              'codigo' => $rtn1->ean,
+                              'nombre' => $rtn1->nombre,
+                              'cantidad' => $key['CANTIDAD']
+                            );
+                          }elseif($key['CANTIDAD'] > $rtn2->cantidad) {
+                            throw new Exception('CANTIDAD MAYOR A EXISTENCIA'."<br/>".
+                            "COAR: ".$key['COAR']."<br/>".
+                            "COVA: ".$key['COVA']."<br/>".
+                            "REFERENCIA: ".$key['REFERENCIA']."<br/>".
+                            "EAN: ".$key['EAN']."<br/>".
+                            "CANTIDAD: ".$key['CANTIDAD']);
+                            break;
+                          }
                         }
                       }
                     }

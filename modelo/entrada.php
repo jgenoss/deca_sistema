@@ -123,21 +123,27 @@ class entrada
   {
     return $this->db->sql(
       "SELECT
-      	sd.id_producto,
+      	sd.id_producto, 
       	p.ean,
       	sd.cantidad,
       	sd.id,
       	p.nombre,
-        p.umb,
+      	p.umb,
       	inv_d.fv,
       	inv_d.fecha_ven AS fecha_v
       FROM
       	entrada_detalle AS sd
-      	INNER JOIN producto AS p ON sd.id_producto = p.id_producto
-      	INNER JOIN inventario_detallado AS inv_d ON p.id_producto = inv_d.id_producto
-      	AND sd.cantidad = inv_d.cantidad
+      	INNER JOIN
+      	producto AS p
+      	ON
+      		sd.id_producto = p.id_producto
+      	INNER JOIN
+      	inventario_detallado AS inv_d
+      	ON
+      		sd.id_producto = inv_d.id_producto AND
+      		sd.id_serie = inv_d.id_serie
       WHERE
-      	sd.id_serie = $val");
+      	sd.id_serie = '$val'");
   }
   public function ConvertFilePDF($b64)
   {

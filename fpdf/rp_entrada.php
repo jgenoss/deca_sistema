@@ -31,8 +31,9 @@
     $total=0;
     $cajas=0;
     foreach ($rtn[3] as $key) {
+      $rtnS = (round($key->cantidad/$key->umb) < 1) ? 1 : round($key->cantidad/$key->umb);
       $total += $key->cantidad;
-      $cajas += $key->umb;
+      $cajas += $rtnS;
       $products[] = array(
         'id' => $key->id_producto,
         'codigo_0' => $key->ean,
@@ -40,12 +41,14 @@
         'codigo_2' => $key->codigo_2,
         'nombre' => utf8_decode($key->nombre),
         'cantidad' => $key->cantidad,
-        'umb' => $key->umb,
+        'cajas' => $rtnS,
         'fv' => $key->fv,
         'fecha_ven' => $key->fecha_ven
       );
 
     }
+    // $div = round($info['total']/$info['cajas']);
+
     $info = array(
       'total' => $total,
       'cajas' => $cajas,
@@ -143,7 +146,7 @@
         $this->Cell(105,7,str_limit($info['direccion'],'55','...'),1);
         $this->Ln();
       }
-      $this->SetY(36);
+      $this->SetY(30);
       $this->SetX(-65);
       $this->Cell(55,7,"FECHA Y HORA DE FACTURA",1,1,'C');
       $this->SetX(-65);
@@ -159,21 +162,21 @@
       $this->SetY(56);
       $this->SetFont('Arial','B',9);
       $this->Cell(0,3,"OBSERVACION",0,1,'C');
-      $this->SetY(65);
+      $this->SetY(60);
       // $this->Cell(190,7,$info['observacion']
       $obs = explode("\n",$info['observacion']);
       $this->SetFont('Arial','',7);
       foreach ($obs as $row) {
-        $this->Cell(190,4,$row,0,1,"L");
+        $this->Cell(190,4,utf8_decode($row),0,1,"L");
       }
-      $this->SetY(64);
+      $this->SetY(60);
       $suma = (count($obs) < 4 )? 0 : count($obs);
       // CELDA DE CUADRO
       if ($info['observacion'] == "N/A") {
-        $y=75;
+        $y=70;
         $this->Cell(190,10+$suma,"",1,'C');
       }else {
-        $y=85;
+        $y=80;
         $this->Cell(190,16+$suma,"",1,'C');
       }
       //Display Table headings
@@ -187,12 +190,12 @@
         $this->Cell(35,7,"EAN",1,0,"C");
         $this->Cell(105,7,"Descripcion",1,0,"C");
         $this->Cell(20,7,"FV",1,0,"C");
-        $this->Cell(15,7,"Umb",1,0,"C");
+        $this->Cell(15,7,"Caj",1,0,"C");
         $this->Cell(15,7,"Cant.",1,1,"C");
       }else {
         $this->Cell(35,7,"EAN",1,0,"C");
-        $this->Cell(125,7,"Descripcion",1,0,"C");
-        $this->Cell(15,7,"Umb",1,0,"C");
+        $this->Cell(130,7,"Descripcion",1,0,"C");
+        $this->Cell(15,7,"Caj.",1,0,"C");
         $this->Cell(15,7,"Cant.",1,1,"C");
       }
 
@@ -204,14 +207,14 @@
           $this->Cell(35,6,$row["codigo_1"],"LR",0,"C");
           $this->Cell(35,6,$row["codigo_2"],"R",0,"C");
           $this->Cell(35,6,$row["codigo_0"],"R",0,"C");
-          $this->Cell(105,6,str_limit($row["nombre"],'70','...'),"R",0,"L");
+          $this->Cell(105,6,str_limit($row["nombre"],'60','...'),"R",0,"L");
           $this->Cell(20,6,($row['fv'] == 1)? $row['fecha_ven']:'N/A',"R",0,"C");
-          $this->Cell(15,6,$row["umb"],"R",0,"C");
+          $this->Cell(15,6,$row["cajas"],"R",0,"C");
           $this->Cell(15,6,$row["cantidad"],"R",1,"C");
         }else {
           $this->Cell(35,6,$row["codigo_0"],"LR",0,"C");
-          $this->Cell(125,6,str_limit($row["nombre"],'55','...'),"R",0,"L");
-          $this->Cell(15,6,$row["umb"],"R",0,"C");
+          $this->Cell(130,6,str_limit($row["nombre"],'55','...'),"R",0,"L");
+          $this->Cell(15,6,$row["cajas"],"R",0,"C");
           $this->Cell(15,6,$row["cantidad"],"R",1,"C");
         }
       }
@@ -229,18 +232,10 @@
           $this->Cell(15,6,"","R",1,"C");
         }else {
           $this->Cell(35,6,"","LR",0);
-          $this->Cell(125,6,"","R",0,"C");
+          $this->Cell(130,6,"","R",0,"C");
           $this->Cell(15,6,"","R",0,"C");
           $this->Cell(15,6,"","R",1,"C");
         }
-      }
-      $total = $info['total'];
-      $cajas = $info['cajas'];
-      $div = round($total/$cajas);
-      if ($div < 1) {
-        $rtn = 1;
-      }else {
-        $rtn = $div;
       }
       //Display table total row
       $this->SetFont('Arial','B',10);
@@ -248,12 +243,12 @@
         $this->Cell(245,7,"TOTAL UNIDADES",1,0,"R");
         $this->Cell(15,7,$info['total'],1,1,"C");
         $this->Cell(245,7,"TOTAL CAJAS",1,0,"R");
-        $this->Cell(15,7,$rtn,1,1,"C");
+        $this->Cell(15,7,$info['cajas'],1,1,"C");
       }else {
-        $this->Cell(175,7,"TOTAL UNIDADES",1,0,"R");
+        $this->Cell(180,7,"TOTAL UNIDADES",1,0,"R");
         $this->Cell(15,7,$info['total'],1,1,"C");
-        $this->Cell(175,7,"TOTAL CAJAS",1,0,"R");
-        $this->Cell(15,7,$rtn,1,1,"C");
+        $this->Cell(180,7,"TOTAL CAJAS",1,0,"R");
+        $this->Cell(15,7,$info['cajas'],1,1,"C");
       }
       $this->SetFont('Arial','',12);
       $this->Cell(0,7,"",0,1);

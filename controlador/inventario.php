@@ -21,6 +21,7 @@ require_once '../modelo/inventario.php';
               '<span class="badge badge-primary">'.$row->codigo_1.'</span> <span class="badge badge-info">'.$row->codigo_2.'</span>',
               $row->ean,
               $row->pNombre,
+              $row->empresa,
               $row->bNombre,
               $row->cNombre,
               $row->cantidad,
