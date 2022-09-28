@@ -8,11 +8,13 @@ new Vue({
 				name:'',
 				status:''
 			},
-			list:true
+			modulo:'',
+			list:true,
+			form:false
 		}
 	},
 	created(){
-
+		this.listUsers();
 	},
 	methods:{
 		submit:function() {
@@ -21,9 +23,36 @@ new Vue({
 					console.log(resp.data);
 			})
 		},
-		newbutton(){
+		listUsers(){
+			$(function() {
+        $("#list").DataTable({
+          "responsive": true,
+          "autoWidth": false,
+          "lengthMenu": [[50, 100, -1], [50, 100, "All"]],
+          "aProcessing": true, //Activamos el procesamiento del datatables
+          "aServerSide": true, //Paginacion y filtrado realizados por el servidor
+          "ajax": {
+            "url": 'controlador/usuarios.php?op=listUsers',
+            "type": "POST",
+            "error": function(e) {console.log(e);}
+          },
+          "bDestroy": true,
+          "iDisplayLength": 25, //Paginacion
+          "order": [[1, "desc"]]
+        });
+      });
+		},
+		cancel(){
+			this.list = true;
 			this.form = false;
 			this.resetInput();
+		},
+		newbutton(){
+			this.modulo = 'Crear nuevo usuario';
+			this.list = false;
+			this.form = true;
+			this.resetInput();
+			this.listUsers();
 		},
 		resetInput(){
 			this.data.login='';

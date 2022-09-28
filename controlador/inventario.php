@@ -26,7 +26,7 @@ require_once '../modelo/inventario.php';
               $row->cNombre,
               $row->cantidad,
               $row->umb,
-              round($row->cantidad/$row->umb),
+              //round($row->cantidad/$row->umb),
               ($row->status == 1)?
               '<span class="badge badge-success">ACTIVO</span>':
               '<span class="badge badge-danger">AGOTADO</span>'

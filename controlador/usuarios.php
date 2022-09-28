@@ -11,7 +11,22 @@ switch (@$_GET['op']) {
 	case 'listUsers':
 		{
 			if (isset($_GET)) {
-				echo "string";
+				$rtn = AllConsult($db->sql("SELECT * FROM usuario"));
+				$A = array();
+				foreach ($rtn as $row) {
+					$button = "";
+					$A[] = array(
+						$button,
+						$row->usuario,
+						$row->nombre
+					);
+				}
+				setJson(array(
+					"sEcho"=> 1,
+					"iTotalRecords" => count($A),
+					"iTotalDisplayRecords" => count($A),
+					"data" => $A
+				));
 			}
 		}
 		break;
