@@ -21,7 +21,7 @@ require_once '../modelo/productos.php';
             $A[] = array(
               ($row->id_producto)?'<button id="edit" value="'.$row->id_producto.'" class="btn btn-primary"><i class="fas fa-edit"></i></button>':'<button id="edit" value="'.$row->id_producto.'" class="btn btn-primary"><i class="fas fa-edit"></i></button>',
               $row->codigo,
-              '<span class="badge badge-primary">'.$row->codigo_1.'</span> <span class="badge badge-info">'.$row->codigo_2.'</span>',
+              $row->codigo_1.' '.$row->codigo_2,
               $row->ean,
               $row->pNombre,
               $row->umb,

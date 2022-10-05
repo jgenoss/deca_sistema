@@ -179,6 +179,148 @@
       <!-- right col -->
     </div>
   </div>
+  <div v-if="edit == true" class="col-12">
+    <div class="row">
+      <!-- Left col -->
+      <section class="col-lg-7 connectedSortable ui-sortable">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-tittle">
+              Datos del cliente
+              <button class="float-right btn btn-xs btn-primary" data-toggle="modal" data-target="#modal-cargue">Carga masiva de Productos</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <!-- open form -->
+            <form v-on:submit.prevent="submit">
+            <div class="row">
+              <div class="col-lg-2 col-md-2">
+                <div class="form-group">
+                  <label>Cliente(*):</label>
+                  <select class="form-control" v-model="entrada.id_cliente">
+                    <option v-for="resultCliente in arrayCliente" v-bind:value="resultCliente.id">{{resultCliente.nombre}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-lg-2 col-md-2">
+                <div class="form-group">
+                  <label>Bodega(*):</label>
+                  <select @change="loadInventario(entrada.id_bodega)" class="form-control" v-model="entrada.id_bodega">
+                    <option v-for="resultBodega in arrayBodega" v-bind:value="resultBodega.id">{{resultBodega.nombre}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-lg-8 col-md-8">
+                <div class="form-group">
+                  <label>Referencia(*):</label>
+                  <input v-model="entrada.referencia" type="text" class="form-control" required>
+                </div>
+              </div>
+              <div class="col-lg-2 col-md-2">
+                <div class="form-group">
+                  <label>Factura(*):</label>
+                  <select class="form-control" v-model="entrada.tipo_comprobante">
+                    <option value="FACTURA">FACTURA</option>
+                    <option value="TORNAGUIA">TORNAGUIA</option>
+                    <option value="REMISION">REMISION</option>
+                    <option value="NUTR">NUTR</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-lg-2 col-md-2">
+                <div class="form-group">
+                  <label>N°(*):</label>
+                  <input v-model="entrada.factura" type="text" class="form-control" class="form-control" required>
+                </div>
+              </div>
+              <div class="col-lg-2 col-md-2">
+                <div class="form-group">
+                  <label>Fecha(*)</label>
+                  <input v-model="entrada.fecha" type="date" class="form-control" required>
+                </div>
+              </div>
+              <div class="col-lg-2 col-md-2">
+                <div class="form-group">
+                  <label>Serie(*):</label>
+                  <input v-model="entrada.serie" type="text" class="form-control" class="form-control" readonly>
+                </div>
+              </div>
+              <div class="col-lg-4 col-md-4">
+                <div class="form-group">
+                  <label for="exampleInputFile">Adjustar Archivo(*)</label>
+                  <div class="input-group">
+                    <div class="custom-file">
+                      <input @change="uploadImage" accept="application/pdf" type="file" id="uploadfiles" ref="uploadfiles" class="custom-file-input" required>
+                      <label class="custom-file-label" for="uploadfiles">{{ file_name }}</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-12 col-md-12">
+                <div class="form-group">
+                  <label>Direccion(*):</label>
+                  <input v-model="entrada.direccion" type="text" class="form-control" class="form-control" required>
+                </div>
+              </div>
+              <div class="col-lg-12 col-md-12">
+                <div class="form-group">
+                  <label>Observacion(*):</label>
+                  <textarea v-model="entrada.observacion" type="text" class="form-control" class="form-control" required></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table id="detalles" class="table table-bordered text-nowrap">
+                <thead>
+                  <tr>
+                    <th>Codigo</th>
+                    <th>Descripcion</th>
+                    <th>Cant.</th>
+                    <th>F.v</th>
+                    <th>Accion</th>
+                  </tr>
+                </thead>
+                <tbody class="text-center">
+                  <tr v-for="(resultListP, index) in entrada.listp">
+                    <td>{{ resultListP.codigo }} </td>
+                    <td><input v-model="resultListP.id" type="hidden"> {{ resultListP.nombre }}</td>
+                    <td><input @input="count(index)" style="width: 60px;" v-model="resultListP.cantidad" type="number" required></td>
+                    <td><input type="checkbox" width="15px" height="15px" v-model="resultListP.fv"> <input v-if="resultListP.fv == true" v-model="resultListP.fecha_v" type="date"></td>
+                    <td><button type="button" @click="deleteFind(index)" class="btn btn-sm btn-danger" id="del"><i class="fas fa-trash"></i></button></td>
+                  </tr>
+                </tbody>
+              </table>
+              <!-- button -->
+              <button v-if="btnR == true" class="btn btn-primary" type="submit" name="entrada">Registrar entrada</button>
+            </div>
+            <!-- /form -->
+          </form>
+          </div>
+        </div>
+      </section>
+      <!-- /.Left col -->
+      <!-- right col (We are only adding the ID to make the widgets sortable)-->
+      <section class="col-lg-5 connectedSortable ui-sortable">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-tittle">
+              Lista de Productos
+            </div>
+          </div>
+          <div class="card-body">
+            <table id="invt" class="table table-bordered table-striped text-center">
+              <thead>
+                <th></th>
+                <th>Codigo</th>
+                <th>Nombre</th>
+              </thead>
+            </table>
+          </div>
+        </div>
+      </section>
+      <!-- right col -->
+    </div>
+  </div>
   <div v-if="view == true" class="col-12">
     <div class="row">
       <!-- Left col -->

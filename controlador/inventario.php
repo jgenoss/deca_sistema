@@ -16,6 +16,11 @@ require_once '../modelo/inventario.php';
           $A = array();
           foreach ($rtn as $row) {
             $button = '<button id="edit" value="'.$row->id_inventario.'" data-toggle="modal" data-target="#modal-edit" class="btn btn-primary"><i class="fas fa-edit"></i></button>';
+            try {
+              $caja = round($row->cantidad/$row->umb);
+            } catch (DivisionByZeroError $e) {
+              $caja= "0";
+            }
             $A[] = array(
               $button,
               '<span class="badge badge-primary">'.$row->codigo_1.'</span> <span class="badge badge-info">'.$row->codigo_2.'</span>',
@@ -25,8 +30,8 @@ require_once '../modelo/inventario.php';
               $row->bNombre,
               $row->cNombre,
               $row->cantidad,
+              $caja,
               $row->umb,
-              //round($row->cantidad/$row->umb),
               ($row->status == 1)?
               '<span class="badge badge-success">ACTIVO</span>':
               '<span class="badge badge-danger">AGOTADO</span>'

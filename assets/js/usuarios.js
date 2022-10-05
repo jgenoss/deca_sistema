@@ -46,15 +46,16 @@ new Vue({
 			this.list = true;
 			this.form = false;
 			this.resetInput();
+
 		},
 		newbutton(){
 			this.modulo = 'Crear nuevo usuario';
 			this.list = false;
 			this.form = true;
 			this.resetInput();
-			this.listUsers();
 		},
 		resetInput(){
+			this.listUsers();
 			this.data.login='';
 			this.data.password='';
 			this.data.name='';
