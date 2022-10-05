@@ -1,2 +1,3 @@
 /modelo/dbconnect.php
-upload_files/*.*
+/upload_files/*.*
+/includes/web.json
