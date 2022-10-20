@@ -14,11 +14,14 @@ switch (@$_GET['op']) {
 				$rtn = AllConsult($db->sql("SELECT * FROM usuario"));
 				$A = array();
 				foreach ($rtn as $row) {
-					$button = "";
+					$button = '
+					<button id="disabled" value="'.$row->id_usuario.'" class="btn btn-sm btn-danger"><i class="fa-sharp fa-solid fa-x"></i></button>
+					<button id="edit" value="'.$row->id_usuario.'" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>';
 					$A[] = array(
 						$button,
 						$row->usuario,
-						$row->nombre
+						$row->nombre,
+						($row->habilitado==1)? '<span class="badge badge-success">HABILITADO</span>':'<span class="badge badge-danger">DISABLED</span>'
 					);
 				}
 				setJson(array(
@@ -45,6 +48,26 @@ switch (@$_GET['op']) {
 				} catch (Exception $e) {
 					setMsg("Error",$e->getMessage(),"error");
 				}
+			}
+		}
+		break;
+	case 'disabled':
+		{
+			if (isset($_POST)) {
+
+				try {
+					$db->sql("UPDATE usuario SET habilitado=0 WHERE id_usuario=".$_POST['id']);
+					setMsg("ALERT","Usuario Desabilidado con exito","success");
+				} catch (Exception $e) {
+					setMsg("Error",$e->getMessage(),"error");
+				}
+			}
+		}
+		break;
+	case 'edit':
+		{
+			if (isset($_POST)) {
+				var_dump($_POST);
 			}
 		}
 		break;

@@ -19,6 +19,16 @@
       <div class="card-header">Information
       </div>
       <div class="card-body">
+        <div class="col-lg-2 col-md-2">
+          <div class="form-group">
+            <label>BODEGA(*):</label>
+            <select  @change="loadInventario(id_bodega)" class="form-control" v-model="id_bodega">
+              <option selected value="all">TODO</option>
+              <option v-for="result in array" v-bind:value="result.id">{{result.nombre}}</option>
+            </select>
+          </div>
+        </div>
+
         <table id="list" class="table table-bordered table-hover">
           <thead>
             <tr class="text-center">

@@ -34,6 +34,27 @@ class salida
       	salida AS s
       	INNER JOIN clientes AS cl ON s.id_cliente = cl.id_cliente");
   }
+  public function getListDate($var)
+  {
+    return $this->db->sql(
+      "SELECT
+      	s.id_salida,
+      	cl.empresa,
+      	s.factura,
+      	s.created_at,
+      	s.referencia,
+      	s.serie,
+      	s.tpago,
+      	s.observacion,
+      	s.devolucion,
+      	s.fecha_de_comprobante
+      FROM
+      	salida AS s
+      	INNER JOIN clientes AS cl ON s.id_cliente = cl.id_cliente
+      WHERE
+      	fecha_de_comprobante BETWEEN '$var[0]'
+      	AND '$var[1]'");
+  }
   public function getInventario($val)
   {
     return $this->db->sql(

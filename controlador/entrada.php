@@ -68,6 +68,33 @@ require_once '../modelo/entrada.php';
         }
       }
       break;
+    case 'getListDate':
+      {
+        if (isset($_GET)) {
+          $rtn = AllConsult($ent->getListDate(array($_GET['f_start'],$_GET['f_end'])));
+          $A = array();
+          $url = "fpdf/rp_entrada.php?id=";
+          foreach ($rtn as $row) {
+            $button='<button id="view" value="'.$row->id_entrada.'" class="btn btn-sm btn-warning"><i class="fas fa-eye"></i></button>
+            <a class="btn btn-sm btn-info" target="_blank" href="'.$url.$row->id_entrada.'" ><i class="fa-solid fa-print"></i></a>';
+            $A[] = array(
+              ($row->created_at)?$button:$button,
+              $row->empresa." / ".$row->nombre,
+              $row->referencia,
+              $row->factura,
+              $row->serie,
+              $row->created_at,
+            );
+          }
+          setJson(array(
+            "sEcho"=> 1,
+            "iTotalRecords" => count($A),
+            "iTotalDisplayRecords" => count($A),
+            "data" => $A
+          ));
+        }
+      }
+      break;
     case 'getInventario':
       {
         if (isset($_GET)) {

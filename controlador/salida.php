@@ -43,6 +43,35 @@ require_once '../modelo/salida.php';
               '4' => $row->serie,
               '5' => $row->tpago,
               '6' => $row->fecha_de_comprobante,
+              '7' => $row->created_at
+            );
+          }
+          setJson(array(
+            "sEcho"=> 1,
+            "iTotalRecords" => count($A),
+            "iTotalDisplayRecords" => count($A),
+            "data" => $A
+          ));
+        }
+      }
+      break;
+    case 'getListDate':
+      {
+        if (isset($_GET)) {
+          $rtn = AllConsult($sl->getListDate(array($_GET['f_start'],$_GET['f_end'])));
+          $A = array();
+          foreach ($rtn as $row) {
+            $url = "fpdf/rp_salida.php?id=";
+            $button='<button id="view" value="'.$row->id_salida.'" class="btn btn-sm btn-warning"><i class="fas fa-eye"></i></button>
+            <a class="btn btn-sm btn-info" target="_blank" href="'.$url.$row->id_salida.'" ><i class="fa-solid fa-print"></i></a>';
+            $A[] = array(
+              '0' => $button,
+              '1' => $row->empresa,
+              '2' => ($row->devolucion==1)?'<span class="badge badge-warning">'.$row->referencia.'</span>':$row->referencia,
+              '3' => $row->factura,
+              '4' => $row->serie,
+              '5' => $row->tpago,
+              '6' => $row->fecha_de_comprobante,
               '7' => $row->created_at,
             );
           }

@@ -15,6 +15,7 @@ new Vue({
 	},
 	created(){
 		this.listUsers();
+		this.activos();
 	},
 	methods:{
 		submit:function() {
@@ -48,6 +49,28 @@ new Vue({
 			this.resetInput();
 
 		},
+		activos() {
+      const thisJq = this;
+      $(function () {
+        $(document).on("click", "#disabled", function() {
+					thisJq.sweetalert2("ERROR","NO TIENES PERMISOS","warning");
+          // let id = $(this).val();
+          // axios.post('controlador/usuarios.php?op=disabled',{id:id}).then(resp =>{
+					// 	thisJq.listUsers();
+					// 	thisJq.sweetalert2(resp.data.tittle,resp.data.message,resp.data.type);
+          // });
+
+        });
+				$(document).on("click", "#edit", function() {
+					thisJq.sweetalert2("ERROR","NO TIENES PERMISOS","warning");
+          // let id = $(this).val();
+          // axios.post('controlador/usuarios.php?op=edit',{id:id}).then(resp =>{
+          //   thisJq.list = false;
+          //   thisJq.form = true;
+          // });
+        });
+      });
+    },
 		newbutton(){
 			this.modulo = 'Crear nuevo usuario';
 			this.list = false;
@@ -60,6 +83,13 @@ new Vue({
 			this.data.password='';
 			this.data.name='';
 			this.data.status='';
-		}
+		},
+		sweetalert2:function(tittle,message,type) {
+			Swal.fire(
+				'¡'+tittle+'!',
+				''+message+'',
+				''+type+''
+			)
+		},
 	}
 })

@@ -12,7 +12,7 @@ require_once '../modelo/inventario.php';
     case 'getInventario':
       {
         if (isset($_GET)) {
-          $rtn = AllConsult($inv->listarInventario());
+          $rtn = AllConsult($inv->listarInventario($_GET['bodega_id']));
           $A = array();
           foreach ($rtn as $row) {
             $button = '<button id="edit" value="'.$row->id_inventario.'" data-toggle="modal" data-target="#modal-edit" class="btn btn-primary"><i class="fas fa-edit"></i></button>';

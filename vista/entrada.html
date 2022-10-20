@@ -20,6 +20,25 @@
         <button @click="newbutton" data-toggle="modal" data-target="#modal-add" class="btn btn-sm btn-default float-right"><i class="fas fa-plus"></i></button>
       </div>
       <div class="card-body">
+        <div class="col-lg-4 col-md-4">
+          <div class="row">
+            <div class="col-lg-5 col-md-5">
+              <div class="form-group">
+                <input v-model="f_start" type="date" class="form-control">
+              </div>
+            </div>
+            <div class="col-lg-5 col-md-5">
+              <div class="form-group">
+                <input v-model="f_end" type="date" class="form-control">
+              </div>
+            </div>
+            <div class="col-lg-1 col-md-1">
+              <div class="form-group">
+                <button @click="getListDate" class="btn btn-primary" type="button" name="button"><i class="fas fa-search"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
         <table id="list" class="table table-bordered table-striped">
           <thead class="text-center">
             <tr>

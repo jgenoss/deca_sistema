@@ -3,19 +3,34 @@ new Vue({
   data(){
     return {
       list:true,
+      id_bodega:'',
       producto:{
         id_inventario:'',
         nombre:'',
         cantidad:''
+      },
+      array:[],
+      result:{
+        id:'',
+        nombre:''
       }
     }
   },
   created(){
     this.tabla();
     this.init();
+    this.getBodega();
   },
   methods: {
-    tabla () {
+    loadInventario(index){
+      if (index == "") {
+        this.tabla("all");
+      }else {
+        this.tabla(index);
+      }
+
+    },
+    tabla (type) {
       $(function () {
         $('#list').DataTable({
           dom:'Bfrtip',
@@ -26,7 +41,7 @@ new Vue({
           "aProcessing": true, //Activamos el procesamiento del datatables
           "aServerSide": true, //Paginacion y filtrado realizados por el servidor
           "ajax": {
-            "url": 'controlador/inventario.php?op=getInventario',
+            "url": `controlador/inventario.php?op=getInventario&bodega_id=${type}`,
             "type": "POST",
             "error": function(e) {console.log(e);}
           },
@@ -59,6 +74,11 @@ new Vue({
         }else {
           this.sweetalert2(resp.data.tittle,resp.data.message,resp.data.type);
         }
+      });
+    },
+    getBodega(){
+      axios.post('controlador/entrada.php?op=getBodega').then(resp =>{
+        this.array = resp.data;
       });
     },
     sweetalert2:function(tittle,message,type) {

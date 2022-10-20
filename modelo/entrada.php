@@ -43,6 +43,30 @@ class entrada
         	INNER JOIN clientes AS cl ON ent.id_cliente = cl.id_cliente
         	INNER JOIN bodega AS bg ON ent.id_bodega = bg.id_bodega");
   }
+  public function getListDate($var)
+  {
+    return $this->db->sql(
+      "SELECT
+    	ent.id_entrada,
+    	ent.id_cliente,
+    	ent.id_bodega,
+    	ent.referencia,
+    	ent.factura,
+    	ent.tipo_comprobante,
+    	ent.fecha_de_comprobante,
+    	ent.direccion,
+    	ent.serie,
+    	ent.archivo,
+    	ent.observacion,
+    	ent.created_at,
+    	cl.empresa,
+    	bg.nombre
+    FROM
+    	entrada AS ent
+    	INNER JOIN clientes AS cl ON ent.id_cliente = cl.id_cliente
+    	INNER JOIN bodega AS bg ON ent.id_bodega = bg.id_bodega
+    	WHERE fecha_de_comprobante BETWEEN '$var[0]' AND '$var[1]'");
+  }
   public function getInventario($val)
   {
     return $this->db->sql(
@@ -123,7 +147,7 @@ class entrada
   {
     return $this->db->sql(
       "SELECT
-      	sd.id_producto, 
+      	sd.id_producto,
       	p.ean,
       	sd.cantidad,
       	sd.id,

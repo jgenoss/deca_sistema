@@ -6,6 +6,8 @@ new Vue({
       total:0,
       file_name:'Selecione un document',
       file:'',
+      f_start:'',
+      f_end:'',
       resultListP:{
         id:'',
         codigo:'',
@@ -58,7 +60,8 @@ new Vue({
       list:true,
       form:false,
       view:false,
-      btnR:true
+      btnR:true,
+      edit:false
     }
   },
   created(){
@@ -74,6 +77,28 @@ new Vue({
       axios.post('controlador/entrada.php?op=getConsecutivo').then(resp =>{
         this.generadNumber(resp.data.next);
         //this.entrada.serie = resp.data.next;
+      });
+    },
+    getListDate(){
+      thisJq = this;
+      $(function() {
+        $("#list").DataTable({
+          dom:'Bfrtip',
+          "buttons": ["copy", "excel", "colvis"],
+          "responsive": true,
+          "autoWidth": false,
+          "lengthMenu": [[50, 100, -1], [50, 100, "All"]],
+          "aProcessing": true, //Activamos el procesamiento del datatables
+          "aServerSide": true, //Paginacion y filtrado realizados por el servidor
+          "ajax": {
+            "url": `controlador/entrada.php?op=getListDate&f_start=${thisJq.f_start}&f_end=${thisJq.f_end}`,
+            "type": "POST",
+            "error": function(e) {console.log(e);}
+          },
+          "bDestroy": true,
+          "iDisplayLength": 25, //Paginacion
+          "order": [[1, "desc"]]
+        });
       });
     },
     generadNumber(num){
