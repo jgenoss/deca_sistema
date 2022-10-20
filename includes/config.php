@@ -24,7 +24,8 @@ if(isset($_SESSION['START'])){
       	ON
       		m.id_modulo = p.id_modulos
       WHERE
-      	p.id_usuario = $id"
+      	p.id_usuario = $id
+      ORDER BY p.id_modulos ASC"
     ));
   }
 }
