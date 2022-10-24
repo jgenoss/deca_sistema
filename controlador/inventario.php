@@ -31,10 +31,7 @@ require_once '../modelo/inventario.php';
               $row->cNombre,
               $row->cantidad,
               $caja,
-              $row->umb,
-              ($row->status == 1)?
-              '<span class="badge badge-success">ACTIVO</span>':
-              '<span class="badge badge-danger">AGOTADO</span>'
+              $row->umb
             );
           }
           setJson(array(

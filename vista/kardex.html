@@ -13,25 +13,62 @@
     </div><!-- /.row -->
   </div><!-- /.container-fluid -->
 </div>
-<div id="usuarios" class="content">
+<div id="kardex" class="content">
   <div v-if="list == true" class="col-12">
     <div class="card card-primary">
-      <div class="card-header">Information
-        <button @click="newbutton" data-toggle="modal" data-target="#modal-add" class="btn btn-sm btn-default float-right"><i class="fas fa-plus"></i></button>
-      </div>
+      <div class="card-header">Information</div>
       <div class="card-body">
-        
+        <h4>KARDEX DE INVENTARIO</h4>
+        <div class="col-lg-6 col-md-4">
+          <div class="row">
+            <div class="col-lg-12 col-md-12">
+              <div class="form-group">
+                <label>Por favor ingrese el codigo del producto que deseas ver su kardex de inventario</label>
+                <input @keyup="search(txt)" class="form-control" v-model="txt" type="search">
+              </div>
+            </div>
+            <div class="col-lg-12 col-md-12">
+              <div class="card table-responsive">
+                <table class="table table-bordered text-nowrap text-center">
+                  <th>Ean</th>
+                  <th>Nombre</th>
+                  <th>Option</th>
+                  <tbody>
+                    <tr v-for="(object_search, index) in list_search" :key="object_search.id">
+                      <td>{{ object_search.ean }}</td>
+                      <td>{{ object_search.nombre }}</td>
+                      <td><button @click="find(object_search.id)" class="btn btn-info" type="button" name="button"><i class="fas fa-plus"></i></button></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
         <table id="list" class="table table-bordered table-striped">
           <thead>
             <tr>
-              <th></th>
-              <th>Usuario</th>
-              <th>Nombre</th>
-              <th>Estado</th>
+              <th colspan="3"></th>
+              <th>ENTRADA</th>
+              <th>SALIDA</th>
+              <th>SALDO</th>
+            </tr>
+            <tr>
+              <th>FECHA</th>
+              <th>EAN</th>
+              <th>PRUDUCTO</th>
+              <th>CANTIDAD</th>
+              <th>CANTIDAD</th>
+              <th>CANTIDAD</th>
             </tr>
           </thead>
           <tbody class="text-center">
+
           </tbody>
+          <tfoot>
+            <th colspan="5"></th>
+            <th>TOTAL</th>
+          </tfoot>
         </table>
       </div>
     </div>
