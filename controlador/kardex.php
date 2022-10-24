@@ -37,13 +37,14 @@ switch (@$_GET['op']) {
           $A = array();
 
           foreach ($query as $key => $value) {
-            $A[] = array(
+            $A = array(
               'p_id' => $value->p_id,
               'p_ean' => $value->p_ean,
               'p_nombre' => $value->p_nombre,
               'e_cantidad' => $value->e_cantidad,
               's_cantidad' => $value->s_cantidad,
-              'i_cantidad' => $value->i_cantidad
+              'i_cantidad' => $value->i_cantidad,
+              'es_cantidad' => $value->entra_salida
             );
           }
           setJson($A);

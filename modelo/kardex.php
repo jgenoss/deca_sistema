@@ -31,8 +31,9 @@ class kardex
         producto.id_producto AS p_id,
       	producto.nombre AS p_nombre,
       	producto.ean AS p_ean,
-      	entrada_detalle.cantidad AS e_cantidad,
-      	salida_detalle.cantidad AS s_cantidad,
+      	SUM(entrada_detalle.cantidad) AS e_cantidad,
+      	SUM(salida_detalle.cantidad) AS s_cantidad,
+        SUM(entrada_detalle.cantidad-salida_detalle.cantidad) as entra_salida,
       	inventario.cantidad AS i_cantidad
       FROM
       	salida_detalle
