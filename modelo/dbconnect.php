@@ -19,6 +19,10 @@
           die($e->getMessage());//Imprime el mensaje de error en pantalla
       }
     }
+    public function lastInsertId()
+    {
+      return $this->db->lastInsertId();
+    }
     public function con()
     {
       return $this->db;

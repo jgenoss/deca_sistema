@@ -189,7 +189,7 @@ require_once '../modelo/entrada.php';
         if (isset($_POST['id'])) {
           $rtn = Consult($ent->getentradaId($_POST['id']));
           $L = array();
-          $rtn0 = AllConsult($ent->getentradaDetallada($rtn->serie));
+          $rtn0 = AllConsult($ent->getentradaDetallada($rtn->id_entrada));
           $total = 0;
           foreach ($rtn0 as $key) {
             $total += $key->cantidad;

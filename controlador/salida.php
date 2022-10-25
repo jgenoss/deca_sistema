@@ -210,7 +210,7 @@ require_once '../modelo/salida.php';
         if (isset($_POST['id'])) {
           $rtn = Consult($sl->getSalidaId($_POST['id']));
           $L = array();
-          $rtn0 = AllConsult($sl->getsalidaDetallada($rtn->serie));
+          $rtn0 = AllConsult($sl->getsalidaDetallada($rtn->id_salida));
           $total=0;
           foreach ($rtn0 as $key) {
             $total += $key->cantidad;

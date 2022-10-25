@@ -104,11 +104,12 @@ class salida
   public function setSalida($val)
   {
     $query = $this->db->sql("INSERT INTO salida ( id_cliente, referencia, factura, fecha_de_comprobante, serie, observacion,direccion, tpago, archivo)VALUES('$val[0]','$val[1]','$val[2]','$val[3]','$val[4]','$val[5]','$val[6]','$val[7]','$val[8]')");
+    $last_id = $this->db->lastInsertId();
     if ($query) {
       for ($i=0; $i < count($val[9]); $i++) {
         $id = $val[9][$i]['id'];
         $cantidad = $val[9][$i]['cantidad'];
-        $query = $this->db->sql("INSERT INTO salida_detalle(id_serie,id_producto,cantidad)VALUES('$val[4]','$id','$cantidad')");
+        $query = $this->db->sql("INSERT INTO salida_detalle(id_salida,id_serie,id_producto,cantidad)VALUES('$last_id','$val[4]','$id','$cantidad')");
         $query = $this->db->sql("UPDATE inventario SET cantidad=cantidad-'$cantidad'  WHERE id_producto =".$id);
       }
     }
@@ -131,7 +132,7 @@ class salida
         	salida_detalle AS sd
         	INNER JOIN producto AS p ON sd.id_producto = p.id_producto
         WHERE
-        	sd.id_serie =$val");
+        	sd.id_salida =$val");
   }
   public function ConvertFilePDF($b64)
   {

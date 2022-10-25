@@ -115,6 +115,7 @@ class entrada
   public function setentrada($val,$id_session)
   {
     $query = $this->db->sql("INSERT INTO entrada (id_cliente, id_bodega, referencia, factura,tipo_comprobante, fecha_de_comprobante, serie, observacion,direccion, archivo)VALUES('$val[0]','$val[1]','$val[2]','$val[3]','$val[4]','$val[5]','$val[6]','$val[7]','$val[8]','$val[9]')");
+    $last_id = $this->db->lastInsertId();
     if ($query) {
       for ($i=0; $i < count($val[10]); $i++) {
 
@@ -123,11 +124,11 @@ class entrada
         $fv = $val[10][$i]['fv'];
         $fecha_v = $val[10][$i]['fecha_v'];
 
-        $query = $this->db->sql("INSERT INTO entrada_detalle(id_serie,id_producto,cantidad)VALUES('$val[6]','$id','$cantidad')");
+        $query = $this->db->sql("INSERT INTO entrada_detalle(id_entrada,id_serie,id_producto,cantidad)VALUES('$last_id','$val[6]','$id','$cantidad')");
         if ($fv) {
-          $this->db->sql("INSERT INTO inventario_detallado (id_producto,id_usuario,cantidad,id_serie,fv,fecha_ven)VALUES('$id','$id_session','$cantidad','$val[6]','$fv','$fecha_v')");
+          $this->db->sql("INSERT INTO inventario_detallado (id_entrada,id_producto,id_usuario,cantidad,id_serie,fv,fecha_ven)VALUES('$last_id','$id','$id_session','$cantidad','$val[6]','$fv','$fecha_v')");
         }else {
-          $this->db->sql("INSERT INTO inventario_detallado (id_producto,id_usuario,cantidad,id_serie,fv)VALUES('$id','$id_session','$cantidad','$val[6]','$fv')");
+          $this->db->sql("INSERT INTO inventario_detallado (id_entrada,id_producto,id_usuario,cantidad,id_serie,fv)VALUES('$last_id','$id','$id_session','$cantidad','$val[6]','$fv')");
         }
         $rtn = $this->db->Consult($this->db->sql("SELECT * FROM inventario WHERE id_producto=".$id));
         if($rtn){
@@ -165,9 +166,9 @@ class entrada
       	inventario_detallado AS inv_d
       	ON
       		sd.id_producto = inv_d.id_producto AND
-      		sd.id_serie = inv_d.id_serie
+      		sd.id_entrada = inv_d.id_entrada
       WHERE
-      	sd.id_serie = '$val'");
+      	sd.id_entrada = '$val'");
   }
   public function ConvertFilePDF($b64)
   {
