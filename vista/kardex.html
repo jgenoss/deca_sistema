@@ -66,7 +66,7 @@
           </thead>
           <tbody >
             <tr v-for="(object_kardex, index) in list_kardex" :key="object_kardex.p_id">
-              <td><button @click="deleteFind(index)" class="btn btn-danger" type="button"><i class="fas fa-trash"></i></button> <button class="btn btn-info" type="button" name="button"><i class="fas fa-print"></i></button></td>
+              <td><button @click="deleteFind(index)" class="btn btn-danger" type="button"><i class="fas fa-trash"></i></button> <a :href="'vista/rp_kardex.php?id='+ object_kardex.p_id" target="_blank"  class="btn btn-info" type="button" name="button"><i class="fas fa-print"></i></a></td>
               <td>{{ object_kardex.p_ean }}</td>
               <td>{{ object_kardex.p_nombre }}</td>
               <td>{{ object_kardex.e_cantidad }}</td>

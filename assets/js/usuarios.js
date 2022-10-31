@@ -21,7 +21,8 @@ new Vue({
 		submit:function() {
 			axios.post('controlador/usuarios.php?op=new',this.data)
 				.then(resp =>{
-					console.log(resp.data);
+					this.sweetalert2(resp.data.tittle,resp.data.message,resp.data.type);
+					this.cancel();
 			})
 		},
 		listUsers(){

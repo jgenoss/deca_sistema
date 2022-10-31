@@ -111,6 +111,12 @@ class salida
         $cantidad = $val[9][$i]['cantidad'];
         $query = $this->db->sql("INSERT INTO salida_detalle(id_salida,id_serie,id_producto,cantidad)VALUES('$last_id','$val[4]','$id','$cantidad')");
         $query = $this->db->sql("UPDATE inventario SET cantidad=cantidad-'$cantidad'  WHERE id_producto =".$id);
+        $queryi = $this->db->Consult($this->db->sql("SELECT * FROM inventario WHERE id_producto =".$id));
+        if ($queryi):
+          $inv_cantidad = $queryi->cantidad;
+          $this->db->sql("INSERT INTO inventario_fecha(id_salida,	id_producto, cantidad ,fecha)VALUES('$last_id','$id','$inv_cantidad','$val[3]')");
+        endif;
+
       }
     }
     return $query;

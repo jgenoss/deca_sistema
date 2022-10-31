@@ -12,15 +12,8 @@
 
     $query = AllConsult($db->sql("SELECT * FROM entrada_detalle INNER JOIN producto ON entrada_detalle.id_producto = producto.id_producto INNER JOIN entrada ON entrada.id_entrada = entrada_detalle.id_entrada WHERE producto.id_producto ='$id'"));
 
-
     $data = array();
     foreach ($query as $key => $value) {
-      if ($query) {
-        $id_entrada = $value->id_entrada;
-        $id_producto = $value->id_producto;
-        $fv = Consult($db->sql("SELECT * FROM inventario_detallado WHERE inventario_detallado.id_entrada = '$id_entrada' AND inventario_detallado.id_producto = '$id_producto'"));
-        // var_dump($fv);exit();
-      }
       $data[] = array(
         'fecha' => $value->fecha_de_comprobante,
         'referencia' => $value->referencia,
@@ -76,14 +69,19 @@
       $this->SetY(35);
       $this->SetX(10);
       $this->SetFont('Arial','B',10);
+      $this->Cell(180,7,"",1,0,"C");
+      $this->Cell(40,7,"ENTRADA",1,0,"C");
+      $this->Cell(20,7,"SALIDA",1,0,"C");
+      $this->Cell(20,7,"SALDO",1,0,"C");
+      $this->Ln();
       $this->Cell(20,7,"FECHA",1,0,"C");
       $this->Cell(135,7,"REFERENCIA",1,0,"C");
       $this->Cell(25,7,"FACTURA",1,0,"C");
       $this->Cell(20,7,"FV",1,0,"C");
-      $this->Cell(20,7,"ENTRADA",1,0,"C");
-      $this->Cell(20,7,"SALIDA",1,0,"C");
-      $this->Cell(20,7,"SALDO",1,1,"C");
-
+      $this->Cell(20,7,"UND",1,0,"C");
+      $this->Cell(20,7,"UND",1,0,"C");
+      $this->Cell(20,7,"UND",1,0,"C");
+      $this->Ln();
       //Display table product rows
       $this->SetFont('Arial','',10);
       foreach($info['list'] as $row){
@@ -93,7 +91,8 @@
         $this->Cell(20,7,"FV",1,0,"C");
         $this->Cell(20,7,$row['entrada'],1,0,"C");
         $this->Cell(20,7,$row['salida'],1,0,"C");
-        $this->Cell(20,7,$row['saldo'],1,1,"C");
+        $this->Cell(20,7,$row['saldo'],1,0,"C");
+        $this->Ln();
       }
       //Display table empty rows
     }
