@@ -41,7 +41,8 @@ class entrada
         FROM
         	entrada AS ent
         	INNER JOIN clientes AS cl ON ent.id_cliente = cl.id_cliente
-        	INNER JOIN bodega AS bg ON ent.id_bodega = bg.id_bodega");
+        	INNER JOIN bodega AS bg ON ent.id_bodega = bg.id_bodega
+        ORDER BY ent.id_entrada desc");
   }
   public function getListDate($var)
   {

@@ -97,7 +97,7 @@ new Vue({
           },
           "bDestroy": true,
           "iDisplayLength": 25, //Paginacion
-          "order": [[1, "desc"]]
+          "order": [[1, "asc"]]
         });
       });
     },
@@ -206,7 +206,7 @@ new Vue({
           },
           "bDestroy": true,
           "iDisplayLength": 25, //Paginacion
-          "order": [[1, "desc"]]
+          "order": [[1, 'desc' ]]
         });
       });
     },

@@ -13,7 +13,8 @@ new Vue({
       result:{
         id:'',
         nombre:''
-      }
+      },
+      index:'all'
     }
   },
   created(){
@@ -25,8 +26,10 @@ new Vue({
     loadInventario(index){
       if (index == "") {
         this.tabla("all");
+        this.index = "all"
       }else {
         this.tabla(index);
+        this.index = index
       }
 
     },
@@ -70,7 +73,7 @@ new Vue({
           this.sweetalert2(resp.data.tittle,resp.data.message,resp.data.type);
           $("#close").click();
           this.reset();
-          this.tabla();
+          this.tabla(this.index);
         }else {
           this.sweetalert2(resp.data.tittle,resp.data.message,resp.data.type);
         }

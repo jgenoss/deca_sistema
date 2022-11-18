@@ -77,7 +77,7 @@ if (!isset($_SESSION['START'])) {
       <table id="list" class="table table-bordered table-striped text-center">
         <thead>
           <tr>
-            <th colspan="3"><?php print $rtn->nombre ?></th>
+            <th colspan="3"><?php print $rtn->ean." ".$rtn->nombre ?></th>
             <th colspan="2">ENTRADA</th>
             <th>SALIDA</th>
             <th>SALDO</th>
@@ -93,7 +93,14 @@ if (!isset($_SESSION['START'])) {
           </tr>
         </thead>
         <tbody>
-          <?php foreach ($array_convined as $key => $value) {?>
+          <?php
+						$sum_salida=0;
+						$sum_entrada=0;
+					 foreach ($array_convined as $key => $value) {
+
+						 	$sum_salida += ($value['type'] == 'salida')? $value['cantidad']:0;
+ 							$sum_entrada += ($value['type'] == 'entrada')? $value['cantidad']:0;
+						 ?>
             <tr>
               <td><?php print $value['fecha'] ?></td>
               <td><?php print $value['referencia'] ?></td>
@@ -101,14 +108,15 @@ if (!isset($_SESSION['START'])) {
               <td><?php print ($value['type'] == 'entrada' && $value['fv'] == 1)? $value['fecha_ven']:'' ?></td>
               <td><?php print ($value['type'] == 'entrada')? $value['cantidad']:'' ?></td>
               <td><?php print ($value['type'] == 'salida')? $value['cantidad']:'' ?></td>
-              <td><?php print ($rtn_inv_fecha)?$rtn_inv_fecha->cantidad:'' ?></td>
+              <td><?php print $sum_entrada-$sum_salida; ?></td>
             </tr>
           <?php } ?>
         </tbody>
 				<tfoot>
 					<tr>
-						<th colspan="5"></th>
-						<th>TOTAL</th>
+						<th colspan="4"></th>
+						<th><?php print $sum_entrada; ?></th>
+						<th><?php print $sum_salida; ?></th>
 						<th><?php print $rtn_inv->cantidad; ?></th>
 					</tr>
 				</tfoot>
