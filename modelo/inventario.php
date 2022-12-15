@@ -21,12 +21,14 @@ class inventario
         	p.codigo_1,
         	p.codigo_2,
         	p.ean,
+          p.tipo_val,
         	p.nombre AS pNombre,
         	c.nombre AS cNombre,
         	i.cantidad,
         	p.umb,
         	b.nombre AS bNombre,
-        	cl.empresa AS empresa
+        	cl.empresa AS empresa,
+          p.id_bodega
         FROM
         	inventario AS i
         	INNER JOIN producto AS p ON i.id_producto = p.id_producto
@@ -42,12 +44,14 @@ class inventario
         	p.codigo_1,
         	p.codigo_2,
         	p.ean,
+          p.tipo_val,
         	p.nombre AS pNombre,
         	c.nombre AS cNombre,
         	i.cantidad,
         	p.umb,
         	b.nombre AS bNombre,
-        	cl.empresa AS empresa
+        	cl.empresa AS empresa,
+          p.id_bodega
         FROM
         	inventario AS i
         	INNER JOIN producto AS p ON i.id_producto = p.id_producto
@@ -63,12 +67,14 @@ class inventario
         	p.codigo_1,
         	p.codigo_2,
         	p.ean,
+          p.tipo_val,
         	p.nombre AS pNombre,
         	c.nombre AS cNombre,
         	i.cantidad,
         	p.umb,
         	b.nombre AS bNombre,
-        	cl.empresa AS empresa
+        	cl.empresa AS empresa,
+          p.id_bodega
         FROM
         	inventario AS i
         	INNER JOIN producto AS p ON i.id_producto = p.id_producto

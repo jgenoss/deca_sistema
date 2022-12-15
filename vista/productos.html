@@ -25,7 +25,8 @@
             <tr class="text-center">
               <th></th>
               <th>Codigo interno</th>
-              <th>Codigo Cliente</th>
+              <th>Codigo 1</th>
+              <th>Codigo 2</th>
               <th>EAN</th>
               <th>Nombre</th>
               <th>UMB</th>
@@ -112,6 +113,24 @@
                     <option value="NO">NO</option>
                     <option value="N/A">N/A</option>
                   </select>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <label>Tipo(*)</label>
+                  <select style="text-align:center;" class="form-control" v-model="productos.tipo">
+                    <option value="Caja">Caja</option>
+                    <option value="Display">Display</option>
+                    <option value="Unidad">Unidad</option>
+                    <option value="Kg">Kg</option>
+                    <option value="Sobre">Sobre</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <label>Tipo valor(*)</label>
+                  <input style="text-align:center;" v-model="productos.tipo_val" type="text" class="form-control" required>
                 </div>
               </div>
               <div class="col-md-1">

@@ -15,6 +15,8 @@ new Vue({
         id_categoria:'',
         id_bodega:'',
         estampilla:'',
+        tipo:'',
+        tipo_val:'',
         status:''
       },
       arraycategoria:[],
@@ -81,6 +83,7 @@ new Vue({
             thisJq.productos = resp.data;
             thisJq.list = false;
             thisJq.form = true;
+            this.getTipoProducto();
           });
         });
       });
@@ -108,7 +111,6 @@ new Vue({
     getBodega:function () {
       axios.post('controlador/productos.php?op=getbodega').then(resp =>{
         this.arraybodega = resp.data;
-        console.log(resp.data);
       });
     },
     limpiarInputs:function () {
@@ -122,6 +124,7 @@ new Vue({
         this.productos.id_bodega='',
         this.productos.estampilla='',
         this.productos.status='',
+        this.productos.tipo_val='',
         this.productos.id_categoria='';
     },
     submitBtn:function () {

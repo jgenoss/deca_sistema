@@ -67,7 +67,8 @@ class salida
       	i.id_inventario,
       	p.nombre AS pNombre,
       	i.cantidad,
-      	c.nombre AS cNombre
+      	c.nombre AS cNombre,
+        b.nombre AS bNombre
       FROM
       	inventario AS i
       	INNER JOIN producto AS p ON i.id_producto = p.id_producto

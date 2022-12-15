@@ -63,7 +63,11 @@ class productos
   }
   public function setProduct($val)
   {
-    return $this->db->sql("INSERT INTO producto ( codigo, ean, nombre, id_categoria, status, estampilla, umb, id_bodega, id_usuario, codigo_1, codigo_2)VALUES ('$val[1]','$val[2]','$val[3]','$val[4]','$val[5]','$val[6]','$val[7]','$val[8]','$val[9]','$val[10]','$val[11]')");
+    $rtn = $this->db->sql("INSERT INTO producto ( codigo, ean, nombre, id_categoria, status, estampilla, umb, id_bodega, id_usuario, codigo_1, codigo_2,tipo,tipo_val)VALUES ('$val[1]','$val[2]','$val[3]','$val[4]','$val[5]','$val[6]','$val[7]','$val[8]','$val[9]','$val[10]','$val[11]','$val[12]','$val[13]')");
+    $last_id = $this->db->lastInsertId();
+    $id_session = $val[9];
+    $this->db->sql("INSERT INTO inventario (id_producto,id_usuario,cantidad)VALUES('$last_id','$id_session','0')");
+    return $rtn;
   }
   public function upProduct($val)
   {
@@ -79,7 +83,9 @@ class productos
       id_bodega = '$val[8]',
       id_usuario = '$val[9]',
       codigo_1 = '$val[10]',
-      codigo_2 = '$val[11]'
+      codigo_2 = '$val[11]',
+      tipo = '$val[12]',
+      tipo_val = '$val[13]'
       WHERE id_producto = '$val[0]'"
     );
   }

@@ -287,11 +287,12 @@ require_once '../modelo/devolucion.php';
                       "CANTIDAD: ".$key['CANTIDAD']);
                       break;
                     }elseif ($rtn1) {
+                      $value = str_replace("-","",$key['CANTIDAD']);
                       $L[] = array(
                         'id' => $rtn1->id_producto,
                         'codigo' => $rtn1->ean,
                         'nombre' => $rtn1->nombre,
-                        'cantidad' => str_replace("-","",$key['CANTIDAD'])
+                        'cantidad' => ($rtn1->tipo == 'Display')? $rtn1->tipo_val*$value:$value
                       );
                     }
                   }

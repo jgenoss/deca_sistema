@@ -18,7 +18,7 @@ require_once '../modelo/bodegas.php';
           foreach ($rtn as $row) {
             $A[] = array(
               ($row->id_bodega)?'<button id="edit" value="'.$row->id_bodega.'" class="btn btn-primary"><i class="fas fa-edit"></i></button>':'<button id="edit" value="'.$row->id_bodega.'" class="btn btn-primary"><i class="fas fa-edit"></i></button>',
-              $row->nombre,
+              '#('.$row->id_bodega.') '.$row->nombre,
               $row->descripcion,
               ($row->status == 1)?
               '<span class="badge badge-success">ACTIVO</span>':

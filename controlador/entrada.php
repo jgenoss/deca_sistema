@@ -44,6 +44,7 @@ require_once '../modelo/entrada.php';
     case 'getentradas':
       {
         if (isset($_GET)) {
+
           $rtn = AllConsult($ent->getentrada());
           $A = array();
           $url = "fpdf/rp_entrada.php?id=";
@@ -56,7 +57,10 @@ require_once '../modelo/entrada.php';
               $row->referencia,
               $row->factura,
               $row->serie,
+              $ent->getUndCaj($row->id_entrada)['cantidad'],
+              $ent->getUndCaj($row->id_entrada)['cajas'],
               $row->created_at,
+
             );
           }
           setJson(array(

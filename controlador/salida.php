@@ -93,10 +93,10 @@ require_once '../modelo/salida.php';
             $button='<button codigo="'.$row->ean.'" nombre="'.$row->pNombre.'" id="prod" value="'.$row->id_producto.'" class="btn btn-sm btn-primary"><i class="fas fa-plus"></i></button>';
             $A[] = array(
               '0' => $button,
-              '1' => '<span class="badge badge-primary">'.$row->codigo_1.'</span> <span class="badge badge-info">'.$row->codigo_2.'</span> <span class="badge badge-warning">'.$row->ean.'</span>',
+              '1' => $row->codigo_1.' '.$row->codigo_2.' '.$row->ean,
               '2' => $row->pNombre,
               '3' => $row->cantidad,
-              '4' => $row->cNombre,
+              '4' => $row->bNombre,
             );
           }
           setJson(array(
@@ -306,11 +306,12 @@ require_once '../modelo/salida.php';
                       }elseif ($rtn1) {
                         if ($rtn2) {
                           if ($rtn2->cantidad > $key['CANTIDAD']) {
+
                             $L[] = array(
                               'id' => $rtn1->id_producto,
                               'codigo' => $rtn1->ean,
                               'nombre' => $rtn1->nombre,
-                              'cantidad' => $key['CANTIDAD']
+                              'cantidad' => ($rtn1->tipo == 'Display')? $rtn1->tipo_val*$key['CANTIDAD']:$key['CANTIDAD']
                             );
                           }elseif($key['CANTIDAD'] > $rtn2->cantidad) {
                             throw new Exception('CANTIDAD MAYOR A EXISTENCIA'."<br/>".

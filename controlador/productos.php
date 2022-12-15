@@ -21,7 +21,8 @@ require_once '../modelo/productos.php';
             $A[] = array(
               ($row->id_producto)?'<button id="edit" value="'.$row->id_producto.'" class="btn btn-primary"><i class="fas fa-edit"></i></button>':'<button id="edit" value="'.$row->id_producto.'" class="btn btn-primary"><i class="fas fa-edit"></i></button>',
               $row->codigo,
-              $row->codigo_1.' '.$row->codigo_2,
+              $row->codigo_1,
+              $row->codigo_2,
               $row->ean,
               $row->pNombre,
               $row->umb,
@@ -89,7 +90,8 @@ require_once '../modelo/productos.php';
             'estampilla' => $rtn->estampilla,
             'umb' => $rtn->umb,
             'id_bodega' => $rtn->id_bodega,
-            'id_categoria' => $rtn->id_categoria
+            'tipo' => $rtn->tipo,
+            'tipo_val' => $rtn->tipo_val
           );
 
           setJson($A);
@@ -111,7 +113,9 @@ require_once '../modelo/productos.php';
             '8' => $_POST['id_bodega'],
             '9' => $_SESSION['START'][1],
             '10' => $_POST['code1'],
-            '11' => $_POST['code2']
+            '11' => $_POST['code2'],
+            '12' => $_POST['tipo'],
+            '13' => $_POST['tipo_val']
           );
           if (empty($_POST['id'])) {
               try {

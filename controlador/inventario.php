@@ -23,9 +23,10 @@ require_once '../modelo/inventario.php';
             }
             $A[] = array(
               $button,
-              '<span class="badge badge-primary">'.$row->codigo_1.'</span> <span class="badge badge-info">'.$row->codigo_2.'</span>',
+              $row->codigo_1,
+              $row->codigo_2,
               $row->ean,
-              $row->pNombre,
+              ($row->id_bodega == 52)? $row->pNombre." ".$row->tipo_val:$row->pNombre,
               $row->empresa,
               $row->bNombre,
               $row->cNombre,

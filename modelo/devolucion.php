@@ -109,7 +109,6 @@ class salida
         $id_salida = $val[7];
 
         $query = $this->db->sql("INSERT INTO devolucion_detalle(id_serie,id_producto,cantidad)VALUES('$val[4]','$id','$cantidad')");
-        $query = $this->db->sql("UPDATE inventario SET cantidad=cantidad+'$cantidad'  WHERE id_producto ='$id'");
         if ($this->db->sql("SELECT * FROM salida WHERE id_salida ='$id_salida'")) {
           $query = $this->db->sql("UPDATE salida SET devolucion = 1, observacion='$val[5]' WHERE id_salida ='$id_salida'");
         }
