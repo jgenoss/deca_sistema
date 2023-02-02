@@ -71,6 +71,7 @@ class productos
   }
   public function upProduct($val)
   {
+    $this->db->sql("UPDATE inventario SET status = '$val[5]' WHERE id_producto = '$val[0]'");
     return $this->db->sql(
       "UPDATE producto
       SET codigo = '$val[1]',

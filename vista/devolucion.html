@@ -184,7 +184,7 @@ salida<div class="content-header">
               <div class="col-lg-3 col-md-3">
                 <div class="form-group">
                   <label>Fecha(*)</label>
-                  <input v-model="devolucion.fecha" type="date" class="form-control" readonly>
+                  <input v-model="devolucion.fecha" type="date" class="form-control">
                 </div>
               </div>
               <div class="col-lg-2 col-md-2">
@@ -200,6 +200,14 @@ salida<div class="content-header">
                     <option value="CONTADO">CONTADO</option>
                     <option value="CREDITO">CREDITO</option>
                     <option value="TRANSFERENCIA">TRANSFERENCIA</option>
+                  </select>
+                </div>
+              <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                  <label>Tipo de devolucion(*):</label>
+                  <select class="form-control" v-model="devolucion.tdevolucion" readonly>
+                    <option value="COMPLETA">COMPLETA</option>
+                    <option value="PARCIAL">PARCIAL</option>
                   </select>
                 </div>
               </div>
@@ -307,7 +315,7 @@ salida<div class="content-header">
                   <label for="exampleInputFile">Adjustar Archivo(*)</label>
                   <div class="input-group">
                     <div class="custom-file">
-                      <input @change="uploadImage" accept="application/pdf" type="file" id="uploadfiles" ref="uploadfiles" class="custom-file-input" required>
+                      <input @change="uploadImage" accept="application/pdf" type="file" id="uploadfiles" ref="uploadfiles" class="custom-file-input">
                       <label class="custom-file-label" for="uploadfiles">{{file_name}}</label>
                     </div>
                   </div>

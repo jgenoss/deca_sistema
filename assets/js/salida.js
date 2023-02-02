@@ -81,12 +81,12 @@ new Vue({
           "aProcessing": true, //Activamos el procesamiento del datatables
           "aServerSide": true, //Paginacion y filtrado realizados por el servidor
           "ajax": {
-            "url": `controlador/entrada.php?op=getListDate&f_start=${thisJq.f_start}&f_end=${thisJq.f_end}`,
+            "url": `controlador/salida.php?op=getListDate&f_start=${thisJq.f_start}&f_end=${thisJq.f_end}`,
             "type": "POST",
             "error": function(e) {console.log(e);}
           },
           "bDestroy": true,
-          "iDisplayLength": 25, //Paginacion
+          "iDisplayLength": 35, //Paginacion
           "order": [[1, "desc"]]
         });
       });

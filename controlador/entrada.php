@@ -59,6 +59,7 @@ require_once '../modelo/entrada.php';
               $row->serie,
               $ent->getUndCaj($row->id_entrada)['cantidad'],
               $ent->getUndCaj($row->id_entrada)['cajas'],
+              $row->fecha_de_comprobante,
               $row->created_at,
 
             );
@@ -87,6 +88,9 @@ require_once '../modelo/entrada.php';
               $row->referencia,
               $row->factura,
               $row->serie,
+              $ent->getUndCaj($row->id_entrada)['cantidad'],
+              $ent->getUndCaj($row->id_entrada)['cajas'],
+              $row->fecha_de_comprobante,
               $row->created_at,
             );
           }

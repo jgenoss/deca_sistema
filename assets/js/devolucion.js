@@ -50,6 +50,7 @@ new Vue({
         id_salida:'',
         id_cliente:'',
         referencia:'',
+        tdevolucion:'',
         factura:'',
         fecha:'',
         file:'',

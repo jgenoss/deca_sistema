@@ -32,7 +32,10 @@ require_once '../modelo/inventario.php';
               $row->cNombre,
               $row->cantidad,
               $caja,
-              $row->umb
+              $row->umb,
+              ($row->status == 1)?
+              '<span class="badge badge-success">ACTIVO</span>':
+              '<span class="badge badge-danger">INACTIVO</span>',
             );
           }
           setJson(array(

@@ -29,6 +29,10 @@ if(isset($_SESSION['START'])){
     ));
   }
 }
+function ConverUTF_8($value)
+{
+  return mb_convert_encoding($value, "UTF-8", "UTF-8");
+}
 function getUserIP() {
   $ipaddress = '';
   if (isset($_SERVER['HTTP_CLIENT_IP']))

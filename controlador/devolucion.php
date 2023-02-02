@@ -55,8 +55,10 @@ require_once '../modelo/devolucion.php';
         if (isset($_GET)) {
           $rtn = AllConsult($sl->getDevolucion());
           $A = array();
+          $url = "fpdf/rp_devolucion.php?id=";
           foreach ($rtn as $row) {
-            $button='<button id="view" value="'.$row->id_devolucion.'" class="btn btn-warning"><i class="fas fa-eye"></i></button>';
+            $button='<button id="view" value="'.$row->id_devolucion.'" class="btn btn-sm btn-warning"><i class="fas fa-eye"></i></button>
+            <a class="btn btn-sm btn-info" target="_blank" href="'.$url.$row->id_devolucion.'" ><i class="fa-solid fa-print"></i></a>';
             $A[] = array(
               ($row->id_devolucion)?$button:$button,
               $row->empresa,

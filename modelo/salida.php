@@ -12,6 +12,30 @@ class salida
   {
     $this->db = new dbconnect();
   }
+  public function getUndCaj($id)
+  {
+    $cantidad = 0;
+    $cajas = 0;
+    $variable = $this->db->AllConsult($this->db->sql("SELECT
+        ent.cantidad,
+        pro.umb
+      FROM
+        salida_detalle AS ent
+        INNER JOIN producto AS pro ON ent.id_producto = pro.id_producto
+      WHERE
+        ent.id_salida = $id
+      GROUP BY
+        pro.id_producto"));
+    foreach ($variable as $key => $value) {
+      $cantidad += $value->cantidad;
+      $cajas += (round($value->cantidad/$value->umb) < 1) ? 1 : round($value->cantidad/$value->umb);
+    }
+    return array(
+      'cantidad' => $cantidad,
+      'cajas' => $cajas,
+    );
+
+  }
   public function getCliente()
   {
     return $this->db->sql("SELECT * FROM clientes WHERE habilitado = 1");
@@ -111,7 +135,7 @@ class salida
         $id = $val[9][$i]['id'];
         $cantidad = $val[9][$i]['cantidad'];
         $query = $this->db->sql("INSERT INTO salida_detalle(id_salida,id_serie,id_producto,cantidad)VALUES('$last_id','$val[4]','$id','$cantidad')");
-        $query = $this->db->sql("UPDATE inventario SET cantidad=cantidad-'$cantidad'  WHERE id_producto =".$id);
+        $query = $this->db->sql("UPDATE inventario SET cantidad=cantidad-'$cantidad' WHERE id_producto = $id AND status = 1");
         $queryi = $this->db->Consult($this->db->sql("SELECT * FROM inventario WHERE id_producto =".$id));
         if ($queryi):
           $inv_cantidad = $queryi->cantidad;

@@ -36,14 +36,15 @@ require_once '../modelo/salida.php';
             $button='<button id="view" value="'.$row->id_salida.'" class="btn btn-sm btn-warning"><i class="fas fa-eye"></i></button>
             <a class="btn btn-sm btn-info" target="_blank" href="'.$url.$row->id_salida.'" ><i class="fa-solid fa-print"></i></a>';
             $A[] = array(
-              '0' => $button,
-              '1' => $row->empresa,
-              '2' => ($row->devolucion==1)?'<span class="badge badge-warning">'.$row->referencia.'</span>':$row->referencia,
-              '3' => $row->factura,
-              '4' => $row->serie,
-              '5' => $row->tpago,
-              '6' => $row->fecha_de_comprobante,
-              '7' => $row->created_at
+              $button,
+              $row->empresa,
+              ($row->devolucion==1)?'<span class="badge badge-warning">'.$row->referencia.'</span>':$row->referencia,
+              $row->factura,
+              $row->serie,
+              $sl->getUndCaj($row->id_salida)['cantidad'],
+              $sl->getUndCaj($row->id_salida)['cajas'],
+              $row->fecha_de_comprobante,
+              $row->created_at
             );
           }
           setJson(array(
@@ -65,14 +66,15 @@ require_once '../modelo/salida.php';
             $button='<button id="view" value="'.$row->id_salida.'" class="btn btn-sm btn-warning"><i class="fas fa-eye"></i></button>
             <a class="btn btn-sm btn-info" target="_blank" href="'.$url.$row->id_salida.'" ><i class="fa-solid fa-print"></i></a>';
             $A[] = array(
-              '0' => $button,
-              '1' => $row->empresa,
-              '2' => ($row->devolucion==1)?'<span class="badge badge-warning">'.$row->referencia.'</span>':$row->referencia,
-              '3' => $row->factura,
-              '4' => $row->serie,
-              '5' => $row->tpago,
-              '6' => $row->fecha_de_comprobante,
-              '7' => $row->created_at,
+              $button,
+              $row->empresa,
+              ($row->devolucion==1)?'<span class="badge badge-warning">'.$row->referencia.'</span>':$row->referencia,
+              $row->factura,
+              $row->serie,
+              $sl->getUndCaj($row->id_salida)['cantidad'],
+              $sl->getUndCaj($row->id_salida)['cajas'],
+              $row->fecha_de_comprobante,
+              $row->created_at
             );
           }
           setJson(array(
@@ -284,7 +286,7 @@ require_once '../modelo/salida.php';
                     $EAN = $key['EAN'];
                     $CANTIDAD = $key['CANTIDAD'];
 
-                    $rtn1 = Consult($db->sql("SELECT * FROM producto WHERE codigo_1='$COVA'"));
+                    $rtn1 = Consult($db->sql("SELECT * FROM producto WHERE codigo_1='$COVA' AND status = 1"));
                     if (!$rtn1) {
                       throw new Exception('ESTE ARTICULO NO EXISTE'."<br/>".
                       "COAR: ".$key['COAR']."<br/>".
@@ -294,7 +296,8 @@ require_once '../modelo/salida.php';
                       "CANTIDAD: ".$key['CANTIDAD']);
                       break;
                     }elseif ($rtn1) {
-                      $rtn2 = Consult($db->sql("SELECT * FROM inventario WHERE id_producto=".$rtn1->id_producto));
+                      $idp = $rtn1->id_producto;
+                      $rtn2 = Consult($db->sql("SELECT * FROM inventario WHERE id_producto=$idp AND status = 1"));
                       if (!$rtn2) {
                         throw new Exception('NO EXISTE EN INVENTARIO'."<br/>".
                         "COAR: ".$key['COAR']."<br/>".
@@ -305,8 +308,7 @@ require_once '../modelo/salida.php';
                         break;
                       }elseif ($rtn1) {
                         if ($rtn2) {
-                          if ($rtn2->cantidad > $key['CANTIDAD']) {
-
+                          if ($rtn2->cantidad >= $key['CANTIDAD']) {
                             $L[] = array(
                               'id' => $rtn1->id_producto,
                               'codigo' => $rtn1->ean,

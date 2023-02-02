@@ -28,7 +28,8 @@ class inventario
         	p.umb,
         	b.nombre AS bNombre,
         	cl.empresa AS empresa,
-          p.id_bodega
+          p.id_bodega,
+          i.status
         FROM
         	inventario AS i
         	INNER JOIN producto AS p ON i.id_producto = p.id_producto
@@ -51,7 +52,8 @@ class inventario
         	p.umb,
         	b.nombre AS bNombre,
         	cl.empresa AS empresa,
-          p.id_bodega
+          p.id_bodega,
+          i.status
         FROM
         	inventario AS i
         	INNER JOIN producto AS p ON i.id_producto = p.id_producto
@@ -74,7 +76,8 @@ class inventario
         	p.umb,
         	b.nombre AS bNombre,
         	cl.empresa AS empresa,
-          p.id_bodega
+          p.id_bodega,
+          i.status
         FROM
         	inventario AS i
         	INNER JOIN producto AS p ON i.id_producto = p.id_producto
