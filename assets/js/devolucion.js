@@ -130,7 +130,7 @@ new Vue({
           },
           "bDestroy": true,
           "iDisplayLength": 20, //Paginacion
-          "order": [[1, "desc"]]
+          "order": [[0, "desc"]]
         });
       });
     },
@@ -212,7 +212,7 @@ new Vue({
           },
           "bDestroy": true,
           "iDisplayLength": 25, //Paginacion
-          "order": [[1, "asc"]]
+          "order": [[0, "asc"]]
         });
         $("#listDevolucion").DataTable({
           dom:'Bfrtip',
@@ -229,7 +229,7 @@ new Vue({
           },
           "bDestroy": true,
           "iDisplayLength": 25, //Paginacion
-          "order": [[1, "asc"]]
+          "order": [[0, "asc"]]
         });
       });
     },

@@ -44,7 +44,7 @@ class salida
   {
     return $this->db->sql(
       "SELECT
-        s.id_salida,
+      	s.id_salida,
       	cl.empresa,
       	s.factura,
       	s.created_at,
@@ -52,11 +52,13 @@ class salida
       	s.serie,
       	s.tpago,
       	s.observacion,
-        s.devolucion,
-        s.fecha_de_comprobante
+      	s.devolucion,
+      	s.fecha_de_comprobante
       FROM
       	salida AS s
-      	INNER JOIN clientes AS cl ON s.id_cliente = cl.id_cliente");
+      	INNER JOIN clientes AS cl ON s.id_cliente = cl.id_cliente
+      ORDER BY
+      	s.created_at DESC");
   }
   public function getListDate($var)
   {

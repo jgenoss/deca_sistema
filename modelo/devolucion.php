@@ -30,7 +30,7 @@ class salida
       	s.observacion
       FROM
       	salida AS s
-      	INNER JOIN clientes AS cl ON s.id_cliente = cl.id_cliente WHERE devolucion = 0");
+      	INNER JOIN clientes AS cl ON s.id_cliente = cl.id_cliente WHERE devolucion = 0 ORDER BY s.created_at DESC");
   }
   public function getDevolucion()
   {
@@ -46,7 +46,7 @@ class salida
       	s.observacion
       FROM
       	devolucion AS s
-      	INNER JOIN clientes AS cl ON s.id_cliente = cl.id_cliente");
+      	INNER JOIN clientes AS cl ON s.id_cliente = cl.id_cliente ORDER BY s.created_at DESC");
   }
   public function getInventario($val)
   {
