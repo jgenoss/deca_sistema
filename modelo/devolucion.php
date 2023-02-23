@@ -16,6 +16,7 @@ class salida
   {
     return $this->db->sql("SELECT * FROM clientes WHERE habilitado = 1");
   }
+
   public function getSalida()
   {
     return $this->db->sql(
@@ -74,7 +75,7 @@ class salida
         	ON
         		b.id_cliente = cl.id_cliente
         WHERE
-        	cl.id_cliente = $val"
+        	cl.id_cliente = $val AND p.status=1"
     );
   }
   public function getProductId($val)
@@ -100,7 +101,7 @@ class salida
   }
   public function setDevolucion($val,$id_session)
   {
-    $query = $this->db->sql("INSERT INTO devolucion ( id_cliente, referencia, factura, fecha_de_comprobante, serie, observacion, tpago ,id_salida,archivo)VALUES('$val[0]','$val[1]','$val[2]','$val[3]','$val[4]','$val[5]','$val[6]','$val[7]','$val[9]')");
+    $query = $this->db->sql("INSERT INTO devolucion ( id_cliente, referencia, factura, fecha_de_comprobante, serie, observacion, tpago ,id_salida,archivo,tdevolucion,cantidad)VALUES('$val[0]','$val[1]','$val[2]','$val[3]','$val[4]','$val[5]','$val[6]','$val[7]','$val[9]','$val[10]','$val[11]')");
     if ($query) {
       for ($i=0; $i < count($val[8]); $i++) {
 

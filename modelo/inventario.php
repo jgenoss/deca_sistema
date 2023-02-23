@@ -11,12 +11,48 @@ class inventario
   {
     $this->db = new dbconnect();
   }
+  public function deleteInventario($id)
+  {
+    $query = $this->db->sql("DELETE FROM producto WHERE id_producto = '$id'");
+    $query = $this->db->sql("DELETE FROM inventario WHERE id_producto = '$id'");
+    return $query;
+  }
+  public function duplicate($id)
+  {
+    $query = $this->db->Consult($this->db->sql("SELECT * FROM producto WHERE id_producto = '$id'"));
+    if ($query) {
+      $A = array(
+        '0' => $query->codigo,
+        '1' => $query->ean,
+        '2' => $query->nombre,
+        '3' => $query->id_categoria,
+        '4' => '0',//status 0
+        '5' => $query->estampilla,
+        '6' => $query->umb,
+        '7' => $query->id_bodega,
+        '8' => $query->id_usuario,
+        '9' => $query->codigo_1,
+        '10' => $query->codigo_2,
+        '11' => $query->tipo,
+        '12' => $query->tipo_val
+      );
+      $rtn = $this->db->sql("INSERT INTO producto (codigo, ean, nombre, id_categoria, status, estampilla, umb, id_bodega, id_usuario, codigo_1, codigo_2,tipo,tipo_val)VALUES
+      ('$A[0]','$A[1]','$A[2]','$A[3]','$A[4]','$A[5]','$A[6]','$A[7]','$A[8]','$A[9]','$A[10]','$A[11]','$A[12]')");
+      $last_id = $this->db->lastInsertId();
+
+      $this->db->sql("INSERT INTO inventario (id_producto,id_usuario,cantidad,status)VALUES('$last_id','$A[8]','0','0')");
+      return $rtn;
+    }elseif (!$query) {
+      return null;
+    }
+  }
   public function listarInventario($type)
   {
     if ($type == "all") {
       return $this->db->sql(
         "SELECT
         	i.id_inventario,
+          p.id_producto,
         	p.codigo,
         	p.codigo_1,
         	p.codigo_2,
@@ -41,6 +77,7 @@ class inventario
       return $this->db->sql(
         "SELECT
         	i.id_inventario,
+          p.id_producto,
         	p.codigo,
         	p.codigo_1,
         	p.codigo_2,
@@ -65,6 +102,7 @@ class inventario
       return $this->db->sql(
         "SELECT
         	i.id_inventario,
+          p.id_producto,
         	p.codigo,
         	p.codigo_1,
         	p.codigo_2,

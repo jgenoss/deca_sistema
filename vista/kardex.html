@@ -37,7 +37,7 @@
                     <tr v-for="(object_search, index) in list_search" :key="object_search.id">
                       <td>{{ object_search.ean }}</td>
                       <td>{{ object_search.nombre }}</td>
-                      <td><button @click="find(object_search.id)" class="btn btn-info" type="button" name="button"><i class="fas fa-plus"></i></button></td>
+                      <td><a class="btn btn-danger" target="_blank" :href="'vista/rp_kardex.php?id='+object_search.id"><i class="fas fa-eye"></i></a> </td>
                     </tr>
                   </tbody>
                 </table>

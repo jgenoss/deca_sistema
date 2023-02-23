@@ -297,7 +297,7 @@ require_once '../modelo/salida.php';
                       break;
                     }elseif ($rtn1) {
                       $idp = $rtn1->id_producto;
-                      $rtn2 = Consult($db->sql("SELECT * FROM inventario WHERE id_producto=$idp AND status = 1"));
+                      $rtn2 = Consult($db->sql("SELECT * FROM inventario WHERE id_producto='$idp' AND status = 1"));
                       if (!$rtn2) {
                         throw new Exception('NO EXISTE EN INVENTARIO'."<br/>".
                         "COAR: ".$key['COAR']."<br/>".

@@ -32,6 +32,8 @@ new Vue({
         serie:'',
         observacion:'',
         tpago:'',
+        cantidad:'',
+        tdevolucion:'',
         listp:[]
       },
       ver:{
@@ -51,6 +53,7 @@ new Vue({
         id_cliente:'',
         referencia:'',
         tdevolucion:'',
+        cantidad:'',
         factura:'',
         fecha:'',
         file:'',
@@ -332,6 +335,8 @@ new Vue({
       this.devolucion.serie='',
       this.devolucion.observacion='',
       this.devolucion.tpago='',
+      this.devolucion.tdevolucion='',
+      this.devolucion.cantidad='',
       this.devolucion.listp = [];
       this.file_name='Selecione un document';
     }

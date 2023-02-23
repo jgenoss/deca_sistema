@@ -62,7 +62,54 @@ new Vue({
           axios.post('controlador/inventario.php?op=getInventarioaId',{id:id}).then(resp =>{
             thisJq.producto = resp.data;
             thisJq.list = true;
-
+          });
+        });
+        $(document).on("click", "#delete", function() {
+          let id = $(this).val();
+          Swal.fire({
+            title: '¿Estas seguro?',
+            text: "!No podrás revertir esto!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText:'Cancelar',
+            confirmButtonText: 'Si!'
+          }).then((result) => {if (result.isConfirmed) {
+              axios.post('controlador/inventario.php?op=delete',{id:id}).then(resp =>{
+                if (resp.data.type == "success") {
+                  thisJq.sweetalert2(resp.data.tittle,resp.data.message,resp.data.type);
+                  thisJq.cancel();
+                }else {
+                  thisJq.list = true;
+                  thisJq.sweetalert2(resp.data.tittle,resp.data.message,resp.data.type);
+                }
+              });
+            }
+          });
+        });
+        $(document).on("click", "#duplicate", function() {
+          let id = $(this).val();
+          Swal.fire({
+            title: '¿Estas seguro?',
+            text: "!Duplicararas este Producto!",
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText:'Cancelar',
+            confirmButtonText: 'Si!'
+          }).then((result) => {if (result.isConfirmed) {
+              axios.post('controlador/inventario.php?op=duplicate',{id:id}).then(resp =>{
+                if (resp.data.type == "success") {
+                  thisJq.sweetalert2(resp.data.tittle,resp.data.message,resp.data.type);
+                  thisJq.cancel();
+                }else {
+                  thisJq.list = true;
+                  thisJq.sweetalert2(resp.data.tittle,resp.data.message,resp.data.type);
+                }
+              });
+            }
           });
         });
       });

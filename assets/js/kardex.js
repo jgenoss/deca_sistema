@@ -33,18 +33,23 @@ new Vue({
     find:function(id){
       axios.post('controlador/kardex.php?op=addKardex',{id}).then(resp => {
         console.log(resp.data);
-        this.addlist(
-          resp.data.p_id,
-          resp.data.p_ean,
-          resp.data.p_nombre,
-          resp.data.e_cantidad,
-          resp.data.s_cantidad,
-          resp.data.i_cantidad,
-          resp.data.es_cantidad
-        );
+        if (resp.data.data == null) {
+          alert("No hay movimientos");
+        }else {
+          this.addlist(
+            resp.data.p_id,
+            resp.data.p_ean,
+            resp.data.p_nombre,
+            resp.data.e_cantidad,
+            resp.data.s_cantidad,
+            resp.data.i_cantidad,
+            resp.data.es_cantidad
+          );
+        }
       })
     },
     addlist:function(p1,p2,p3,p4,p5,p6,p7){
+      console.log(p1,p2,p3,p4,p5,p6,p7);
       this.list_kardex.push({
         p_id:p1,
         p_ean:p2,

@@ -45,7 +45,9 @@ if(!isset($_GET['id'])){
       'factura' => $rtn[0]->factura,
       'fecha' => $rtn[0]->fecha_de_comprobante,
       'observacion' => $rtn[0]->observacion,
-      'listp' => $products
+      'listp' => $products,
+      'tdevolucion' => $rtn[0]->tdevolucion,
+      'cantidad' => $rtn[0]->cantidad
     );
   class PDF extends FPDF
   {
@@ -79,7 +81,7 @@ if(!isset($_GET['id'])){
       $this->SetY(30);
       $this->SetX(-60);
       $this->SetFont('Arial','',8);
-      $this->Cell(0,6,"TIPO DE DEVOLUCION: COMPLETA",1,0,"R");
+      $this->Cell(0,6,"TIPO DE DEVOLUCION: ".$info['tdevolucion'],1,0,"R");
 
       // CLIENTE
       $this->SetY(30);
@@ -101,11 +103,18 @@ if(!isset($_GET['id'])){
 
       //Display table product rows
       $this->SetFont('Arial','',10);
-      foreach($info['listp'] as $row){
-        $this->Cell(170,6,str_limit($row["codigo_1"]." - / - ".$row["nombre"],'100','...'),1,0,"L");
-        $this->Cell(26,6,$row["cantidad"],1,0,"C");
+      if ($info['tdevolucion'] == 'TOTAL' && $info['cliente'] == 'DISMEL LTDA') {
+        $this->Cell(170,6,"TODOS LOS ITEMS",1,0,"C");
+        $this->Cell(26,6,$info['cantidad'],1,0,"C");
         $this->Ln();
+      }else {
+        foreach($info['listp'] as $row){
+          $this->Cell(170,6,str_limit($row["codigo_1"]." - / - ".$row["nombre"],'100','...'),1,0,"L");
+          $this->Cell(26,6,$row["cantidad"],1,0,"C");
+          $this->Ln();
+        }
       }
+
       //Display table empty rows
       for($i=0;$i<28-count($info['listp']);$i++)
       {
@@ -200,6 +209,6 @@ if(!isset($_GET['id'])){
   $pdf->AliasNbPages();
   $pdf->AddPage();
   $pdf->body($info);
-  $pdf->Output("I","ENTRADA(test).pdf");
+  $pdf->Output("I","DEVOLUCION-".$info['factura']."(".$info['referencia'].").pdf");
 }
 ?>

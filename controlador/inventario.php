@@ -15,7 +15,11 @@ require_once '../modelo/inventario.php';
           $rtn = AllConsult($inv->listarInventario($_GET['bodega_id']));
           $A = array();
           foreach ($rtn as $row) {
-            $button = '<button id="edit" value="'.$row->id_inventario.'" data-toggle="modal" data-target="#modal-edit" class="btn btn-primary"><i class="fas fa-edit"></i></button>';
+            $button = ($row->status == 1)? '
+            <button id="delete" value="'.$row->id_producto.'" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+            <button id="edit" value="'.$row->id_inventario.'" data-toggle="modal" data-target="#modal-edit" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></button>
+            <button id="duplicate" value="'.$row->id_producto.'" class="btn btn-sm btn-info"><i class="fas fa-clone"></i></button>':'<button id="delete" value="'.$row->id_producto.'" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+            <button id="edit" value="'.$row->id_inventario.'" data-toggle="modal" data-target="#modal-edit" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></button>';
             try {
               $caja = round($row->cantidad/$row->umb);
             } catch (DivisionByZeroError $e) {
@@ -67,6 +71,30 @@ require_once '../modelo/inventario.php';
           try {
             $inv->editInventario(array($_POST['id_inventario'],$_POST['cantidad']));
             setMsg('Exito','Existencia modificada con exito','success');
+          }catch (Exception $e) {
+            setMsg("Error",$e->getMessage(),"error");
+          }
+        }
+      }
+      break;
+    case 'delete':
+      {
+        if (isset($_POST)) {
+          try {
+            $inv->deleteInventario($_POST['id']);
+            setMsg('Exito','Producto eliminado con exito','success');
+          }catch (Exception $e) {
+            setMsg("Error",$e->getMessage(),"error");
+          }
+        }
+      }
+      break;
+    case 'duplicate':
+      {
+        if (isset($_POST)) {
+          try {
+            $inv->duplicate($_POST['id']);
+            setMsg('Exito','Producto duplicado con exito','success');
           }catch (Exception $e) {
             setMsg("Error",$e->getMessage(),"error");
           }

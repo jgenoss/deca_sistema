@@ -18,7 +18,6 @@ if (!isset($_SESSION['START'])) {
   if (isset($_GET['id'])):
 	$id =	$_GET['id'];
   $rtn =Consult($db->sql("SELECT * FROM producto WHERE id_producto=".$id));
-
   $rtn_inv =Consult($db->sql("SELECT * FROM inventario WHERE id_producto=".$id));
 
 
@@ -40,7 +39,7 @@ if (!isset($_SESSION['START'])) {
   $rtns = AllConsult($kardex->getSalidaId($_GET['id']));
   $salidas = array();
   foreach ($rtns as $value) {
-		$rtn_inv_fecha = Consult($db->sql("SELECT * FROM inventario_fecha WHERE id_producto='$id>' AND id_salida=".$value->id_salida));
+		$rtn_inv_fecha = Consult($db->sql("SELECT * FROM inventario_fecha WHERE id_producto='$id' AND id_salida=".$value->id_salida));
     $salidas[] = array(
       'type' =>'salida',
       'fecha' =>$value->fecha_de_comprobante,

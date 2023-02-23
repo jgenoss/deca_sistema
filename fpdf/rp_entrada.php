@@ -201,19 +201,19 @@
 
 
       //Display table product rows
-      $this->SetFont('Arial','',10);
+      $this->SetFont('Arial','',8);
       foreach($info['listp'] as $row){
         if ($info['cliente'] == "ALTIPAL") {
           $this->Cell(35,6,$row["codigo_1"],"LR",0,"C");
           $this->Cell(35,6,$row["codigo_2"],"R",0,"C");
           $this->Cell(35,6,$row["codigo_0"],"R",0,"C");
-          $this->Cell(105,6,str_limit($row["nombre"],'60','...'),"R",0,"L");
+          $this->Cell(105,6,str_limit($row["nombre"],'85','...'),"R",0,"L");
           $this->Cell(20,6,($row['fv'] == 1)? $row['fecha_ven']:'N/A',"R",0,"C");
           $this->Cell(15,6,$row["cajas"],"R",0,"C");
           $this->Cell(15,6,$row["cantidad"],"R",1,"C");
         }else {
           $this->Cell(35,6,$row["codigo_0"],"LR",0,"C");
-          $this->Cell(130,6,str_limit($row["nombre"],'55','...'),"R",0,"L");
+          $this->Cell(130,6,str_limit($row["nombre"],'85','...'),"R",0,"L");
           $this->Cell(15,6,$row["cajas"],"R",0,"C");
           $this->Cell(15,6,$row["cantidad"],"R",1,"C");
         }

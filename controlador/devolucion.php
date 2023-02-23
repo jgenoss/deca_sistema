@@ -125,6 +125,8 @@ require_once '../modelo/devolucion.php';
             '7' => $_POST['id_salida'],
             '8' => $_POST['listp'],
             '9' => (!empty($_POST['file']))? $sl->ConvertFilePDF($_POST['file']):'',
+            '10' => $_POST['tdevolucion'],
+            '11' => $_POST['cantidad']
           );
           try {
             $sl->setDevolucion($A,$_SESSION['START'][1]);

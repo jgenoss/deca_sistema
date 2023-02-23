@@ -202,15 +202,7 @@ salida<div class="content-header">
                     <option value="TRANSFERENCIA">TRANSFERENCIA</option>
                   </select>
                 </div>
-              <div class="col-lg-3 col-md-3">
-                <div class="form-group">
-                  <label>Tipo de devolucion(*):</label>
-                  <select class="form-control" v-model="devolucion.tdevolucion" readonly>
-                    <option value="COMPLETA">COMPLETA</option>
-                    <option value="PARCIAL">PARCIAL</option>
-                  </select>
-                </div>
-              </div>
+
               <div class="col-lg-12 col-md-12">
                 <div class="form-group">
                   <label>Observacion(*):</label>
@@ -268,7 +260,7 @@ salida<div class="content-header">
             <!-- open form -->
             <form v-on:submit.prevent="submit">
             <div class="row">
-              <div class="col-lg-2 col-md-2">
+              <div class="col-lg-3 col-md-2">
                 <div class="form-group">
                   <label>Cliente(*):</label>
                   <select  @change="loadInventario(devolucion.id_cliente)" class="form-control" v-model="devolucion.id_cliente">
@@ -282,27 +274,27 @@ salida<div class="content-header">
                   <input v-model="devolucion.referencia" type="text" class="form-control" required>
                 </div>
               </div>
-              <div class="col-lg-3 col-md-4">
+              <div class="col-lg-2 col-md-4">
                 <div class="form-group">
                   <label>Factura(*):</label>
                   <input v-model="devolucion.factura" type="text" class="form-control" class="form-control" required>
                 </div>
               </div>
-              <div class="col-lg-3 col-md-3">
+              <div class="col-lg-3 col-md-2">
                 <div class="form-group">
                   <label>Fecha(*)</label>
                   <input v-model="devolucion.fecha" type="date" class="form-control" required>
                 </div>
               </div>
-              <div class="col-lg-2 col-md-2">
+              <div class="col-lg-3 col-md-2">
                 <div class="form-group">
                   <label>Serie(*):</label>
                   <input v-model="devolucion.serie" type="text" class="form-control" class="form-control" readonly>
                 </div>
               </div>
-              <div class="col-lg-3 col-md-3">
+              <div class="col-lg-3 col-md-2">
                 <div class="form-group">
-                  <label>Tipo de pago(*):</label>
+                  <label>Tipo pago(*):</label>
                   <select class="form-control" v-model="devolucion.tpago" required>
                     <option value="CONTADO">CONTADO</option>
                     <option value="CREDITO">CREDITO</option>
@@ -310,7 +302,22 @@ salida<div class="content-header">
                   </select>
                 </div>
               </div>
-              <div class="col-lg-4 col-md-4">
+              <div class="col-lg-3 col-md-2">
+                <div class="form-group">
+                  <label>Tipo devolucion(*):</label>
+                  <select class="form-control" v-model="devolucion.tdevolucion">
+                    <option value="TOTAL">TOTAL</option>
+                    <option value="PARCIAL">PARCIAL</option>
+                  </select>
+                </div>
+              </div>
+              <div v-if="devolucion.tdevolucion == 'TOTAL'" class="col-lg-2 col-md-2">
+                <div class="form-group">
+                  <label>Cant items(*):</label>
+                  <input v-model="devolucion.cantidad" type="number" class="form-control" class="form-control">
+                </div>
+              </div>
+              <div class="col-lg-4 col-md-2">
                 <div class="form-group">
                   <label for="exampleInputFile">Adjustar Archivo(*)</label>
                   <div class="input-group">
@@ -347,7 +354,7 @@ salida<div class="content-header">
                 </tbody>
               </table>
               <!-- button -->
-              <button v-if="btnR == true" class="btn btn-primary" type="submit" name="salida">Registrar salida</button>
+              <button v-if="btnR == true" class="btn btn-primary" type="submit" name="salida">Registrar Devolucion</button>
             </div>
             <!-- /form -->
           </form>

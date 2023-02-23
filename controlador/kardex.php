@@ -20,8 +20,7 @@ switch (@$_GET['op']) {
             $A[] = array(
               'id' => $value->id_producto,
               'ean' => $value->ean,
-              'nombre' => $value->nombre,
-              'button' => $button
+              'nombre' => $value->nombre
             );
           }
           setJson($A);
@@ -31,28 +30,30 @@ switch (@$_GET['op']) {
 
     break;
   case 'addKardex':
-      {
+    {
         if (isset($_POST['id'])) {
           $query = AllConsult($kr->queryKardex($_POST['id']));
           $A = array();
-
-          foreach ($query as $key => $value) {
-            $A = array(
-              'p_id' => $value->p_id,
-              'p_ean' => $value->p_ean,
-              'p_nombre' => $value->p_nombre,
-              'e_cantidad' => $value->e_cantidad,
-              's_cantidad' => $value->s_cantidad,
-              'i_cantidad' => $value->i_cantidad,
-              'es_cantidad' => $value->entra_salida
-            );
-          }
-          setJson($A);
+          if ($query) {
+            foreach ($query as $key => $value) {
+              $A = array(
+                'p_id' => $value->p_id,
+                'p_ean' => $value->p_ean,
+                'p_nombre' => $value->p_nombre,
+                'e_cantidad' => $value->e_cantidad,
+                's_cantidad' => $value->s_cantidad,
+                'i_cantidad' => $value->i_cantidad,
+                'es_cantidad' => $value->entra_salida
+              );
+            }
+            setJson($A);
+          }else {
+            setJson(array('data' => null));
         }
       }
+    }
     break;
   default:
-      die(null);
       exit();
     break;
 }
