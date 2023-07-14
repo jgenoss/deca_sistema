@@ -1,71 +1,71 @@
 new Vue({
-  el:'#entrada',
-  data(){
-    return{
-      codigo:'',
-      total:0,
-      file_name:'Selecione un document',
-      file:'',
-      f_start:'',
-      f_end:'',
-      resultListP:{
-        id:'',
-        codigo:'',
-        nombre:'',
-        fecha_v:'',
-        fv:false,
-        cantidad:0,
-        umb:'',
-        cj:''
+  el: '#entrada',
+  data() {
+    return {
+      codigo: '',
+      total: 0,
+      file_name: 'Selecione un document',
+      file: '',
+      f_start: '',
+      f_end: '',
+      resultListP: {
+        id: '',
+        codigo: '',
+        nombre: '',
+        fecha_v: '',
+        fv: false,
+        cantidad: 0,
+        umb: '',
+        cj: ''
       },
-      arrayCliente:[],
-      resultCliente:{
-        id:'',
-        nombre:''
+      arrayCliente: [],
+      resultCliente: {
+        id: '',
+        nombre: ''
       },
-      arrayBodega:[],
-      resultBodega:{
-        id:'',
-        nombre:''
+      arrayBodega: [],
+      resultBodega: {
+        id: '',
+        nombre: ''
       },
-      entrada:{
-        id_cliente:'',
-        id_bodega:'',
-        referencia:'',
-        factura:'',
-        tipo_comprobante:'',
-        fecha:'',
-        file:'',
-        serie:'',
-        observacion:'',
-        direccion:'',
-        cja_purina:'',
-        listp:[]
+      entrada: {
+        id_cliente: '',
+        id_bodega: '',
+        referencia: '',
+        factura: '',
+        tipo_comprobante: '',
+        fecha: '',
+        file: '',
+        serie: '',
+        observacion: '',
+        direccion: '',
+        cja_purina: '',
+        listp: []
       },
-      ver:{
-        total:0,
-        id_cliente:'',
-        id_bodega:'',
-        referencia:'',
-        factura:'',
-        tipo_comprobante:'',
-        fecha:'',
-        file:'',
-        serie:'',
-        observacion:'',
-        direccion:'',
-        listp:[]
+      ver: {
+        total: 0,
+        id_cliente: '',
+        id_bodega: '',
+        referencia: '',
+        factura: '',
+        tipo_comprobante: '',
+        fecha: '',
+        file: '',
+        serie: '',
+        observacion: '',
+        direccion: '',
+        listp: []
       },
-      fila:'',
-      Modulo:'',
-      list:true,
-      form:false,
-      view:false,
-      btnR:true,
-      edit:false
+      fila: '',
+      Modulo: '',
+      list: true,
+      form: false,
+      view: false,
+      btnR: true,
+      edit: false
     }
   },
-  created(){
+  created() {
     this.tabla();
     this.init();
     this.getCliente();
@@ -73,18 +73,18 @@ new Vue({
     this.getConsecutivo();
   },
 
-  methods:{
-    getConsecutivo(){
-      axios.post('controlador/entrada.php?op=getConsecutivo').then(resp =>{
+  methods: {
+    getConsecutivo() {
+      axios.post('controlador/entrada.php?op=getConsecutivo').then(resp => {
         this.generadNumber(resp.data.next);
         //this.entrada.serie = resp.data.next;
       });
     },
-    getListDate(){
+    getListDate() {
       thisJq = this;
-      $(function() {
+      $(function () {
         $("#list").DataTable({
-          dom:'Bfrtip',
+          dom: 'Bfrtip',
           "buttons": ["copy", "excel", "colvis"],
           "responsive": true,
           "autoWidth": false,
@@ -94,7 +94,7 @@ new Vue({
           "ajax": {
             "url": `controlador/entrada.php?op=getListDate&f_start=${thisJq.f_start}&f_end=${thisJq.f_end}`,
             "type": "POST",
-            "error": function(e) {console.log(e);}
+            "error": function (e) { console.log(e); }
           },
           "bDestroy": true,
           "iDisplayLength": 40, //Paginacion
@@ -102,40 +102,40 @@ new Vue({
         });
       });
     },
-    generadNumber(num){
+    generadNumber(num) {
       if (parseInt(num) < 10) {
         this.entrada.serie = `0000000${num}`;
-      }else if (parseInt(num) < 100) {
+      } else if (parseInt(num) < 100) {
         this.entrada.serie = `000000${num}`;
-      }else if (parseInt(num) < 1000) {
+      } else if (parseInt(num) < 1000) {
         this.entrada.serie = `00000${num}`;
-      }else if (parseInt(num) < 10000) {
+      } else if (parseInt(num) < 10000) {
         this.entrada.serie = `0000${num}`;
-      }else if (parseInt(num) < 100000) {
+      } else if (parseInt(num) < 100000) {
         this.entrada.serie = `000${num}`;
-      }else {
-        this.sweetalert2("ATENCION","CONTACTE CON EL PROGRAMADOR","error");
+      } else {
+        this.sweetalert2("ATENCION", "CONTACTE CON EL PROGRAMADOR", "error");
         this.entrada.serie = `andale hagale un aumento de sueldo`;
       }
     },
-    count(index){
-      axios.post('controlador/entrada.php?op=valiDate',this.entrada.listp[index]).then(resp =>{
+    count(index) {
+      axios.post('controlador/entrada.php?op=valiDate', this.entrada.listp[index]).then(resp => {
         if (resp.data.type == "error") {
-          this.sweetalert2(resp.data.tittle,resp.data.message,resp.data.type);
+          this.sweetalert2(resp.data.tittle, resp.data.message, resp.data.type);
           this.entrada.listp[index].cantidad = resp.data.max;
-        }else if (resp.data.max == "0") {
-          this.sweetalert2(resp.data.tittle,resp.data.message,resp.data.type);
+        } else if (resp.data.max == "0") {
+          this.sweetalert2(resp.data.tittle, resp.data.message, resp.data.type);
           this.entrada.listp[index].cantidad = resp.data.max;
         }
       });
     },
-    loadInventario(index){
+    loadInventario(index) {
       this.listaInventario(index);
     },
-    submit:function () {
+    submit: function () {
       if (!this.entrada.listp.length) {
-        this.sweetalert2("info","Agregue un producto","info");
-      }else {
+        this.sweetalert2("info", "Agregue un producto", "info");
+      } else {
         Swal.fire({
           title: '¿Estas seguro?',
           text: "!No podrás revertir esto!",
@@ -143,26 +143,26 @@ new Vue({
           showCancelButton: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
-          cancelButtonText:'Cancelar',
+          cancelButtonText: 'Cancelar',
           confirmButtonText: 'Si!'
         }).then((result) => {
           if (result.isConfirmed) {
-            axios.post('controlador/entrada.php?op=regentrada',this.entrada).then(resp =>{
+            axios.post('controlador/entrada.php?op=regentrada', this.entrada).then(resp => {
               if (resp.data.type == "success") {
-                this.sweetalert2(resp.data.tittle,resp.data.message,resp.data.type);
+                this.sweetalert2(resp.data.tittle, resp.data.message, resp.data.type);
                 this.cancel();
-              }else {
-                this.sweetalert2(resp.data.tittle,resp.data.message,resp.data.type);
+              } else {
+                this.sweetalert2(resp.data.tittle, resp.data.message, resp.data.type);
               }
             });
           }
         });
       }
     },
-    editSub:function () {
+    editSub: function () {
       if (!this.entrada.listp.length) {
-        this.sweetalert2("info","Agregue un producto","info");
-      }else {
+        this.sweetalert2("info", "Agregue un producto", "info");
+      } else {
         Swal.fire({
           title: '¿Estas seguro?',
           text: "!No podrás revertir esto!",
@@ -170,36 +170,36 @@ new Vue({
           showCancelButton: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
-          cancelButtonText:'Cancelar',
+          cancelButtonText: 'Cancelar',
           confirmButtonText: 'Si!'
         }).then((result) => {
           if (result.isConfirmed) {
-            axios.post('controlador/entrada.php?op=editentrada',this.entrada).then(resp =>{
+            axios.post('controlador/entrada.php?op=editentrada', this.entrada).then(resp => {
               if (resp.data.type == "success") {
-                this.sweetalert2(resp.data.tittle,resp.data.message,resp.data.type);
+                this.sweetalert2(resp.data.tittle, resp.data.message, resp.data.type);
                 this.cancel();
-              }else {
-                this.sweetalert2(resp.data.tittle,resp.data.message,resp.data.type);
+              } else {
+                this.sweetalert2(resp.data.tittle, resp.data.message, resp.data.type);
               }
             });
           }
         });
       }
     },
-    uploadImage: function() {
+    uploadImage: function () {
       thisJq = this;
       const file = document.querySelector('input[type=file]').files[0];
       const reader = new FileReader();
-      reader.onload = function(e) {
+      reader.onload = function (e) {
         thisJq.file_name = file.name;
         thisJq.entrada.file = e.target.result;
       };
-      reader.onerror = function(error) {
+      reader.onerror = function (error) {
         alert(error);
       };
       reader.readAsDataURL(file);
     },
-    onChangeFileUpload(){
+    onChangeFileUpload() {
       thisJq = this;
       file = this.$refs.uploadfiles0.files[0];
       this.file_name = file.name;
@@ -207,20 +207,20 @@ new Vue({
     },
     submitUpload() {
       const formData = new FormData();
-      formData.append('file',this.file)
-      axios.post('controlador/entrada.php?op=uploadFile',formData).then(resp =>{
+      formData.append('file', this.file)
+      axios.post('controlador/entrada.php?op=uploadFile', formData).then(resp => {
         if (resp.data.type == "success") {
-          this.sweetalert2(resp.data.tittle,resp.data.message,resp.data.type);
+          this.sweetalert2(resp.data.tittle, resp.data.message, resp.data.type);
           this.entrada.listp = resp.data.listp;
-        }else {
-          this.sweetalert2(resp.data.tittle,resp.data.message,resp.data.type);
+        } else {
+          this.sweetalert2(resp.data.tittle, resp.data.message, resp.data.type);
         }
       });
     },
     tabla() {
-      $(function() {
+      $(function () {
         $("#list").DataTable({
-          dom:'Bfrtip',
+          dom: 'Bfrtip',
           "buttons": ["copy", "excel", "colvis"],
           "responsive": true,
           "autoWidth": false,
@@ -230,16 +230,16 @@ new Vue({
           "ajax": {
             "url": 'controlador/entrada.php?op=getentradas',
             "type": "POST",
-            "error": function(e) {console.log(e);}
+            "error": function (e) { console.log(e); }
           },
           "bDestroy": true,
           "iDisplayLength": 40, //Paginacion
-          "order": [[0, 'desc' ]]
+          "order": [[0, 'desc']]
         });
       });
     },
     listaInventario(type) {
-      $(function() {
+      $(function () {
         $("#invt").DataTable({
           "responsive": true,
           "autoWidth": false,
@@ -249,7 +249,7 @@ new Vue({
           "ajax": {
             "url": `controlador/entrada.php?op=getInventario&id=${type}`,
             "type": "POST",
-            "error": function(e) {console.log(e);}
+            "error": function (e) { console.log(e); }
           },
           "bDestroy": true,
           "iDisplayLength": 25, //Paginacion
@@ -257,8 +257,8 @@ new Vue({
         });
       });
     },
-    cancel:function () {
-      $("#css").attr("class","sidebar-mini layout-fixed");
+    cancel: function () {
+      $("#css").attr("class", "sidebar-mini layout-fixed");
       this.tabla();
       location.reload();
       this.limpiarInputs();
@@ -266,95 +266,95 @@ new Vue({
       this.form = false;
       this.view = false;
     },
-    getCliente(){
-      axios.post('controlador/entrada.php?op=getClientes').then(resp =>{
+    getCliente() {
+      axios.post('controlador/entrada.php?op=getClientes').then(resp => {
         this.arrayCliente = resp.data;
       });
     },
-    getBodega(){
-      axios.post('controlador/entrada.php?op=getBodega').then(resp =>{
+    getBodega() {
+      axios.post('controlador/entrada.php?op=getBodega').then(resp => {
         this.arrayBodega = resp.data;
       });
     },
-    init(){
+    init() {
       const thisJq = this;
       $(function () {
-        $(document).on("click","#view", function() {
+        $(document).on("click", "#view", function () {
           let id = $(this).val();
-          axios.post('controlador/entrada.php?op=getentradaId',{id:id}).then(resp =>{
+          axios.post('controlador/entrada.php?op=getentradaId', { id: id }).then(resp => {
             thisJq.ver = resp.data;
             thisJq.total = resp.data.total;
-            $("#css").attr("class","sidebar-mini layout-fixed sidebar-collapse");
+            $("#css").attr("class", "sidebar-mini layout-fixed sidebar-collapse");
             thisJq.view = true;
             thisJq.list = false;
           });
         });
-        $(document).on("click","#edit", function() {
+        $(document).on("click", "#edit", function () {
           let id = $(this).val();
-          axios.post('controlador/entrada.php?op=getentradaId',{id:id}).then(resp =>{
+          axios.post('controlador/entrada.php?op=getentradaId', { id: id }).then(resp => {
             thisJq.entrada = resp.data;
             thisJq.backup = resp.data;
             thisJq.listaInventario(thisJq.entrada.id_bodega);
             thisJq.total = resp.data.total;
-            $("#css").attr("class","sidebar-mini layout-fixed sidebar-collapse");
+            $("#css").attr("class", "sidebar-mini layout-fixed sidebar-collapse");
             thisJq.edit = true;
             thisJq.list = false;
           });
         });
-        $(document).on("click", "#prod", function() {
+        $(document).on("click", "#prod", function () {
           let id = $(this).val();
           let nombre = $(this).attr("nombre");
           let codigo = $(this).attr("codigo");
-          thisJq.addFind(id,codigo,nombre);
+          thisJq.addFind(id, codigo, nombre);
         });
       });
     },
-    addFind: function (id,codigo,nombre) {
+    addFind: function (id, codigo, nombre) {
       this.entrada.listp.push({
-        id:id,
-        codigo:codigo,
-        nombre:nombre,
-        fecha_v:'',
-        fv:false,
-        cantidad:0
+        id: id,
+        codigo: codigo,
+        nombre: nombre,
+        fecha_v: '',
+        fv: false,
+        cantidad: 0
       });
     },
     deleteFind: function (index) {
       console.log(index);
       this.entrada.listp.splice(index, 1);
     },
-    getProductId:function (id) {
-      axios.post('controlador/entrada.php?op=getProductId',{id:id}).then(resp =>{
-        this.agregarDetalle(resp.data.id,resp.data.producto,resp.data.codigo);
+    getProductId: function (id) {
+      axios.post('controlador/entrada.php?op=getProductId', { id: id }).then(resp => {
+        this.agregarDetalle(resp.data.id, resp.data.producto, resp.data.codigo);
       });
     },
-    newbutton:function () {
+    newbutton: function () {
       this.getCliente();
       this.getBodega();
       this.getConsecutivo();
       this.limpiarInputs();
-      $("#css").attr("class","sidebar-mini layout-fixed sidebar-collapse");
+      $("#css").attr("class", "sidebar-mini layout-fixed sidebar-collapse");
       this.Modulo = 'Nuevo Cliente';
       this.list = false;
       this.form = true;
     },
-    sweetalert2:function(tittle,message,type) {
-			Swal.fire(
-				'¡'+tittle+'!',
-				''+message+'',
-				''+type+''
-			)
-		},
-    limpiarInputs:function() {
-      this.entrada.id_cliente='',
-      this.entrada.referencia='',
-      this.entrada.factura='',
-      this.entrada.fecha='',
-      this.entrada.file='',
-      this.entrada.serie='',
-      this.entrada.observacion='',
-      this.entrada.tpago='',
-      this.entrada.listp = [];
+    sweetalert2: function (tittle, message, type) {
+      Swal.fire(
+        '¡' + tittle + '!',
+        '' + message + '',
+        '' + type + ''
+      )
+    },
+    limpiarInputs: function () {
+      this.entrada.id_cliente = '',
+        this.entrada.referencia = '',
+        this.entrada.factura = '',
+        this.entrada.fecha = '',
+        this.entrada.file = '',
+        this.entrada.serie = '',
+        this.entrada.observacion = '',
+        this.entrada.tpago = '',
+        this.entrada.listp = [];
       this.file_name = 'Selecione un document';
     }
   }

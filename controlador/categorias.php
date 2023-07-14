@@ -16,12 +16,12 @@ switch (@$_GET['op']) {
 	case 'addCategory':
 		{
 			if (isset($_POST)) {
-				var_dump($_POST);a
+				var_dump($_POST);
 			}
 		}
 		break;
 	default:
-			die();
+		die();
 		break;
 }
 ?>

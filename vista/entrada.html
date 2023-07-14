@@ -167,7 +167,7 @@
                     <td><input v-model="resultListP.id" type="hidden"> {{ resultListP.nombre }}</td>
                     <td><input @input="count(index)" style="width: 60px;" v-model="resultListP.cantidad" type="number" required></td>
                     <td><input type="checkbox" width="15px" height="15px" v-model="resultListP.fv"> <input v-if="resultListP.fv == true" v-model="resultListP.fecha_v" type="date"></td>
-                    <td><button type="button" @click="deleteFind(index)" class="btn btn-sm btn-danger" id="del"><i class="fas fa-trash"></i></button></td>
+                    <td><a href="#" v-on:click.prevent="deleteFind(index)" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a></td>
                   </tr>
                 </tbody>
               </table>
@@ -310,7 +310,7 @@
                     <td><input v-model="resultListP.id" type="hidden"> {{ resultListP.nombre }}</td>
                     <td><input @input="count(index)" style="width: 60px;" v-model="resultListP.cantidad" type="number" required></td>
                     <td><input type="checkbox" width="15px" height="15px" v-model="resultListP.fv"> <input v-if="resultListP.fv == true" v-model="resultListP.fecha_v" type="date"></td>
-                    <td><button type="button" @click="deleteFind(index)" class="btn btn-sm btn-danger" id="del"><i class="fas fa-trash"></i></button></td>
+                    <td><a href="#" v-on:click.prevent="deleteFind(index)" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a></td>
                   </tr>
                 </tbody>
               </table>

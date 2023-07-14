@@ -12,7 +12,7 @@ class salida
   function __construct()
   {
     $this->db = new dbconnect();
-    $this->fecha = date('Y-m')."-01";
+    $this->fecha = date('Y-m') . "-01";
   }
   public function getUndCaj($id)
   {
@@ -30,7 +30,7 @@ class salida
         pro.id_producto"));
     foreach ($variable as $key => $value) {
       $cantidad += $value->cantidad;
-      $cajas += (round($value->cantidad/$value->umb) < 1) ? 1 : round($value->cantidad/$value->umb);
+      $cajas += (round($value->cantidad / $value->umb) < 1) ? 1 : round($value->cantidad / $value->umb);
     }
     return array(
       'cantidad' => $cantidad,
@@ -61,7 +61,8 @@ class salida
       	INNER JOIN clientes AS cl ON s.id_cliente = cl.id_cliente
       WHERE s.created_at BETWEEN '$this->fecha' AND current_timestamp()
       ORDER BY
-      	s.created_at DESC");
+      	s.created_at DESC"
+    );
   }
   public function getDevType($value)
   {
@@ -92,7 +93,8 @@ class salida
       	INNER JOIN clientes AS cl ON s.id_cliente = cl.id_cliente
       WHERE
       	fecha_de_comprobante BETWEEN '$var[0]'
-      	AND '$var[1]'");
+      	AND '$var[1]'"
+    );
   }
   public function getInventario($val)
   {
@@ -146,7 +148,7 @@ class salida
     $query = $this->db->sql("INSERT INTO salida ( id_cliente, referencia, factura, fecha_de_comprobante, serie, observacion,direccion, tpago, archivo)VALUES('$val[0]','$val[1]','$val[2]','$val[3]','$val[4]','$val[5]','$val[6]','$val[7]','$val[8]')");
     $last_id = $this->db->lastInsertId();
     if ($query) {
-      for ($i=0; $i < count($val[9]); $i++) {
+      for ($i = 0; $i < count($val[9]); $i++) {
         $id = $val[9][$i]['id'];
         $cantidad = $val[9][$i]['cantidad'];
         $query = $this->db->sql("INSERT INTO salida_detalle(id_salida,id_serie,id_producto,cantidad)VALUES('$last_id','$val[4]','$id','$cantidad')");
@@ -154,7 +156,7 @@ class salida
         $this->db->sql("INSERT INTO movimientos (fecha,tipo,cantidad,producto_id,referencia,factura,fv,fecha_vencimiento)VALUES('$val[3]','salida','$cantidad','$id','$val[1]','$val[2]','0','0000-00-00')");
 
         $query = $this->db->sql("UPDATE inventario SET cantidad=cantidad-'$cantidad' WHERE id_producto = $id AND status = 1");
-        $queryi = $this->db->Consult($this->db->sql("SELECT * FROM inventario WHERE id_producto =".$id));
+        $queryi = $this->db->Consult($this->db->sql("SELECT * FROM inventario WHERE id_producto =" . $id));
         if ($queryi):
           $inv_cantidad = $queryi->cantidad;
           $this->db->sql("INSERT INTO inventario_fecha(id_salida,	id_producto, cantidad ,fecha)VALUES('$last_id','$id','$inv_cantidad','$val[3]')");
@@ -181,19 +183,21 @@ class salida
         	salida_detalle AS sd
         	INNER JOIN producto AS p ON sd.id_producto = p.id_producto
         WHERE
-        	sd.id_salida =$val");
+        	sd.id_salida =$val"
+    );
   }
   public function ConvertFilePDF($b64)
   {
-    $bin = base64_decode(str_replace('data:application/pdf;base64,','', $b64), true);
-    $namefile = time().'_'.date("Y-m-d").'_SALIDA'.'.pdf';
+    $bin = base64_decode(str_replace('data:application/pdf;base64,', '', $b64), true);
+    $namefile = time() . '_' . date("Y-m-d") . '_SALIDA' . '.pdf';
     $ext = '../';
     $file_dir = 'upload_files/';
     try {
-      file_put_contents($ext.$file_dir.$namefile, $bin);
-      return $file_dir.$namefile;
+      file_put_contents($ext . $file_dir . $namefile, $bin);
+      return $file_dir . $namefile;
     } catch (Exception $e) {
-      if (strpos($bin, '%PDF') !== 0);
+      if (strpos($bin, '%PDF') !== 0)
+        ;
       return $e->getMessage();
     }
   }
