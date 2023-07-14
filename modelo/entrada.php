@@ -7,10 +7,12 @@ class entrada
 {
 
   private $db;
-
+  private $fecha;
+  private $fecha_actual;
   function __construct()
   {
     $this->db = new dbconnect();
+    $this->fecha = date('Y-m-')."01";
   }
   public function getUndCaj($id)
   {
@@ -42,7 +44,7 @@ class entrada
   }
   public function getBodega()
   {
-    return $this->db->sql("SELECT * FROM bodega WHERE status = 1");
+    return $this->db->sql("SELECT * FROM bodega WHERE status = 1 ORDER BY nombre ASC");
   }
   public function getentrada()
   {
@@ -51,6 +53,7 @@ class entrada
         	ent.id_entrada,
         	ent.id_cliente,
         	ent.id_bodega,
+          ent.caj_purina,
         	ent.referencia,
         	ent.factura,
         	ent.tipo_comprobante,
@@ -66,7 +69,7 @@ class entrada
         	entrada AS ent
         	INNER JOIN clientes AS cl ON ent.id_cliente = cl.id_cliente
         	INNER JOIN bodega AS bg ON ent.id_bodega = bg.id_bodega
-        ORDER BY ent.created_at DESC");
+        ORDER BY ent.created_at DESC LIMIT 60");
   }
   public function getListDate($var)
   {
@@ -75,6 +78,7 @@ class entrada
     	ent.id_entrada,
     	ent.id_cliente,
     	ent.id_bodega,
+      ent.caj_purina,
     	ent.referencia,
     	ent.factura,
     	ent.tipo_comprobante,
@@ -114,7 +118,7 @@ class entrada
       	ON
       		p.id_bodega = b.id_bodega
       WHERE
-      	b.id_bodega = $val"
+      	b.id_bodega = $val AND p.status = 1"
     );
   }
   public function getProductId($val)
@@ -139,7 +143,7 @@ class entrada
   }
   public function setentrada($val,$id_session)
   {
-    $query = $this->db->sql("INSERT INTO entrada (id_cliente, id_bodega, referencia, factura,tipo_comprobante, fecha_de_comprobante, serie, observacion,direccion, archivo)VALUES('$val[0]','$val[1]','$val[2]','$val[3]','$val[4]','$val[5]','$val[6]','$val[7]','$val[8]','$val[9]')");
+    $query = $this->db->sql("INSERT INTO entrada (id_cliente, id_bodega, referencia, factura,tipo_comprobante, fecha_de_comprobante, serie, observacion,direccion, archivo,caj_purina)VALUES('$val[0]','$val[1]','$val[2]','$val[3]','$val[4]','$val[5]','$val[6]','$val[7]','$val[8]','$val[9]','$val[11]')");
     $last_id = $this->db->lastInsertId();
     if ($query) {
       for ($i=0; $i < count($val[10]); $i++) {
@@ -152,8 +156,10 @@ class entrada
         $query = $this->db->sql("INSERT INTO entrada_detalle(id_entrada,id_serie,id_producto,cantidad)VALUES('$last_id','$val[6]','$id','$cantidad')");
         if ($fv) {
           $this->db->sql("INSERT INTO inventario_detallado (id_entrada,id_producto,id_usuario,cantidad,id_serie,fv,fecha_ven)VALUES('$last_id','$id','$id_session','$cantidad','$val[6]','$fv','$fecha_v')");
+          $this->db->sql("INSERT INTO movimientos (fecha,tipo,cantidad,producto_id,referencia,factura,fv,fecha_vencimiento)VALUES('$val[5]','entrada','$cantidad','$id','$val[2]','$val[3]','$fv','$fecha_v')");
         }else {
           $this->db->sql("INSERT INTO inventario_detallado (id_entrada,id_producto,id_usuario,cantidad,id_serie,fv)VALUES('$last_id','$id','$id_session','$cantidad','$val[6]','$fv')");
+          $this->db->sql("INSERT INTO movimientos (fecha,tipo,cantidad,producto_id,referencia,factura,fv,fecha_vencimiento)VALUES('$val[5]','entrada','$cantidad','$id','$val[2]','$val[3]','0','0000-00-00')");
         }
         $rtn = $this->db->Consult($this->db->sql("SELECT * FROM inventario WHERE id_producto=".$id));
         if($rtn){
@@ -175,6 +181,7 @@ class entrada
       "SELECT
       	sd.id_producto,
       	p.ean,
+        p.codigo_1,
       	sd.cantidad,
       	sd.id,
       	p.nombre,

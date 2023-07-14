@@ -37,7 +37,7 @@ class inventario
         '12' => $query->tipo_val
       );
       $rtn = $this->db->sql("INSERT INTO producto (codigo, ean, nombre, id_categoria, status, estampilla, umb, id_bodega, id_usuario, codigo_1, codigo_2,tipo,tipo_val)VALUES
-      ('$A[0]','$A[1]','$A[2]','$A[3]','$A[4]','$A[5]','$A[6]','$A[7]','$A[8]','$A[9]','$A[10]','$A[11]','$A[12]')");
+      ('$A[0]','$A[1]','$A[2]','$A[3]','0','$A[5]','$A[6]','57','$A[8]','$A[9]','$A[10]','$A[11]','$A[12]')");
       $last_id = $this->db->lastInsertId();
 
       $this->db->sql("INSERT INTO inventario (id_producto,id_usuario,cantidad,status)VALUES('$last_id','$A[8]','0','0')");
@@ -135,10 +135,8 @@ class inventario
   {
     return $this->db->sql(
       "SELECT
-      	i.id_inventario,
-      	i.id_producto,
-      	i.cantidad,
-      	p.nombre
+      	i.*,
+      	p.*
       FROM
       	inventario AS i
       	INNER JOIN producto AS p ON i.id_producto = p.id_producto
@@ -147,7 +145,8 @@ class inventario
   }
   public function editInventario($value)
   {
-    return $this->db->sql("UPDATE inventario SET cantidad='$value[1]' WHERE id_inventario='$value[0]'");
+     $this->db->sql("UPDATE inventario SET cantidad='$value[1]',status='$value[4]' WHERE id_inventario='$value[0]'");
+    return $this->db->sql("UPDATE producto SET nombre='$value[2]',umb='$value[3]',status='$value[4]' WHERE id_producto='$value[5]'");
   }
 }
 

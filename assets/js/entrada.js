@@ -39,6 +39,7 @@ new Vue({
         serie:'',
         observacion:'',
         direccion:'',
+        cja_purina:'',
         listp:[]
       },
       ver:{
@@ -158,6 +159,33 @@ new Vue({
         });
       }
     },
+    editSub:function () {
+      if (!this.entrada.listp.length) {
+        this.sweetalert2("info","Agregue un producto","info");
+      }else {
+        Swal.fire({
+          title: '¿Estas seguro?',
+          text: "!No podrás revertir esto!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          cancelButtonText:'Cancelar',
+          confirmButtonText: 'Si!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            axios.post('controlador/entrada.php?op=editentrada',this.entrada).then(resp =>{
+              if (resp.data.type == "success") {
+                this.sweetalert2(resp.data.tittle,resp.data.message,resp.data.type);
+                this.cancel();
+              }else {
+                this.sweetalert2(resp.data.tittle,resp.data.message,resp.data.type);
+              }
+            });
+          }
+        });
+      }
+    },
     uploadImage: function() {
       thisJq = this;
       const file = document.querySelector('input[type=file]').files[0];
@@ -232,6 +260,7 @@ new Vue({
     cancel:function () {
       $("#css").attr("class","sidebar-mini layout-fixed");
       this.tabla();
+      location.reload();
       this.limpiarInputs();
       this.list = true;
       this.form = false;
@@ -250,13 +279,25 @@ new Vue({
     init(){
       const thisJq = this;
       $(function () {
-        $(document).on("click", "#view", function() {
+        $(document).on("click","#view", function() {
           let id = $(this).val();
           axios.post('controlador/entrada.php?op=getentradaId',{id:id}).then(resp =>{
             thisJq.ver = resp.data;
             thisJq.total = resp.data.total;
             $("#css").attr("class","sidebar-mini layout-fixed sidebar-collapse");
             thisJq.view = true;
+            thisJq.list = false;
+          });
+        });
+        $(document).on("click","#edit", function() {
+          let id = $(this).val();
+          axios.post('controlador/entrada.php?op=getentradaId',{id:id}).then(resp =>{
+            thisJq.entrada = resp.data;
+            thisJq.backup = resp.data;
+            thisJq.listaInventario(thisJq.entrada.id_bodega);
+            thisJq.total = resp.data.total;
+            $("#css").attr("class","sidebar-mini layout-fixed sidebar-collapse");
+            thisJq.edit = true;
             thisJq.list = false;
           });
         });

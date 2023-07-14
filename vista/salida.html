@@ -101,16 +101,11 @@
                   <input v-model="salida.fecha" type="date" class="form-control" required>
                 </div>
               </div>
-              <div class="col-lg-2 col-md-2">
-                <div class="form-group">
-                  <label>Serie(*):</label>
-                  <input v-model="salida.serie" type="text" class="form-control" class="form-control" readonly>
-                </div>
-              </div>
               <div class="col-lg-3 col-md-3">
                 <div class="form-group">
                   <label>Tipo de pago(*):</label>
                   <select class="form-control" v-model="salida.tpago" required>
+                    <option value="TRAMITE INTERNO">TRAMITE INTERNO</option>
                     <option value="CONTADO">CONTADO</option>
                     <option value="CREDITO">CREDITO</option>
                     <option value="TRANSFERENCIA">TRANSFERENCIA</option>
@@ -147,6 +142,7 @@
                   <tr>
                     <th>Codigo</th>
                     <th>Descripcion</th>
+                    <th>Tipo</th>
                     <th>Cant.</th>
                     <th>Accion</th>
                   </tr>
@@ -155,6 +151,13 @@
                   <tr v-for="(resultListP, index) in salida.listp">
                     <td class="text-center">{{ resultListP.codigo }} </td>
                     <td><input v-model="resultListP.id" type="hidden"> {{ resultListP.nombre }}</td>
+                    <td>
+                      <select v-model="resultListP.tipo">
+                        <option value="Unidad">Unidad</option>
+                        <option value="Display">Display</option>
+                        <option value="Caja">Caja</option>
+                      </select>
+                    </td>
                     <td class="text-center"><input @input="count(index)" style="width: 60px;" v-model="resultListP.cantidad" type="number" required></td>
                     <td class="text-center"><button @click="deleteFind(index)" class="btn btn-sm btn-danger" id="del"><i class="fas fa-trash"></i></button></td>
                   </tr>
@@ -242,6 +245,7 @@
                 <div class="form-group">
                   <label>Tipo de pago(*):</label>
                   <select class="form-control" v-model="ver.tpago" readonly>
+                    <option value="TRAMITE INTERNO">TRAMITE INTERNO</option>
                     <option value="CONTADO">CONTADO</option>
                     <option value="CREDITO">CREDITO</option>
                     <option value="TRANSFERENCIA">TRANSFERENCIA</option>

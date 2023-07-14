@@ -23,9 +23,9 @@
       	entrada_detalle AS sd
       	INNER JOIN producto AS p ON sd.id_producto = p.id_producto
       	INNER JOIN inventario_detallado AS inv_d ON p.id_producto = inv_d.id_producto
-      	AND sd.id_serie = inv_d.id_serie
+      	AND sd.id_entrada = inv_d.id_entrada
       WHERE
-      	sd.id_serie =".$rtn[0]->serie));
+      	sd.id_entrada =".$rtn[0]->id_entrada));
 
 
     $total=0;
@@ -33,7 +33,13 @@
     foreach ($rtn[3] as $key) {
       $rtnS = (round($key->cantidad/$key->umb) < 1) ? 1 : round($key->cantidad/$key->umb);
       $total += $key->cantidad;
-      $cajas += $rtnS;
+      if ($rtn[0]->id_bodega == 52){
+        $cajas = $rtn[0]->caj_purina;
+      }else {
+        $cajas += $rtnS;
+      }
+
+
       $products[] = array(
         'id' => $key->id_producto,
         'codigo_0' => $key->ean,
@@ -48,6 +54,22 @@
 
     }
     // $div = round($info['total']/$info['cajas']);
+    function generadNumber($num)
+    {
+      if (intval($num) < 10) {
+          return "0000000$num";
+      }else if (intval($num) < 100) {
+        return "000000$num";
+      }else if (intval($num) < 1000) {
+        return "00000$num";
+      }else if (intval($num) < 10000) {
+        return "0000$num";
+      }else if (intval($num) < 100000) {
+        return "000$num";
+      }else {
+        return "andale hagale un aumento de sueldo";
+      }
+    }
 
     $info = array(
       'total' => $total,
@@ -58,7 +80,7 @@
       'factura' => $rtn[0]->factura,
       'tipo_comprobante' => $rtn[0]->tipo_comprobante,
       'fecha' => $rtn[0]->fecha_de_comprobante,
-      'serie' => $rtn[0]->serie,
+      'serie' => generadNumber($rtn[0]->id_entrada),
       'observacion' => $rtn[0]->observacion,
       'direccion' => $rtn[0]->direccion,
       'listp' => $products
@@ -70,6 +92,46 @@
   }
   class PDF extends FPDF
   {
+    private $effectivePageWidth;
+    function __construct($orientation='P', $unit='mm', $size='A4')
+    {
+        parent::__construct($orientation, $unit, $size);
+        $this->effectivePageWidth = $this->GetPageWidth() - $this->lMargin - $this->rMargin;
+    }
+    function AutoMultiCell($w, $h, $txt, $border=0, $align='J', $fill=false)
+    {
+        // Dividir el texto en líneas individuales
+        $lines = explode("\n", $txt);
+
+        foreach ($lines as $line) {
+            // Obtener el ancho del texto
+            $lineWidth = $this->GetStringWidth($line);
+
+            // Si el ancho del texto es menor que la anchura efectiva de la página,
+            // simplemente imprimir el texto
+            if ($lineWidth < $this->effectivePageWidth) {
+                $this->MultiCell($w, $h, $line, $border, $align, $fill);
+            } else {
+                // Si el ancho del texto es mayor que la anchura efectiva de la página,
+                // dividir la línea en múltiples líneas
+                $words = explode(' ', $line);
+                $currentWidth = 0;
+                $line = '';
+                foreach ($words as $word) {
+                    $wordWidth = $this->GetStringWidth($word);
+                    if ($currentWidth + $wordWidth < $this->effectivePageWidth) {
+                        $line .= $word . ' ';
+                        $currentWidth += $wordWidth + $this->GetStringWidth(' ');
+                    } else {
+                        $this->MultiCell($w, $h, $line, $border, $align, $fill);
+                        $line = $word . ' ';
+                        $currentWidth = $wordWidth + $this->GetStringWidth(' ');
+                    }
+                }
+                $this->MultiCell($w, $h, $line, $border, $align, $fill);
+            }
+        }
+    }
     function Header(){
       //Display Company Info
       // $this->Line(0,10,210,10);
@@ -123,40 +185,43 @@
       // $this->RoundedRect(10, 35, 135, 15, 2, 'DF');
       if ($info['cliente'] == "ALTIPAL") {
         $this->Cell(20,7,"CLIENTE:",1);
-        $this->Cell(40,7,str_limit($info['cliente'],'20','...'),1);
+        $this->Cell(40,7,wordwrap($info['cliente'],'20',"\n"),1);
         $this->Cell(20,7,"BODEGA:",1);
-        $this->Cell(70,7,str_limit($info['bodega'],'50','...'),1);
+        $this->Cell(70,7,wordwrap($info['bodega'],'50',"\n"),1);
         $this->Ln();
         $this->Cell(25,7,"REFERENCIA:",1);
-        $this->Cell(125,7,str_limit($info['referencia'],'50','...'),1);
+        $this->Cell(125,7,wordwrap($info['referencia'],'50',"\n"),1);
         $this->Ln();
         $this->Cell(25,7,"DIRECCION:",1);
-        $this->Cell(125,7,str_limit($info['direccion'],'55','...'),1);
+        $this->Cell(125,7,wordwrap($info['direccion'],'55',"\n"),1);
         $this->Ln();
       }else {
-        $this->Cell(20,7,"CLIENTE:",1);
-        $this->Cell(40,7,str_limit($info['cliente'],'20','...'),1);
-        $this->Cell(20,7,"BODEGA:",1);
-        $this->Cell(50,7,str_limit($info['bodega'],'25','...'),1);
-        $this->Ln();
-        $this->Cell(25,7,"REFERENCIA:",1);
-        $this->Cell(105,7,str_limit($info['referencia'],'50','...'),1);
-        $this->Ln();
+        $this->SetFont('Arial','',7);
+        $this->Cell(20,7,"CLIENTE:",1,0,'C');
+        $this->Cell(40,7,wordwrap($info['cliente'],20,"\n"),1);
+        $this->Cell(20,7,"BODEGA:",1,0,'C');
+        $this->Cell(50,7,wordwrap($info['bodega'],25,"\n"),1,1);
+        $this->Cell(25,7,"REFERENCIA:",1,0,'C');
+        $ref = explode("\n",wordwrap($info['referencia'],70,"\n"));
+        foreach ($ref as $key => $value) {
+          $this->Cell(105,7,$value,1,1);
+        }
+        //$this->Ln();
         $this->Cell(25,7,"DIRECCION:",1);
-        $this->Cell(105,7,str_limit($info['direccion'],'55','...'),1);
-        $this->Ln();
+        $this->Cell(105,7,wordwrap($info['direccion'],55,"\n"),1,1);
+        //$this->Ln();
       }
       $this->SetY(30);
       $this->SetX(-65);
       $this->Cell(55,7,"FECHA Y HORA DE FACTURA",1,1,'C');
       $this->SetX(-65);
-      $this->Cell(22,7,"EXPEDICION",1,0);
+      $this->Cell(22,7,"EXPEDICION",1,0,'C');
       $this->Cell(0,7,$info['fecha'],1,1,'C');
       $this->SetX(-65);
-      $this->Cell(22,7,"GENERADO",1,0);
+      $this->Cell(22,7,"GENERADO",1,0,'C');
       $this->Cell(0,7,date("Y-m-d"),1,1,'C');
       $this->SetX(-65);
-      $this->Cell(22,7,$info['tipo_comprobante'],1,0);
+      $this->Cell(22,7,$info['tipo_comprobante'],1,0,'C');
       $this->Cell(0,7,$info['factura'],1,1,'C');
 
       $this->SetY(56);
@@ -164,7 +229,7 @@
       $this->Cell(0,3,"OBSERVACION",0,1,'C');
       $this->SetY(60);
       // $this->Cell(190,7,$info['observacion']
-      $obs = explode("\n",$info['observacion']);
+      $obs = explode("\n",wordwrap($info['observacion'],130,"\n"));
       $this->SetFont('Arial','',7);
       foreach ($obs as $row) {
         $this->Cell(190,4,utf8_decode($row),0,1,"L");
@@ -339,7 +404,7 @@
   $pdf->AliasNbPages();
   $pdf->AddPage();
   $pdf->body($info);
-  $pdf->Output("I","ENTRADA(".$info['referencia'].").pdf");
+  $pdf->Output("I","ENTRADA-".$info['factura']."(".$info['referencia'].").pdf");
 
 }
 ?>

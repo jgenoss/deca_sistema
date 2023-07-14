@@ -180,7 +180,7 @@ require_once '../modelo/devolucion.php';
         if (isset($_POST['id'])) {
           $rtn = Consult($sl->getSalidaId($_POST['id']));
           $L = array();
-          $rtn0 = AllConsult($sl->getsalidaDetallada($rtn->serie));
+          $rtn0 = AllConsult($sl->getsalidaDetallada($rtn->id_salida));
           $total=0;
           foreach ($rtn0 as $key) {
             $total += $key->cantidad;
@@ -214,7 +214,7 @@ require_once '../modelo/devolucion.php';
           $rtn = Consult($db->sql("SELECT * FROM devolucion WHERE id_devolucion = ".$_POST['id']));
           $L = array();
           if ($rtn) {
-            $rtn0 = AllConsult($sl->getDevolucionDetallada($rtn->serie));
+            $rtn0 = AllConsult($sl->getDevolucionDetallada($rtn->id_devolucion));
             $total=0;
             foreach ($rtn0 as $key) {
               $total += $key->cantidad;
@@ -267,7 +267,7 @@ require_once '../modelo/devolucion.php';
                     'COVA' => (isset($row[0]))? $row[0]:'',
                     'COAR' => (isset($row[1]))? $row[1]:'',
                     'REFERENCIA' => (isset($row[2]))? $row[2]:'',
-                    'CANTIDAD' => (isset($row[3]))? $row[3]:''
+                    'CANTIDAD' => (isset($row[3]))? str_replace("-","",$row[3]):''
                   );
                 }
               }
@@ -291,13 +291,24 @@ require_once '../modelo/devolucion.php';
                       "CANTIDAD: ".$key['CANTIDAD']);
                       break;
                     }elseif ($rtn1) {
-                      $value = str_replace("-","",$key['CANTIDAD']);
-                      $L[] = array(
-                        'id' => $rtn1->id_producto,
-                        'codigo' => $rtn1->ean,
-                        'nombre' => $rtn1->nombre,
-                        'cantidad' => ($rtn1->tipo == 'Display')? $rtn1->tipo_val*$value:$value
-                      );
+                      if ($rtn1->tipo == 'Display') {
+                        $cant = $rtn1->tipo_val * $key['CANTIDAD'];
+                        $L[] = array(
+                          'id' => $rtn1->id_producto,
+                          'codigo' => $rtn1->ean,
+                          'nombre' => $rtn1->nombre,
+                          'tipo' => 'Display',
+                          'cantidad' => $cant
+                        );
+                      }else {
+                        $L[] = array(
+                          'id' => $rtn1->id_producto,
+                          'codigo' => $rtn1->ean,
+                          'nombre' => $rtn1->nombre,
+                          'tipo' => 'Unidad',
+                          'cantidad' => $key['CANTIDAD']
+                        );
+                      }
                     }
                   }
                 }

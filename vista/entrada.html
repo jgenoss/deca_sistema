@@ -67,6 +67,7 @@
           <div class="card-header">
             <div class="card-tittle">
               Datos del cliente
+              <button @click="cancel" class="btn btn-sm btn-default float-right">Volver</button>
               <button class="float-right btn btn-xs btn-primary" data-toggle="modal" data-target="#modal-cargue">Carga masiva de Productos</button>
             </div>
           </div>
@@ -119,12 +120,6 @@
                   <input v-model="entrada.fecha" type="date" class="form-control" required>
                 </div>
               </div>
-              <div class="col-lg-2 col-md-2">
-                <div class="form-group">
-                  <label>Serie(*):</label>
-                  <input v-model="entrada.serie" type="text" class="form-control" class="form-control" readonly>
-                </div>
-              </div>
               <div class="col-lg-4 col-md-4">
                 <div class="form-group">
                   <label for="exampleInputFile">Adjustar Archivo(*)</label>
@@ -134,6 +129,12 @@
                       <label class="custom-file-label" for="uploadfiles">{{ file_name }}</label>
                     </div>
                   </div>
+                </div>
+              </div>
+              <div v-if=" entrada.id_bodega == 52" class="col-lg-2 col-md-2">
+                <div class="form-group">
+                  <label>Cjas Purina</label>
+                  <input v-model="entrada.cja_purina" type="number" class="form-control">
                 </div>
               </div>
               <div class="col-lg-12 col-md-12">
@@ -209,12 +210,13 @@
           <div class="card-header">
             <div class="card-tittle">
               Datos del cliente
+              <button @click="cancel" class="btn btn-sm btn-default float-right">Volver</button>
               <button class="float-right btn btn-xs btn-primary" data-toggle="modal" data-target="#modal-cargue">Carga masiva de Productos</button>
             </div>
           </div>
           <div class="card-body">
             <!-- open form -->
-            <form v-on:submit.prevent="submit">
+            <form v-on:submit.prevent="editSub">
             <div class="row">
               <div class="col-lg-2 col-md-2">
                 <div class="form-group">
@@ -227,7 +229,7 @@
               <div class="col-lg-2 col-md-2">
                 <div class="form-group">
                   <label>Bodega(*):</label>
-                  <select @change="loadInventario(entrada.id_bodega)" class="form-control" v-model="entrada.id_bodega">
+                  <select  @change="loadInventario(entrada.id_bodega)" class="form-control" v-model="entrada.id_bodega">
                     <option v-for="resultBodega in arrayBodega" v-bind:value="resultBodega.id">{{resultBodega.nombre}}</option>
                   </select>
                 </div>
@@ -261,21 +263,21 @@
                   <input v-model="entrada.fecha" type="date" class="form-control" required>
                 </div>
               </div>
-              <div class="col-lg-2 col-md-2">
-                <div class="form-group">
-                  <label>Serie(*):</label>
-                  <input v-model="entrada.serie" type="text" class="form-control" class="form-control" readonly>
-                </div>
-              </div>
               <div class="col-lg-4 col-md-4">
                 <div class="form-group">
                   <label for="exampleInputFile">Adjustar Archivo(*)</label>
                   <div class="input-group">
                     <div class="custom-file">
-                      <input @change="uploadImage" accept="application/pdf" type="file" id="uploadfiles" ref="uploadfiles" class="custom-file-input" required>
+                      <input @change="uploadImage" accept="application/pdf" type="file" id="uploadfiles" ref="uploadfiles" class="custom-file-input">
                       <label class="custom-file-label" for="uploadfiles">{{ file_name }}</label>
                     </div>
                   </div>
+                </div>
+              </div>
+              <div v-if=" entrada.id_bodega == 52" class="col-lg-2 col-md-2">
+                <div class="form-group">
+                  <label>Cjas Purina</label>
+                  <input v-model="entrada.cja_purina" type="number" class="form-control">
                 </div>
               </div>
               <div class="col-lg-12 col-md-12">
@@ -313,7 +315,7 @@
                 </tbody>
               </table>
               <!-- button -->
-              <button v-if="btnR == true" class="btn btn-primary" type="submit" name="entrada">Registrar entrada</button>
+              <button v-if="btnR == true" class="btn btn-primary" type="submit" name="entrada">Guardar Cambios</button>
             </div>
             <!-- /form -->
           </form>

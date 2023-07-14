@@ -7,10 +7,12 @@ class salida
 {
 
   private $db;
-
+  private $fecha;
+  private $fecha_actual;
   function __construct()
   {
     $this->db = new dbconnect();
+    $this->fecha = date('Y-m')."-01";
   }
   public function getUndCaj($id)
   {
@@ -57,8 +59,19 @@ class salida
       FROM
       	salida AS s
       	INNER JOIN clientes AS cl ON s.id_cliente = cl.id_cliente
+      WHERE s.created_at BETWEEN '$this->fecha' AND current_timestamp()
       ORDER BY
       	s.created_at DESC");
+  }
+  public function getDevType($value)
+  {
+    return $this->db->Consult($this->db->sql("SELECT
+      	devolucion.tdevolucion
+      FROM
+      	salida
+      	INNER JOIN devolucion ON salida.factura = devolucion.factura
+      WHERE
+      	salida.id_salida = $value"));
   }
   public function getListDate($var)
   {
@@ -137,6 +150,9 @@ class salida
         $id = $val[9][$i]['id'];
         $cantidad = $val[9][$i]['cantidad'];
         $query = $this->db->sql("INSERT INTO salida_detalle(id_salida,id_serie,id_producto,cantidad)VALUES('$last_id','$val[4]','$id','$cantidad')");
+
+        $this->db->sql("INSERT INTO movimientos (fecha,tipo,cantidad,producto_id,referencia,factura,fv,fecha_vencimiento)VALUES('$val[3]','salida','$cantidad','$id','$val[1]','$val[2]','0','0000-00-00')");
+
         $query = $this->db->sql("UPDATE inventario SET cantidad=cantidad-'$cantidad' WHERE id_producto = $id AND status = 1");
         $queryi = $this->db->Consult($this->db->sql("SELECT * FROM inventario WHERE id_producto =".$id));
         if ($queryi):

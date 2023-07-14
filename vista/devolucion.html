@@ -196,13 +196,28 @@ salida<div class="content-header">
               <div class="col-lg-3 col-md-3">
                 <div class="form-group">
                   <label>Tipo de pago(*):</label>
-                  <select class="form-control" v-model="devolucion.tpago" readonly>
+                  <select class="form-control" v-model="devolucion.tpago">
                     <option value="CONTADO">CONTADO</option>
                     <option value="CREDITO">CREDITO</option>
                     <option value="TRANSFERENCIA">TRANSFERENCIA</option>
                   </select>
                 </div>
-
+              </div>
+              <div class="col-lg-3 col-md-2">
+                <div class="form-group">
+                  <label>Tipo devolucion(*):</label>
+                  <select class="form-control" v-model="devolucion.tdevolucion">
+                    <option value="TOTAL">TOTAL</option>
+                    <option value="PARCIAL">PARCIAL</option>
+                  </select>
+                </div>
+              </div>
+              <div v-if="devolucion.tdevolucion == 'TOTAL'" class="col-lg-2 col-md-2">
+                <div class="form-group">
+                  <label>Cant items(*):</label>
+                  <input v-model="devolucion.cantidad" type="number" class="form-control" class="form-control">
+                </div>
+              </div>
               <div class="col-lg-12 col-md-12">
                 <div class="form-group">
                   <label>Observacion(*):</label>
@@ -335,6 +350,7 @@ salida<div class="content-header">
                 </div>
               </div>
             </div>
+
             <div class="table-responsive">
               <table id="detalles" class="table table-bordered text-nowrap">
                 <thead>

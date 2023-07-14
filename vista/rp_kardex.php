@@ -21,37 +21,7 @@ if (!isset($_SESSION['START'])) {
   $rtn_inv =Consult($db->sql("SELECT * FROM inventario WHERE id_producto=".$id));
 
 
-
-  $rtne = AllConsult($kardex->getEntradaId($_GET['id']));
-  $entradas = array();
-  foreach ($rtne as $value) {
-    $entradas[] = array(
-      'type' =>'entrada',
-      'fecha' =>$value->fecha_de_comprobante,
-      'referencia' =>$value->referencia,
-      'factura' =>$value->factura,
-      'cantidad' =>$value->cantidad,
-      'fecha_ven' =>$value->fecha_ven,
-      'fv' =>$value->fv,
-    );
-  }
-
-  $rtns = AllConsult($kardex->getSalidaId($_GET['id']));
-  $salidas = array();
-  foreach ($rtns as $value) {
-		$rtn_inv_fecha = Consult($db->sql("SELECT * FROM inventario_fecha WHERE id_producto='$id' AND id_salida=".$value->id_salida));
-    $salidas[] = array(
-      'type' =>'salida',
-      'fecha' =>$value->fecha_de_comprobante,
-      'referencia' =>$value->referencia,
-      'factura' =>$value->factura,
-      'cantidad' =>$value->cantidad,
-    );
-  }
-  $array_convined = array_merge($entradas,$salidas);
-
-
-
+	echo '</table>';
 ?>
 <html lang="en" dir="ltr">
   <meta charset="utf-8">
@@ -79,6 +49,7 @@ if (!isset($_SESSION['START'])) {
             <th colspan="3"><?php print $rtn->ean." ".$rtn->nombre ?></th>
             <th colspan="2">ENTRADA</th>
             <th>SALIDA</th>
+            <th>DEV</th>
             <th>SALDO</th>
           </tr>
           <tr>
@@ -89,33 +60,53 @@ if (!isset($_SESSION['START'])) {
             <th>UND</th>
             <th>UND</th>
             <th>UND</th>
+            <th>UND</th>
           </tr>
         </thead>
         <tbody>
           <?php
-						$sum_salida=0;
-						$sum_entrada=0;
-					 foreach ($array_convined as $key => $value) {
-
-						 	$sum_salida += ($value['type'] == 'salida')? $value['cantidad']:0;
- 							$sum_entrada += ($value['type'] == 'entrada')? $value['cantidad']:0;
-						 ?>
+						$saldo = 0;
+						$total_salida = 0;
+						$total_entrada = 0;
+						$total_devolucion = 0;
+						$movimientos = AllConsult($db->sql("SELECT * FROM movimientos WHERE producto_id = '$id' order by fecha asc"));
+						foreach ($movimientos as $key => $value) {
+							if ($value->tipo == 'entrada') {
+								$saldo += $value->cantidad;
+							} elseif ($value->tipo == 'salida') {
+								$saldo -= $value->cantidad;
+							} elseif ($value->tipo == 'devolucion') {
+								$saldo += $value->cantidad;
+							}
+							if ($value->tipo == 'entrada') {
+								$total_entrada += $value->cantidad;
+							} elseif ($value->tipo == 'salida') {
+								$total_salida += $value->cantidad;
+							} elseif ($value->tipo == 'devolucion') {
+								$total_devolucion += $value->cantidad;
+							}
+					?>
+					<?php if ($value->factura == 'AJUSTEINTERNO'): ?>
+						<?php else: ?>
             <tr>
-              <td><?php print $value['fecha'] ?></td>
-              <td><?php print $value['referencia'] ?></td>
-              <td><?php print $value['factura'] ?></td>
-              <td><?php print ($value['type'] == 'entrada' && $value['fv'] == 1)? $value['fecha_ven']:'' ?></td>
-              <td><?php print ($value['type'] == 'entrada')? $value['cantidad']:'' ?></td>
-              <td><?php print ($value['type'] == 'salida')? $value['cantidad']:'' ?></td>
-              <td><?php print $sum_entrada-$sum_salida; ?></td>
+              <td><?php print $value->fecha; ?></td>
+              <td><?php print $value->referencia; ?></td>
+							<td><?php print $value->factura; ?></td>
+              <td><?php print ($value->tipo == 'entrada' && $value->fv == 1)? $value->fecha_vencimiento :'N/A' ?></td>
+              <td><?php print ($value->tipo == 'entrada')? $value->cantidad : '' ; ?></td>
+              <td><?php print ($value->tipo == 'salida')? $value->cantidad : '' ; ?></td>
+              <td><?php print ($value->tipo == 'devolucion')? $value->cantidad : '' ; ?></td>
+              <td><?php print($saldo); ?></td>
             </tr>
+						<?php endif; ?>
           <?php } ?>
         </tbody>
 				<tfoot>
 					<tr>
 						<th colspan="4"></th>
-						<th><?php print $sum_entrada; ?></th>
-						<th><?php print $sum_salida; ?></th>
+						<th><?php print $total_entrada; ?></th>
+						<th><?php print $total_salida; ?></th>
+						<th><?php print $total_devolucion; ?></th>
 						<th><?php print $rtn_inv->cantidad; ?></th>
 					</tr>
 				</tfoot>

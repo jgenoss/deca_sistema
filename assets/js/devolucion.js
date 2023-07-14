@@ -137,9 +137,21 @@ new Vue({
         });
       });
     },
+    validateProduct: function () {
+      list = this.devolucion.listp;
+      for (var i = 0; i < list.length; i++) {
+        if (list[i]['cantidad'] == 0) {
+          this.sweetalert2("ERROR",`Digite cantidad para el producto <br /> ${list[i]['nombre']}`,"error");
+          return false;
+          break;
+        }
+      }
+    },
     submit:function () {
       if (!this.devolucion.listp.length) {
         this.sweetalert2("info","Agregue un producto","info");
+      }else if (this.validateProduct() == false) {
+        this.validateProduct();
       }else {
         Swal.fire({
           title: '¿Estas seguro?',

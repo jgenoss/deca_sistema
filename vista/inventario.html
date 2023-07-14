@@ -19,6 +19,10 @@
       <div class="card-header">Information
       </div>
       <div class="card-body">
+        <div class="justify-content-between">
+          <a v-if="id_bodega != 0" :href="'rp_inventario/reporte_xls.php?id_bodega=' + id_bodega" class="float-right btn btn-success">XLS</a>
+          <a v-if="id_bodega != 0" :href="'rp_inventario/reporte_print.php?id_bodega=' + id_bodega" class="float-right btn btn-info"><I class="fas fa-print"></I></a>
+        </div>
         <div class="col-lg-2 col-md-2">
           <div class="form-group">
             <label>BODEGA(*):</label>
@@ -56,29 +60,49 @@
   <div class="modal fade" id="modal-edit">
     <div class="modal-dialog">
       <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title">EDITAR INVENTARIO</h4>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <form v-on:submit.prevent="submit">
-          <div class="modal-body">
-            <div class="col-lg-12 col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <h4 class="card-title">EDITAR INVENTARIO</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form v-on:submit.prevent="submit">
+          <div class="card-body text-center">
+            <div class="row">
               <div class="col-md-12">
                 <div class="form-group">
-                  <label>{{ producto.nombre }} ID: {{ producto.id_producto }}</label>
+                  <label>Nombre del producto Id {{ producto.id_producto }}</label>
+                  <input v-model="producto.nombre" type="text" class="form-control" required>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>Umb</label>
+                  <input v-model="producto.umb" type="number" class="form-control" required>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>Cant</label>
                   <input type="hidden" v-model="producto.id_inventario">
                   <input v-model="producto.cantidad" type="number" class="form-control" required>
                 </div>
               </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>Estado</label>
+                  <input v-model="producto.umb" type="checkbox" class="form-control" required>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="modal-footer justify-content-between">
+          <div class="card-footer justify-content-between">
             <button type="button" class="btn btn-default" data-dismiss="modal" id="close">Close</button>
-            <button type="submit" class="btn btn-primary">Save changes</button>
+            <button type="submit" class="float-right btn btn-primary">Save changes</button>
           </div>
-        </form>
+          </form>
+        </div>
       </div>
       <!-- /.modal-content -->
     </div>

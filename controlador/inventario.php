@@ -59,7 +59,9 @@ require_once '../modelo/inventario.php';
               'id_inventario' => $rtn->id_inventario,
               'id_producto' => $rtn->id_producto,
               'cantidad' => $rtn->cantidad,
-              'nombre' => $rtn->nombre
+              'nombre' => $rtn->nombre,
+              'umb' => $rtn->umb,
+              'status' => $rtn->status
             );
           setJson($A);
         }
@@ -69,7 +71,14 @@ require_once '../modelo/inventario.php';
       {
         if (isset($_POST)) {
           try {
-            $inv->editInventario(array($_POST['id_inventario'],$_POST['cantidad']));
+            $inv->editInventario(array(
+              $_POST['id_inventario'],//0
+              $_POST['cantidad'],//1
+              $_POST['nombre'],//2
+              $_POST['umb'],//3
+              $_POST['status'],//4
+              $_POST['id_producto']//5
+            ));
             setMsg('Exito','Existencia modificada con exito','success');
           }catch (Exception $e) {
             setMsg("Error",$e->getMessage(),"error");

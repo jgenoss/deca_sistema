@@ -12,6 +12,7 @@ new Vue({
         id:'',
         codigo:'',
         nombre:'',
+        tipo:'',
         cantidad:0
       },
       arrayCliente:[],

@@ -7,10 +7,13 @@ class salida
 {
 
   private $db;
-
+  private $fecha;
+  private $fecha_actual;
   function __construct()
   {
     $this->db = new dbconnect();
+    $this->fecha = date('Y-m-')."01";
+    $this->fecha_actual = date('Y-m-').date('d')+1;
   }
   public function getCliente()
   {
@@ -19,6 +22,8 @@ class salida
 
   public function getSalida()
   {
+    //$fecha = date('Y-m-')."01";
+    //$fecha_actual = date('Y-m-').date('d')+1;
     return $this->db->sql(
       "SELECT
         s.id_salida,
@@ -31,7 +36,7 @@ class salida
       	s.observacion
       FROM
       	salida AS s
-      	INNER JOIN clientes AS cl ON s.id_cliente = cl.id_cliente WHERE devolucion = 0 ORDER BY s.created_at DESC");
+      	INNER JOIN clientes AS cl ON s.id_cliente = cl.id_cliente WHERE devolucion = 0 ORDER BY s.created_at DESC LIMIT 500");
   }
   public function getDevolucion()
   {
@@ -102,6 +107,7 @@ class salida
   public function setDevolucion($val,$id_session)
   {
     $query = $this->db->sql("INSERT INTO devolucion ( id_cliente, referencia, factura, fecha_de_comprobante, serie, observacion, tpago ,id_salida,archivo,tdevolucion,cantidad)VALUES('$val[0]','$val[1]','$val[2]','$val[3]','$val[4]','$val[5]','$val[6]','$val[7]','$val[9]','$val[10]','$val[11]')");
+    $last_id = $this->db->lastInsertId();
     if ($query) {
       for ($i=0; $i < count($val[8]); $i++) {
 
@@ -109,9 +115,10 @@ class salida
         $cantidad = $val[8][$i]['cantidad'];
         $id_salida = $val[7];
 
-        $query = $this->db->sql("INSERT INTO devolucion_detalle(id_serie,id_producto,cantidad)VALUES('$val[4]','$id','$cantidad')");
+        $query = $this->db->sql("INSERT INTO devolucion_detalle(id_devolucion,id_serie,id_producto,cantidad)VALUES('$last_id','$val[4]','$id','$cantidad')");
         if ($this->db->sql("SELECT * FROM salida WHERE id_salida ='$id_salida'")) {
-          $query = $this->db->sql("UPDATE salida SET devolucion = 1, observacion='$val[5]' WHERE id_salida ='$id_salida'");
+          $query = $this->db->sql("UPDATE salida SET devolucion = 1 WHERE id_salida ='$id_salida'");
+          $this->db->sql("INSERT INTO movimientos (fecha,tipo,cantidad,producto_id,referencia,factura,fv,fecha_vencimiento)VALUES('$val[3]','devolucion','$cantidad','$id','$val[1]','$val[2]','0','0000-00-00')");
         }
         if($this->db->Consult($this->db->sql("SELECT * FROM inventario WHERE id_producto=".$id))){
           $this->db->sql("UPDATE inventario SET cantidad=cantidad+'$cantidad' WHERE id_producto =".$id);
@@ -124,7 +131,7 @@ class salida
   }
   public function getSalidaId($val)
   {
-    return $this->db->sql("SELECT * FROM salida WHERE id_salida = $val");
+    return $this->db->sql("SELECT * FROM salida WHERE id_salida = '$val'");
   }
   public function getsalidaDetallada($val)
   {
@@ -139,7 +146,7 @@ class salida
         	salida_detalle AS sd
         	INNER JOIN producto AS p ON sd.id_producto = p.id_producto
         WHERE
-        	sd.id_serie =$val");
+        	sd.id_salida =$val");
   }
   public function getDevolucionDetallada($val)
   {
@@ -154,7 +161,7 @@ class salida
         	devolucion_detalle AS sd
         	INNER JOIN producto AS p ON sd.id_producto = p.id_producto
         WHERE
-        	sd.id_serie =$val");
+        	sd.id_devolucion =$val");
   }
   public function ConvertFilePDF($b64)
   {

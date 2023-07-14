@@ -7,7 +7,9 @@ new Vue({
       producto:{
         id_inventario:'',
         nombre:'',
-        cantidad:''
+        cantidad:'',
+        umb:'',
+        status:''
       },
       array:[],
       result:{

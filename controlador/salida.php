@@ -38,9 +38,9 @@ require_once '../modelo/salida.php';
             $A[] = array(
               $button,
               $row->empresa,
-              ($row->devolucion==1)?'<span class="badge badge-warning">'.$row->referencia.'</span>':$row->referencia,
+              ($row->devolucion==1)?'<span class="badge badge-warning">'.$row->referencia.' '.$sl->getDevType($row->id_salida)->tdevolucion.'</span>':$row->referencia,
               $row->factura,
-              $row->serie,
+              $row->id_salida,
               $sl->getUndCaj($row->id_salida)['cantidad'],
               $sl->getUndCaj($row->id_salida)['cajas'],
               $row->fecha_de_comprobante,
@@ -70,7 +70,7 @@ require_once '../modelo/salida.php';
               $row->empresa,
               ($row->devolucion==1)?'<span class="badge badge-warning">'.$row->referencia.'</span>':$row->referencia,
               $row->factura,
-              $row->serie,
+              $row->id_salida,
               $sl->getUndCaj($row->id_salida)['cantidad'],
               $sl->getUndCaj($row->id_salida)['cajas'],
               $row->fecha_de_comprobante,
@@ -140,30 +140,13 @@ require_once '../modelo/salida.php';
             '9' => $_POST['listp']
           );
           try {
-            $A[8] = $sl->ConvertFilePDF($A[8]);
-            // for ($i=0; $i < count($A[9]); $i++) {
-            //   $id = $A[9][$i]['id'];
-            //   $cantidad = $A[9][$i]['cantidad'];
-            //
-            //   $rtn = $db->sql("SELECT * FROM inventario WHERE id_producto = $id");
-            //   if ($rtn) {
-            //     if ($A[9][$i]['cantidad'] > $rtn->cantidad) {
-            //       throw new Exception('La cantidad es mayor a la existencia');
-            //       break;
-            //     }elseif ($rtn->cantidad >= $value['cantidad']) {
-            //       $query = $db->sql("INSERT INTO salida ( id_cliente, referencia, factura, fecha_de_comprobante, serie, observacion,direccion, tpago, archivo)VALUES('$A[0]','$A[1]','$A[2]','$A[3]','$A[4]','$A[5]','$A[6]','$A[7]','$A[8]')");
-            //       if ($query) {
-            //         $cantidad = $A[9][$i]['cantidad'];
-            //         $db->sql("INSERT INTO salida_detalle(id_serie,id_producto,cantidad)VALUES('$A[4]','$id','$cantidad')");
-            //         $db->sql("UPDATE inventario SET cantidad=cantidad-'$cantidad'  WHERE id_producto =".$id);
-            //       }
-            //     }
-            //   }elseif (!$rtn) {
-            //     throw new Exception('No hay existencia de este producto en el inventario');
-            //     break;
-            //   }
-            // }
-            $sl->setSalida($A);
+            $rtn = Consult($db->sql("SELECT * FROM salida WHERE factura = '$A[2]'"));
+            if ($rtn) {
+              throw new Exception('esta salida ya fue procesada');
+            }else {
+              $A[8] = $sl->ConvertFilePDF($A[8]);
+              $sl->setSalida($A);
+            }
             setMsg("Info",'Salida Procesada con exito',"success");
           } catch (Exception $e) {
             setMsg("Error",$e->getMessage(),"error");
@@ -230,7 +213,7 @@ require_once '../modelo/salida.php';
             'factura' => $rtn->factura,
             'fecha' => $rtn->fecha_de_comprobante,
             'file' => $rtn->archivo,
-            'serie' => $rtn->serie,
+            'serie' => $rtn->id_salida,
             'observacion' => $rtn->observacion,
             'direccion' => $rtn->direccion,
             'tpago' => $rtn->tpago,
@@ -264,8 +247,9 @@ require_once '../modelo/salida.php';
                     'COAR' => (isset($row[0]))? $row[0]:'',
                     'COVA' => (isset($row[1]))? $row[1]:'',
                     'REFERENCIA' => (isset($row[2]))? $row[2]:'',
-                    'EAN' => (isset($row[3]))? $row[3]:'',
-                    'CANTIDAD' => (isset($row[4]))? $row[4]:''
+                    'TIPO' => (isset($row[3]))? $row[3]:'',
+                    'EAN' => (isset($row[4]))? $row[4]:'',
+                    'CANTIDAD' => (isset($row[5]))? $row[5]:''
                   );
                 }
               }
@@ -276,6 +260,7 @@ require_once '../modelo/salida.php';
                     "COAR:".$key['COAR']."<br/>".
                     "COVA:".$key['COVA']."<br/>".
                     "REFERENCIA:".$key['REFERENCIA']."<br/>".
+                    "TIPO:".$key['TIPO']."<br/>".
                     "EAN:".$key['EAN']."<br/>".
                     "CANTIDAD:".$key['CANTIDAD']);
                     break;
@@ -284,6 +269,7 @@ require_once '../modelo/salida.php';
                     $COVA = $key['COVA'];
                     $COAR = $key['COAR'];
                     $EAN = $key['EAN'];
+                    $TIPO = $key['TIPO'];
                     $CANTIDAD = $key['CANTIDAD'];
 
                     $rtn1 = Consult($db->sql("SELECT * FROM producto WHERE codigo_1='$COVA' AND status = 1"));
@@ -309,12 +295,41 @@ require_once '../modelo/salida.php';
                       }elseif ($rtn1) {
                         if ($rtn2) {
                           if ($rtn2->cantidad >= $key['CANTIDAD']) {
-                            $L[] = array(
-                              'id' => $rtn1->id_producto,
-                              'codigo' => $rtn1->ean,
-                              'nombre' => $rtn1->nombre,
-                              'cantidad' => ($rtn1->tipo == 'Display')? $rtn1->tipo_val*$key['CANTIDAD']:$key['CANTIDAD']
-                            );
+                            if (($key['TIPO'] == 'Display') && ($rtn1->tipo == 'Display')) {
+                              $cant = $rtn1->tipo_val * $key['CANTIDAD'];
+                              $L[] = array(
+                                'id' => $rtn1->id_producto,
+                                'codigo' => $rtn1->ean,
+                                'nombre' => $rtn1->nombre,
+                                'tipo' => 'Display',
+                                'cantidad' => $cant
+                              );
+                            }elseif ($key['TIPO'] == 'Caja') {
+                              $L[] = array(
+                                'id' => $rtn1->id_producto,
+                                'codigo' => $rtn1->ean,
+                                'nombre' => $rtn1->nombre,
+                                'tipo' => 'Caja',
+                                'cantidad' => $rtn1->umb*$key['CANTIDAD']
+                              );
+                            }elseif ($key['TIPO'] == 'Unidad') {
+                              $L[] = array(
+                                'id' => $rtn1->id_producto,
+                                'codigo' => $rtn1->ean,
+                                'nombre' => $rtn1->nombre,
+                                'tipo' => 'Unidad',
+                                'cantidad' => $key['CANTIDAD']
+                              );
+                            }else {
+                              $L[] = array(
+                                'id' => $rtn1->id_producto,
+                                'codigo' => $rtn1->ean,
+                                'nombre' => $rtn1->nombre,
+                                'tipo' => 'Unidad',
+                                'cantidad' => $key['CANTIDAD']
+                              );
+                            }
+
                           }elseif($key['CANTIDAD'] > $rtn2->cantidad) {
                             throw new Exception('CANTIDAD MAYOR A EXISTENCIA'."<br/>".
                             "COAR: ".$key['COAR']."<br/>".

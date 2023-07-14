@@ -15,19 +15,25 @@ class kardex
   {
     return $this->db->sql(
     "SELECT
-    	entrada.fecha_de_comprobante,
-    	entrada.referencia,
-    	entrada.factura,
-    	entrada_detalle.cantidad,
-    	inventario_detallado.fv,
-    	inventario_detallado.fecha_ven
+    	entra.fecha_de_comprobante,
+    	entra.referencia,
+    	entra.factura,
+    	entra_deta.cantidad,
+    	inve_deta.fv,
+    	inve_deta.fecha_ven
     FROM
-    	entrada_detalle
-    	INNER JOIN inventario_detallado ON entrada_detalle.id_producto = inventario_detallado.id_producto
-    	INNER JOIN entrada ON entrada_detalle.id_entrada = entrada.id_entrada
-    	AND inventario_detallado.id_entrada = entrada.id_entrada
+    	entrada_detalle AS entra_deta
+    	INNER JOIN
+    	inventario_detallado AS inve_deta
+    	ON
+    		entra_deta.id_producto = inve_deta.id_producto
+    	INNER JOIN
+    	entrada AS entra
+    	ON
+    		entra_deta.id_entrada = entra.id_entrada AND
+    		inve_deta.id_entrada = entra.id_entrada
     WHERE
-    	entrada_detalle.id_producto =$id");
+    	entra_deta.id_producto =$id");
   }
   public function getSalidaId($id)
   {
@@ -51,7 +57,7 @@ class kardex
       	 *
         FROM
         	producto
-        WHERE
+        WHERE status = 1 AND
         	codigo_1 LIKE '%$value'
         	OR codigo_2 LIKE '%$value'
         	OR ean LIKE '%$value'

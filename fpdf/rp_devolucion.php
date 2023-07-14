@@ -25,7 +25,7 @@ if(!isset($_GET['id'])){
       	ON
       		sd.id_producto = p.id_producto
       WHERE
-      	sd.id_serie =".$rtn[0]->serie));
+      	sd.id_devolucion =".$rtn[0]->id_devolucion));
 
     foreach ($rtn[2] as $key) {
       $products[] = array(
@@ -209,6 +209,6 @@ if(!isset($_GET['id'])){
   $pdf->AliasNbPages();
   $pdf->AddPage();
   $pdf->body($info);
-  $pdf->Output("I","DEVOLUCION-".$info['factura']."(".$info['referencia'].").pdf");
+  $pdf->Output("I","FD-".$info['factura'].".pdf");
 }
 ?>
