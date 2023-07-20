@@ -12,8 +12,8 @@ class salida
   function __construct()
   {
     $this->db = new dbconnect();
-    $this->fecha = date('Y-m-')."01";
-    $this->fecha_actual = date('Y-m-').date('d')+1;
+    $this->fecha = date('Y-m-') . "01";
+    $this->fecha_actual = date('Y-m-') . date('d') + 1;
   }
   public function getCliente()
   {
@@ -36,7 +36,8 @@ class salida
       	s.observacion
       FROM
       	salida AS s
-      	INNER JOIN clientes AS cl ON s.id_cliente = cl.id_cliente WHERE devolucion = 0 ORDER BY s.created_at DESC LIMIT 500");
+      	INNER JOIN clientes AS cl ON s.id_cliente = cl.id_cliente WHERE devolucion = 0 ORDER BY s.created_at DESC LIMIT 500"
+    );
   }
   public function getDevolucion()
   {
@@ -52,7 +53,8 @@ class salida
       	s.observacion
       FROM
       	devolucion AS s
-      	INNER JOIN clientes AS cl ON s.id_cliente = cl.id_cliente ORDER BY s.created_at DESC");
+      	INNER JOIN clientes AS cl ON s.id_cliente = cl.id_cliente ORDER BY s.created_at DESC"
+    );
   }
   public function getInventario($val)
   {
@@ -104,12 +106,12 @@ class salida
       	AND i.id_inventario = '$val'"
     );
   }
-  public function setDevolucion($val,$id_session)
+  public function setDevolucion($val, $id_session)
   {
     $query = $this->db->sql("INSERT INTO devolucion ( id_cliente, referencia, factura, fecha_de_comprobante, serie, observacion, tpago ,id_salida,archivo,tdevolucion,cantidad)VALUES('$val[0]','$val[1]','$val[2]','$val[3]','$val[4]','$val[5]','$val[6]','$val[7]','$val[9]','$val[10]','$val[11]')");
     $last_id = $this->db->lastInsertId();
     if ($query) {
-      for ($i=0; $i < count($val[8]); $i++) {
+      for ($i = 0; $i < count($val[8]); $i++) {
 
         $id = $val[8][$i]['id'];
         $cantidad = $val[8][$i]['cantidad'];
@@ -120,9 +122,9 @@ class salida
           $query = $this->db->sql("UPDATE salida SET devolucion = 1 WHERE id_salida ='$id_salida'");
           $this->db->sql("INSERT INTO movimientos (fecha,tipo,cantidad,producto_id,referencia,factura,fv,fecha_vencimiento)VALUES('$val[3]','devolucion','$cantidad','$id','$val[1]','$val[2]','0','0000-00-00')");
         }
-        if($this->db->Consult($this->db->sql("SELECT * FROM inventario WHERE id_producto=".$id))){
-          $this->db->sql("UPDATE inventario SET cantidad=cantidad+'$cantidad' WHERE id_producto =".$id);
-        }else {
+        if ($this->db->Consult($this->db->sql("SELECT * FROM inventario WHERE id_producto=" . $id))) {
+          $this->db->sql("UPDATE inventario SET cantidad=cantidad+'$cantidad' WHERE id_producto =" . $id);
+        } else {
           $this->db->sql("INSERT INTO inventario (id_producto,id_usuario,cantidad)VALUES('$id','$id_session','$cantidad')");
         }
       }
@@ -146,7 +148,8 @@ class salida
         	salida_detalle AS sd
         	INNER JOIN producto AS p ON sd.id_producto = p.id_producto
         WHERE
-        	sd.id_salida =$val");
+        	sd.id_salida =$val"
+    );
   }
   public function getDevolucionDetallada($val)
   {
@@ -161,19 +164,21 @@ class salida
         	devolucion_detalle AS sd
         	INNER JOIN producto AS p ON sd.id_producto = p.id_producto
         WHERE
-        	sd.id_devolucion =$val");
+        	sd.id_devolucion =$val"
+    );
   }
   public function ConvertFilePDF($b64)
   {
-    $bin = base64_decode(str_replace('data:application/pdf;base64,','', $b64), true);
-    $namefile = time().'_'.date("Y-m-d").'_DEVOLUCION'.'.pdf';
+    $bin = base64_decode(str_replace('data:application/pdf;base64,', '', $b64), true);
+    $namefile = time() . '_' . date("Y-m-d") . '_DEVOLUCION' . '.pdf';
     $ext = '../';
     $file_dir = 'upload_files/';
     try {
-      file_put_contents($ext.$file_dir.$namefile, $bin);
-      return $file_dir.$namefile;
+      file_put_contents($ext . $file_dir . $namefile, $bin);
+      return $file_dir . $namefile;
     } catch (Exception $e) {
-      if (strpos($bin, '%PDF') !== 0);
+      if (strpos($bin, '%PDF') !== 0)
+        ;
       return $e->getMessage();
     }
   }
