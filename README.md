@@ -89,7 +89,7 @@ DECA es un sistema de gestión logística completo desarrollado para optimizar l
 
 ### 1. Clonación del Repositorio
 ```bash
-git clone https://github.com/tu-usuario/deca-sistema-logistica.git
+git clone https://github.com/jgenoss/deca-sistema-logistica.git
 cd deca-sistema-logistica
 ```
 
@@ -216,36 +216,46 @@ Para reportar bugs o solicitar features:
 
 Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
 
-## 👥 Derechos de Autor
+## 👨‍💻 Autor y Derechos
 
-**© 2024 DECA Soluciones Logística. Todos los derechos reservados.**
+**Desarrollado por: JGenoss**
 
-### Desarrollado por:
-- **Empresa**: DECA Soluciones Logística
+### 🏆 Derechos de Autor
+- **© 2024 JGenoss. Todos los derechos reservados.**
+- **Desarrollador Principal**: JGenoss
+- **Proyecto**: Sistema DECA - Gestión Logística
+- **GitHub**: [@jgenoss](https://github.com/jgenoss)
+
+### 🏢 Cliente/Implementación
+- **Cliente**: DECA Soluciones Logística
 - **Sitio Web**: [decasoluciones.co](https://decasoluciones.co/)
-- **Tecnología**: unnamedJG
+- **Implementado para**: Gestión logística empresarial
 
-### Propiedad Intelectual
-- El código fuente es propiedad de DECA Soluciones Logística
-- Uso permitido bajo los términos de la licencia MIT
-- Marca "DECA" es propiedad registrada
+### 📄 Términos de Uso
+- El código fuente es propiedad intelectual del desarrollador JGenoss
+- Licenciado bajo MIT para uso libre
+- Se requiere atribución al autor original
+- Prohibida la redistribución sin créditos correspondientes
 
-### Atribuciones
-- AdminLTE: [adminlte.io](https://adminlte.io/)
-- Vue.js: [vuejs.org](https://vuejs.org/)
-- Bootstrap: [getbootstrap.com](https://getbootstrap.com/)
+### 🙏 Atribuciones de Librerías
+- **AdminLTE**: [adminlte.io](https://adminlte.io/) - Template de administración
+- **Vue.js**: [vuejs.org](https://vuejs.org/) - Framework JavaScript
+- **Bootstrap**: [getbootstrap.com](https://getbootstrap.com/) - Framework CSS
+- **FPDF**: [fpdf.org](http://www.fpdf.org/) - Generación de PDFs
 
-## 📞 Soporte y Contacto
+## 📞 Contacto
 
-### Soporte Técnico
-- **Email**: soporte@decasoluciones.co
-- **Teléfono**: +57 (5) 123-4567
-- **Horario**: Lunes a Viernes, 8:00 AM - 6:00 PM COT
+### 👨‍💻 Desarrollador
+- **Email**: [granadillo33@gmail.com](mailto:granadillo33@gmail.com)
+- **GitHub**: [@jgenoss](https://github.com/jgenoss)
+- **Especialidad**: Desarrollo Full Stack & Sistemas de Gestión
 
-### Enlaces Útiles
-- [Documentación Técnica](https://docs.decasoluciones.co/)
-- [Centro de Ayuda](https://ayuda.decasoluciones.co/)
-- [Portal del Cliente](https://portal.decasoluciones.co/)
+### 💼 Servicios Disponibles
+- Desarrollo de sistemas web personalizados
+- Implementación de sistemas de gestión empresarial
+- Consultoría en desarrollo PHP/Vue.js
+- Soporte técnico y mantenimiento
+- Licencias comerciales y proyectos a medida
 
 ---
 
@@ -253,6 +263,14 @@ Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más det
 
 **⭐ Si este proyecto te ha sido útil, considera darle una estrella en GitHub ⭐**
 
-*Hecho con ❤️ por el equipo de DECA Soluciones Logística*
+*Hecho con ❤️ y mucho código por JGenoss*
+
+[![GitHub followers](https://img.shields.io/github/followers/jgenoss?style=social)](https://github.com/jgenoss)
+[![GitHub stars](https://img.shields.io/github/stars/jgenoss/deca-sistema-logistica?style=social)](https://github.com/jgenoss/deca-sistema-logistica)
+
+### 🚀 Más Proyectos
+¿Necesitas un sistema similar? ¡Contáctame!
+
+[📧 granadillo33@gmail.com](mailto:granadillo33@gmail.com) | [💻 GitHub](https://github.com/jgenoss)
 
 </div>
