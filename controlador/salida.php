@@ -69,8 +69,14 @@ switch (@$_GET['op']) {
         $A = array();
         foreach ($rtn as $row) {
           $url = "fpdf/rp_salida.php?id=";
-          $button = '<button id="view" value="' . $row->id_salida . '" class="btn btn-sm btn-warning"><i class="fas fa-eye"></i></button>
-            <a class="btn btn-sm btn-info" target="_blank" href="' . $url . $row->id_salida . '" ><i class="fa-solid fa-print"></i></a>';
+          $button = '<div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-cog"></i></button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <button id="view" value="' . $row->id_salida . '" class="dropdown-item"><i class="fas fa-eye"></i> Ver</button>
+                <button id="edit" value="' . $row->id_salida . '" class="dropdown-item"><i class="fas fa-edit"></i> Editar</button>
+                <a target="_blank" href="' . $url . $row->id_salida . '" class="dropdown-item"><i class="fa-solid fa-print"></i> Imprimir</a>
+            </div>
+          </div>';
           $A[] = array(
             $button,
             $row->empresa,

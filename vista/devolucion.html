@@ -189,7 +189,7 @@
                 <div class="col-lg-3 col-md-3">
                   <div class="form-group">
                     <label>Fecha(*)</label>
-                    <input v-model="devolucion.fecha" type="date" class="form-control">
+                    <input v-model="devolucion.fecha" type="datetime-local" class="form-control">
                   </div>
                 </div>
                 <div class="col-lg-2 col-md-2">
@@ -310,7 +310,7 @@
                 <div class="col-lg-3 col-md-2">
                   <div class="form-group">
                     <label>Fecha(*)</label>
-                    <input v-model="devolucion.fecha" type="date" class="form-control" required>
+                    <input v-model="devolucion.fecha" type="datetime-local" class="form-control" required>
                   </div>
                 </div>
                 <div class="col-lg-3 col-md-2">
@@ -432,7 +432,7 @@
           </div>
           <div class="card-body">
             <!-- open form -->
-            <form v-on:submit.prevent="submit">
+            <form v-on:submit.prevent="editSubmit">
               <div class="row">
                 <div class="col-lg-3 col-md-2">
                   <div class="form-group">
@@ -459,7 +459,7 @@
                 <div class="col-lg-3 col-md-2">
                   <div class="form-group">
                     <label>Fecha(*)</label>
-                    <input v-model="devolucion.fecha" type="date" class="form-control" required>
+                    <input v-model="devolucion.fecha" type="datetime-local" class="form-control" required>
                   </div>
                 </div>
                 <div class="col-lg-3 col-md-2">

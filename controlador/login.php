@@ -8,23 +8,41 @@ require_once '../modelo/dbconnect.php';
   switch (@$_GET['op']) {
     case 'setLogin':
       {
-        if (isset($_POST)) {
-          $user = ClearInput($_POST['user']);
-          $pass = ClearInput($_POST['pass']);
-          $rtn = Consult($db->select_condition("usuario","usuario = '$user' AND contrasena = '$pass'"));
-          if ($rtn) {
-            $_SESSION['START'] = array(
-              "0" => true,
-              "1" => $rtn->id_usuario,
-              "2" => $rtn->usuario,
-            );
-            setMsg('Info','Iniciando session','success');
-          }else {
-            setMsg('Info','Usuario o Contraseña incorrectos','error');
-          }
+        if (!empty($_POST['user']) && !empty($_POST['pass'])) {
+            $user = trim($_POST['user']);
+            $pass = trim($_POST['pass']);
+
+            $sql = "SELECT * FROM usuario WHERE usuario = :usuario";
+            $stmt = $db->con()->prepare($sql);
+            $stmt->execute([":usuario" => $user]);
+
+            $rtn = $db->Consult($stmt);
+
+            if ($rtn) {
+                $pepper   = "sadnadiuaswa989898f2v484jy874j2yuk984";
+                $peppered = hash_hmac("sha256", $pass, $pepper);
+
+                if (password_verify($peppered, $rtn->contrasena)) {
+                    session_regenerate_id(true);
+
+                    $_SESSION['START'] = [
+                        "0" => true,
+                        "1" => $rtn->id_usuario,
+                        "2" => $rtn->usuario,
+                    ];
+
+                    setMsg('Info', 'Iniciando sesión', 'success');
+                } else {
+                    setMsg('Info', 'Usuario o Contraseña incorrectos', 'error');
+                }
+            } else {
+                setMsg('Info', 'Usuario o Contraseña incorrectos', 'error');
+            }
+        } else {
+            setMsg('Error', 'Faltan credenciales', 'error');
         }
       }
-      break;
+    break;
     case 'destroySession':
       {
         if (isset($_GET)) {

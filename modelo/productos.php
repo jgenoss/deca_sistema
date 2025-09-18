@@ -46,7 +46,7 @@ class productos
       	INNER JOIN
       	clientes AS cl
       	ON
-      		b.id_cliente = cl.id_cliente"
+      		b.id_cliente = cl.id_cliente AND cl.habilitado = 1"
     );
   }
   public function getCategoria()

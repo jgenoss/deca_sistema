@@ -71,7 +71,7 @@ class inventario
         	INNER JOIN producto AS p ON i.id_producto = p.id_producto
         	INNER JOIN categoria AS c ON p.id_categoria = c.id_categoria
         	INNER JOIN bodega AS b ON p.id_bodega = b.id_bodega
-        	INNER JOIN clientes AS cl ON b.id_cliente = cl.id_cliente"
+        	INNER JOIN clientes AS cl ON b.id_cliente = cl.id_cliente and cl.habilitado = 1 and i.cantidad > 0"
       );
     }elseif ($type == "undefined") {
       return $this->db->sql(
@@ -96,7 +96,7 @@ class inventario
         	INNER JOIN producto AS p ON i.id_producto = p.id_producto
         	INNER JOIN categoria AS c ON p.id_categoria = c.id_categoria
         	INNER JOIN bodega AS b ON p.id_bodega = b.id_bodega
-        	INNER JOIN clientes AS cl ON b.id_cliente = cl.id_cliente"
+        	INNER JOIN clientes AS cl ON b.id_cliente = cl.id_cliente and cl.habilitado = 1 and i.cantidad > 0"
       );
     } else {
       return $this->db->sql(
@@ -123,7 +123,7 @@ class inventario
         	INNER JOIN bodega AS b ON p.id_bodega = b.id_bodega
         	INNER JOIN clientes AS cl ON b.id_cliente = cl.id_cliente
         WHERE
-  	     b.id_bodega = $type
+  	     b.id_bodega = $type and cl.habilitado = 1 and i.cantidad > 0
          ORDER BY
   	      i.id_inventario ASC"
       );

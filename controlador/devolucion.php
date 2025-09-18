@@ -148,6 +148,7 @@ switch (@$_GET['op']) {
     }
     break;
   case 'editDevolucion': {
+    // quiero que esta funcion edite pudes hacerlo y responde en español por favor
       if (isset($_POST)) {
         $A = array(
           '0' => $_POST['id_cliente'],
@@ -161,31 +162,48 @@ switch (@$_GET['op']) {
           '8' => $_POST['listp'],
           '9' => (!empty($_POST['file'])) ? $sl->ConvertFilePDF($_POST['file']) : '',
           '10' => $_POST['tdevolucion'],
-          '11' => $_POST['cantidad']
+          '11' => $_POST['cantidad'],
+          '12' => $_POST['id_devolucion']
         );
         try {
-          $query = $$db->sql("INSERT INTO devolucion ( id_cliente, referencia, factura, fecha_de_comprobante, serie, observacion, tpago ,id_salida,archivo,tdevolucion,cantidad)VALUES('$val[0]','$val[1]','$val[2]','$val[3]','$val[4]','$val[5]','$val[6]','$val[7]','$val[9]','$val[10]','$val[11]')");
-          $last_id = $$db->lastInsertId();
+          $query = $db->sql("UPDATE devolucion SET id_cliente='$A[0]', referencia='$A[1]', factura='$A[2]', fecha_de_comprobante='$A[3]', observacion='$A[5]', tpago='$A[6]', archivo='$A[9]', tdevolucion='$A[10]', cantidad='$A[11]',serie='$A[4]' WHERE id_devolucion ='$A[12]'");
+          //$last_id = $db->lastInsertId();
           if ($query) {
-            for ($i = 0; $i < count($val[8]); $i++) {
 
-              $id = $val[8][$i]['id'];
-              $cantidad = $val[8][$i]['cantidad'];
-              $id_salida = $val[7];
-
-              $query = $$db->sql("INSERT INTO devolucion_detalle(id_devolucion,id_serie,id_producto,cantidad)VALUES('$last_id','$val[4]','$id','$cantidad')");
-              if ($$db->sql("SELECT * FROM salida WHERE id_salida ='$id_salida'")) {
-                $query = $$db->sql("UPDATE salida SET devolucion = 1 WHERE id_salida ='$id_salida'");
-                $$db->sql("INSERT INTO movimientos (fecha,tipo,cantidad,producto_id,referencia,factura,fv,fecha_vencimiento)VALUES('$val[3]','devolucion','$cantidad','$id','$val[1]','$val[2]','0','0000-00-00')");
+            // Eliminar los detalles de entrada existentes
+            $detallesAntiguos = $db->AllConsult($db->sql("SELECT id_producto, cantidad FROM devolucion_detalle WHERE id_devolucion='$A[12]'"));
+            $db->sql("DELETE FROM devolucion_detalle WHERE id_devolucion='$A[12]'");
+            $db->sql("DELETE FROM movimientos WHERE referencia='$A[1]' AND factura='$A[2]'");
+            // restaurar cambios en el inventario
+            foreach ($detallesAntiguos as $detalle) {
+              $id = $detalle->id_producto;
+              $cantidad = $detalle->cantidad;
+              $rtn = $db->Consult($db->sql("SELECT * FROM inventario WHERE id_producto=" . $id));
+              if ($rtn) {
+                $db->sql("UPDATE inventario SET cantidad=cantidad-'$cantidad' WHERE id_producto=" . $id);
               }
-              if ($$db->Consult($$db->sql("SELECT * FROM inventario WHERE id_producto=" . $id))) {
-                $$db->sql("UPDATE inventario SET cantidad=cantidad+'$cantidad' WHERE id_producto =" . $id);
+
+            }
+            //insertar nuevos datos en tabla devolucion_detalle
+            foreach ($A[8] as $value) {
+
+              $id = $value['id'];
+              $cantidad = $value['cantidad'];
+              $id_salida = $A[7];
+
+              $query = $db->sql("INSERT INTO devolucion_detalle(id_devolucion,id_serie,id_producto,cantidad)VALUES('$A[12]','$A[4]','$id','$cantidad')");
+              if ($db->sql("SELECT * FROM salida WHERE id_salida ='$id_salida'")) {
+                $query = $db->sql("UPDATE salida SET devolucion = 1 WHERE id_salida ='$id_salida'");
+                $db->sql("INSERT INTO movimientos (fecha,tipo,cantidad,producto_id,referencia,factura,fv,fecha_vencimiento)VALUES('$A[3]','devolucion','$cantidad','$id','$A[1]','$A[2]','0','0000-00-00')");
+              }
+              if ($db->Consult($db->sql("SELECT * FROM inventario WHERE id_producto=" . $id))) {
+                $db->sql("UPDATE inventario SET cantidad=cantidad+'$cantidad' WHERE id_producto =" . $id);
               } else {
-                $$db->sql("INSERT INTO inventario (id_producto,id_usuario,cantidad)VALUES('$id','$id_session','$cantidad')");
+                $db->sql("INSERT INTO inventario (id_producto,id_usuario,cantidad)VALUES('$id','$id_session','$cantidad')");
               }
             }
           }
-          setMsg("Info", 'Devolucion Procesada con exito', "success");
+          setMsg("Info", 'Cambios realizados con exito', "success");
         } catch (Exception $e) {
           setMsg("Error", $e->getMessage(), "error");
         }
@@ -281,6 +299,9 @@ switch (@$_GET['op']) {
         }
         $A = array(
           'total' => $total,
+          'tdevolucion' => $rtn->tdevolucion,
+          'id_devolucion' => $rtn->id_devolucion,
+          'cantidad' => $rtn->cantidad,
           'id_salida' => $rtn->id_salida,
           'id_cliente' => $rtn->id_cliente,
           'referencia' => $rtn->referencia,

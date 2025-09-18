@@ -89,8 +89,14 @@ switch (@$_GET['op']) {
         $A = array();
         $url = "fpdf/rp_entrada.php?id=";
         foreach ($rtn as $row) {
-          $button = '<button id="view" value="' . $row->id_entrada . '" class="btn btn-sm btn-warning"><i class="fas fa-eye"></i></button>
-            <a class="btn btn-sm btn-info" target="_blank" href="' . $url . $row->id_entrada . '" ><i class="fa-solid fa-print"></i></a>';
+          $button = '<div class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-cog"></i></button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <button id="view" value="' . $row->id_entrada . '" class="dropdown-item"><i class="fas fa-eye"></i> Ver</button>
+              <button id="edit" value="' . $row->id_entrada . '" class="dropdown-item"><i class="fas fa-edit"></i> Editar</button>
+              <a target="_blank" href="' . $url . $row->id_entrada . '" class="dropdown-item"><i class="fa-solid fa-print"></i> Imprimir</a>
+          </div>
+        </div>';
           $A[] = array(
             ($row->created_at) ? $button : $button,
             $row->empresa . " / " . $row->nombre,
@@ -167,7 +173,7 @@ switch (@$_GET['op']) {
           '11' => $_POST['cja_purina']
         );
         try {
-          var_dump($_POST);
+          //var_dump($_POST);
           $A[9] = $ent->ConvertFilePDF($A[9]);
           $ent->setentrada($A, $_SESSION['START'][1]);
           setMsg("Info", 'entrada Procesada con exito', "success");

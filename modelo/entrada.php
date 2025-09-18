@@ -44,7 +44,12 @@ class entrada
   }
   public function getBodega()
   {
-    return $this->db->sql("SELECT * FROM bodega WHERE status = 1 ORDER BY nombre ASC");
+    return $this->db->sql("SELECT bodega.*
+    FROM bodega
+    INNER JOIN clientes ON clientes.id_cliente = bodega.id_cliente
+    WHERE bodega.status = 1 AND clientes.habilitado = 1
+    ORDER BY bodega.nombre ASC;
+    ");
   }
   public function getentrada()
   {

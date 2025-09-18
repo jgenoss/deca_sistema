@@ -31,9 +31,12 @@
     {
       return $this->db->query("UPDATE $tabla SET $data WHERE $condicion");
     }
-    public function select_condition($tabla, $condicion)
+    public function select_condition($tabla, $condicion, $params = [])
     {
-      return $this->db->query("SELECT * FROM $tabla WHERE $condicion");
+        $sql = "SELECT * FROM $tabla WHERE $condicion";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt;
     }
     public function sql($sql)
     {
