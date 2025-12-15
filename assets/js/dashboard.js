@@ -208,53 +208,54 @@ new Vue({
     },
     
     renderGraficaClientesActivos(data) {
-      const ctx = document.getElementById('chartClientesActivos');
-      if (!ctx) return;
-      
-      if (this.charts.clientesActivos) {
-        this.charts.clientesActivos.destroy();
-      }
-      
-      this.charts.clientesActivos = new Chart(ctx, {
-        type: 'horizontalBar',
-        data: {
-          labels: data.map(item => item.cliente.substring(0, 20)),
-          datasets: [
-            {
-              label: 'Entradas',
-              data: data.map(item => item.entradas),
-              backgroundColor: 'rgba(75, 192, 192, 0.7)',
-            },
-            {
-              label: 'Salidas',
-              data: data.map(item => item.salidas),
-              backgroundColor: 'rgba(255, 99, 132, 0.7)',
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              position: 'top',
-            },
-            title: {
-              display: true,
-              text: 'Top 10 Clientes Más Activos (Este Mes)'
-            }
-          },
-          scales: {
-            x: {
-              stacked: true,
-              beginAtZero: true
-            },
-            y: {
-              stacked: true
-            }
-          }
+        const ctx = document.getElementById('chartClientesActivos');
+        if (!ctx) return;
+        
+        if (this.charts.clientesActivos) {
+            this.charts.clientesActivos.destroy();
         }
-      });
+        
+        this.charts.clientesActivos = new Chart(ctx, {
+            type: 'bar', // Cambiado de 'horizontalBar' a 'bar'
+            data: {
+            labels: data.map(item => item.cliente.substring(0, 20)),
+            datasets: [
+                {
+                label: 'Entradas',
+                data: data.map(item => item.entradas),
+                backgroundColor: 'rgba(75, 192, 192, 0.7)',
+                },
+                {
+                label: 'Salidas',
+                data: data.map(item => item.salidas),
+                backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                }
+            ]
+            },
+            options: {
+            indexAxis: 'y', // Esta línea hace que las barras sean horizontales
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                position: 'top',
+                },
+                title: {
+                display: true,
+                text: 'Top 10 Clientes Más Activos (Este Mes)'
+                }
+            },
+            scales: {
+                x: {
+                stacked: true,
+                beginAtZero: true
+                },
+                y: {
+                stacked: true
+                }
+            }
+            }
+        });
     },
     
     renderGraficaMovimientosCategorias(data) {

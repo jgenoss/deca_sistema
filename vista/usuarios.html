@@ -158,7 +158,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(modulo, index) in permisos.lista" :key="modulo.id_modulo">
+              <tr v-for="(modulo, index) in permisos.lista" :key="'perm_' + modulo.id_modulo + '_' + index">
                 <td>
                   <i class="fas fa-folder text-primary"></i>
                   <strong>{{ modulo.titulo }}</strong>
@@ -169,40 +169,40 @@
                   <div class="icheck-primary d-inline">
                     <input 
                       type="checkbox" 
-                      :id="'view_' + modulo.id_modulo" 
+                      :id="'view_' + modulo.id_modulo + '_' + index" 
                       v-model="modulo.view"
                       @change="toggleAllPermisos(modulo, 'view')">
-                    <label :for="'view_' + modulo.id_modulo"></label>
+                    <label :for="'view_' + modulo.id_modulo + '_' + index"></label>
                   </div>
                 </td>
                 <td class="text-center">
                   <div class="icheck-success d-inline">
                     <input 
                       type="checkbox" 
-                      :id="'insert_' + modulo.id_modulo" 
+                      :id="'insert_' + modulo.id_modulo + '_' + index" 
                       v-model="modulo.insert"
                       @change="toggleAllPermisos(modulo, 'insert')">
-                    <label :for="'insert_' + modulo.id_modulo"></label>
+                    <label :for="'insert_' + modulo.id_modulo + '_' + index"></label>
                   </div>
                 </td>
                 <td class="text-center">
                   <div class="icheck-warning d-inline">
                     <input 
                       type="checkbox" 
-                      :id="'update_' + modulo.id_modulo" 
+                      :id="'update_' + modulo.id_modulo + '_' + index" 
                       v-model="modulo.update"
                       @change="toggleAllPermisos(modulo, 'update')">
-                    <label :for="'update_' + modulo.id_modulo"></label>
+                    <label :for="'update_' + modulo.id_modulo + '_' + index"></label>
                   </div>
                 </td>
                 <td class="text-center">
                   <div class="icheck-danger d-inline">
                     <input 
                       type="checkbox" 
-                      :id="'delete_' + modulo.id_modulo" 
+                      :id="'delete_' + modulo.id_modulo + '_' + index" 
                       v-model="modulo.delete"
                       @change="toggleAllPermisos(modulo, 'delete')">
-                    <label :for="'delete_' + modulo.id_modulo"></label>
+                    <label :for="'delete_' + modulo.id_modulo + '_' + index"></label>
                   </div>
                 </td>
               </tr>

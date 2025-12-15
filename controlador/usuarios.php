@@ -159,45 +159,52 @@ switch (@$_GET['op']) {
 		break;
 		
 	case 'getPermisos':
-		{
-			if (isset($_POST['id_usuario'])) {
-				$id_usuario = $_POST['id_usuario'];
-				
-				// Obtener todos los módulos con sus permisos
-				$modulos = AllConsult($db->sql("
-					SELECT 
-						m.id_modulo,
-						m.titulo,
-						m.descripcion,
-						COALESCE(p.id_permiso, 0) as id_permiso,
-						COALESCE(p.view, 0) as view,
-						COALESCE(p.insert, 0) as `insert`,
-						COALESCE(p.update, 0) as `update`,
-						COALESCE(p.delete, 0) as `delete`
-					FROM modulos m
-					LEFT JOIN permisos p ON m.id_modulo = p.id_modulos AND p.id_usuario = $id_usuario
-					WHERE m.estado = 1
-					ORDER BY m.titulo
-				"));
-				
-				$data = array();
-				foreach ($modulos as $modulo) {
+	{
+		if (isset($_POST['id_usuario'])) {
+			$id_usuario = $_POST['id_usuario'];
+			
+			// Obtener todos los módulos con sus permisos
+			$modulos = AllConsult($db->sql("
+				SELECT 
+					m.id_modulo,
+					m.titulo,
+					m.descripcion,
+					COALESCE(p.id_permiso, 0) as id_permiso,
+					COALESCE(p.view, 0) as view,
+					COALESCE(p.insert, 0) as `insert`,
+					COALESCE(p.update, 0) as `update`,
+					COALESCE(p.delete, 0) as `delete`
+				FROM modulos m
+				LEFT JOIN permisos p ON m.id_modulo = p.id_modulos AND p.id_usuario = $id_usuario
+				WHERE m.estado = 1 
+				AND m.id_modulo > 0
+				GROUP BY m.id_modulo
+				ORDER BY m.titulo
+			"));
+			
+			$data = array();
+			$seen_ids = array(); // Prevenir duplicados
+			
+			foreach ($modulos as $modulo) {
+				// Solo agregar si no hemos visto este id_modulo antes
+				if (!in_array($modulo->id_modulo, $seen_ids)) {
 					$data[] = array(
-						'id_modulo' => $modulo->id_modulo,
-						'id_permiso' => $modulo->id_permiso,
+						'id_modulo' => intval($modulo->id_modulo),
+						'id_permiso' => intval($modulo->id_permiso),
 						'titulo' => $modulo->titulo,
 						'descripcion' => $modulo->descripcion,
-						'view' => $modulo->view,
-						'insert' => $modulo->insert,
-						'update' => $modulo->update,
-						'delete' => $modulo->delete
+						'view' => intval($modulo->view),
+						'insert' => intval($modulo->insert),
+						'update' => intval($modulo->update),
+						'delete' => intval($modulo->delete)
 					);
+					$seen_ids[] = $modulo->id_modulo;
 				}
-				setJson($data);
 			}
+			setJson($data);
 		}
+	}
 		break;
-		
 	case 'savePermisos':
 		{
 			if (isset($_POST)) {
