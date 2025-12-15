@@ -90,6 +90,23 @@ class productos
       WHERE id_producto = '$val[0]'"
     );
   }
-}
+  public function eliminar($id)
+  {
+        // 1. Eliminar Movimientos (Kardex) - Nota: en esta tabla se llama 'producto_id'
+      $this->db->sql("DELETE FROM movimientos WHERE producto_id = $id");
 
+        // 2. Eliminar detalles de operaciones
+      $this->db->sql("DELETE FROM devolucion_detalle WHERE id_producto = $id");
+      $this->db->sql("DELETE FROM salida_detalle WHERE id_producto = $id");
+      $this->db->sql("DELETE FROM entrada_detalle WHERE id_producto = $id");
+
+        // 3. Eliminar inventarios
+      $this->db->sql("DELETE FROM inventario_detallado WHERE id_producto = $id");
+      $this->db->sql("DELETE FROM inventario_fecha WHERE id_producto = $id");
+      $this->db->sql("DELETE FROM inventario WHERE id_producto = $id");
+
+        // 4. Finalmente eliminar el producto
+      return $this->db->sql("DELETE FROM producto WHERE id_producto = $id");
+  }
+}
 ?>

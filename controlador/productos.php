@@ -17,9 +17,18 @@ require_once '../modelo/productos.php';
           $rtn = AllConsult($prd->listarProductos());
           $A = array();
           foreach ($rtn as $row) {
-
+            $botones = '
+                <div class="btn-group">
+                    <button id="edit" value="'.$row->id_producto.'" class="btn btn-primary btn-sm" title="Editar">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button id="delete" value="'.$row->id_producto.'" class="btn btn-danger btn-sm" title="Eliminar">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            ';
             $A[] = array(
-              ($row->id_producto)?'<button id="edit" value="'.$row->id_producto.'" class="btn btn-primary"><i class="fas fa-edit"></i></button>':'<button id="edit" value="'.$row->id_producto.'" class="btn btn-primary"><i class="fas fa-edit"></i></button>',
+              $botones,
               $row->codigo,
               $row->codigo_1,
               $row->codigo_2,
@@ -135,6 +144,16 @@ require_once '../modelo/productos.php';
         }
       }
       break;
+    case 'eliminar':
+        if (isset($_POST['id'])) {
+            $id = intval($_POST['id']);
+            if($prd->eliminar($id)){
+                echo json_encode(['status' => true, 'msg' => 'Producto y todo su historial eliminado correctamente.']);
+            } else {
+                echo json_encode(['status' => false, 'msg' => 'Error al eliminar el producto.']);
+            }
+        }
+        break;
     default:
         die("NULL");
       break;

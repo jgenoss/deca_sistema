@@ -25,6 +25,7 @@ new Vue({
     this.init();
   },
   methods:{
+    
     tabla() {
       $(function() {
         $("#list").DataTable({
@@ -64,6 +65,46 @@ new Vue({
           });
         });
         $('[data-mask]').inputmask();
+        $(document).on("click", "#delete", function() {
+          let id = $(this).val();
+          Swal.fire({
+            title: '¿Estás seguro?',
+            text: "¡Se eliminarán todos los productos, inventarios y movimientos asociados a esta bodega! Esta acción no se puede deshacer.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, eliminar todo',
+            cancelButtonText: 'Cancelar'
+          }).then((result) => {
+            if (result.isConfirmed) {
+                // Realizar la petición de eliminación
+                axios.post('controlador/bodegas.php?op=eliminar', { id: id })
+                .then(resp => {
+                    if (resp.data.status) {
+                        Swal.fire(
+                            '¡Eliminado!',
+                            resp.data.msg,
+                            'success'
+                        );
+                        // Recargar la tabla
+                        if (thisJq && thisJq.tabla) {
+                            thisJq.tabla(); 
+                        } else {
+                            // Fallback si la referencia a Vue no está directa
+                            location.reload(); 
+                        }
+                    } else {
+                        Swal.fire('Error', resp.data.msg, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                    Swal.fire('Error', 'Ocurrió un error en el servidor', 'error');
+                });
+            }
+          });
+        });
       });
     },
     newbutton:function () {

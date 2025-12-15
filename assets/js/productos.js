@@ -86,6 +86,42 @@ new Vue({
             this.getTipoProducto();
           });
         });
+        // Evento para eliminar producto
+        $(document).on("click", "#delete", function() {
+            let id = $(this).val();
+
+            Swal.fire({
+                title: '¿Eliminar Producto?',
+                text: "¡Se borrará todo el inventario, movimientos y registros históricos de este producto! Esta acción es irreversible.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    axios.post('controlador/productos.php?op=eliminar', { id: id })
+                    .then(resp => {
+                        if (resp.data.status) {
+                            Swal.fire(
+                                '¡Eliminado!',
+                                resp.data.msg,
+                                'success'
+                            );
+                            // Recargar la tabla
+                            $('#list').DataTable().ajax.reload(null, false); 
+                        } else {
+                            Swal.fire('Error', resp.data.msg, 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        Swal.fire('Error', 'Ocurrió un error en el servidor', 'error');
+                    });
+                }
+            });
+        });
       });
     },
     cancel () {

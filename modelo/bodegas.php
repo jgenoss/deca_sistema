@@ -54,6 +54,20 @@ class bodega
       	id_bodega='$val[0]'"
     );
   }
+  public function eliminar($id)
+    {
+        // 1. Ejecutar el procedimiento almacenado que ya existe en tu DB
+        // Este procedimiento elimina: movimientos, devolucion_detalle, salida_detalle,
+        // entrada_detalle, inventario, inventario_detallado y los productos asociados.
+        $this->db->sql("CALL limpiarProductosBodega($id)");
+
+        // 2. Eliminar las cabeceras de Entradas asociadas a esta bodega
+        // (El procedimiento solo borraba los detalles, no el documento principal)
+        $this->db->sql("DELETE FROM entrada WHERE id_bodega = $id");
+
+        // 3. Finalmente, eliminar la bodega
+        return $this->db->sql("DELETE FROM bodega WHERE id_bodega = $id");
+    }
 }
 
 ?>

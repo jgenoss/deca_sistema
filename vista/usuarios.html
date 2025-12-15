@@ -2,30 +2,36 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1 class="m-0">Gestion de usuarios</h1>
-      </div><!-- /.col -->
+        <h1 class="m-0"><i class="fas fa-users-cog"></i> Gestión de Usuarios</h1>
+      </div>
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
-          <li class="breadcrumb-item"><a href="">Gestion de usuarios</a></li>
+          <li class="breadcrumb-item"><a href="">Gestión de Usuarios</a></li>
           <li class="breadcrumb-item active">AdminCP</li>
         </ol>
-      </div><!-- /.col -->
-    </div><!-- /.row -->
-  </div><!-- /.container-fluid -->
+      </div>
+    </div>
+  </div>
 </div>
+
 <div id="usuarios" class="content">
+  
+  <!-- LISTA DE USUARIOS -->
   <div v-if="list == true" class="col-12">
     <div class="card card-primary">
-      <div class="card-header">Information
-        <button @click="newbutton" data-toggle="modal" data-target="#modal-add" class="btn btn-sm btn-default float-right"><i class="fas fa-plus"></i></button>
+      <div class="card-header">
+        <h3 class="card-title"><i class="fas fa-list"></i> Lista de Usuarios</h3>
+        <button @click="newbutton" class="btn btn-sm btn-success float-right">
+          <i class="fas fa-plus"></i> Nuevo Usuario
+        </button>
       </div>
       <div class="card-body">
-        <table id="list" class="table table-bordered table-striped">
+        <table id="list" class="table table-bordered table-striped table-hover">
           <thead>
-            <tr>
-              <th></th>
+            <tr class="text-center">
+              <th style="width: 120px;">Acciones</th>
               <th>Usuario</th>
-              <th>Nombre</th>
+              <th>Nombre Completo</th>
               <th>Estado</th>
             </tr>
           </thead>
@@ -35,55 +41,212 @@
       </div>
     </div>
   </div>
-  <!-- modulo add and edit -->
+
+  <!-- FORMULARIO CREAR/EDITAR USUARIO -->
   <div class="d-flex justify-content-center">
-    <div v-if="form == true" class="col-md-4">
+    <div v-if="form == true" class="col-md-6">
       <div class="card card-primary">
-        <div class="card-header"> {{ modulo }}
-          <button @click="cancel" class="btn btn-sm btn-default float-right">Volver</button>
+        <div class="card-header">
+          <h3 class="card-title">
+            <i :class="data.id_usuario ? 'fas fa-edit' : 'fas fa-plus'"></i> 
+            {{ modulo }}
+          </h3>
+          <button @click="cancel" class="btn btn-sm btn-default float-right">
+            <i class="fas fa-times"></i> Cerrar
+          </button>
         </div>
-        <div>
-          <form v-on:submit.prevent="submit">
-          <div class="modal-body">
+        <form v-on:submit.prevent="submit">
+          <div class="card-body">
             <div class="row">
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label>Usuario</label>
-                  <input v-model="data.login" type="text" class="form-control" required>
+              <div class="col-md-12">
+                <div class="alert alert-info">
+                  <i class="fas fa-info-circle"></i> 
+                  <small>{{ data.id_usuario ? 'Edite los campos que desee actualizar. Deje la contraseña vacía si no desea cambiarla.' : 'Complete todos los campos para crear un nuevo usuario.' }}</small>
                 </div>
               </div>
+              
               <div class="col-md-6">
                 <div class="form-group">
-                  <label>Contraseña</label>
-                  <input v-model="data.password" type="text" class="form-control" required>
+                  <label><i class="fas fa-user"></i> Usuario *</label>
+                  <input v-model="data.login" type="text" class="form-control" placeholder="usuario" required>
+                  <small class="form-text text-muted">Sin espacios ni caracteres especiales</small>
                 </div>
               </div>
+              
               <div class="col-md-6">
                 <div class="form-group">
-                  <label>Nombre</label>
-                  <input v-model="data.name" type="text" class="form-control" required>
+                  <label><i class="fas fa-key"></i> Contraseña {{ data.id_usuario ? '' : '*' }}</label>
+                  <input v-model="data.password" type="password" class="form-control" placeholder="••••••••" :required="!data.id_usuario">
+                  <small class="form-text text-muted">{{ data.id_usuario ? 'Dejar vacío para no cambiar' : 'Mínimo 6 caracteres' }}</small>
                 </div>
               </div>
-              <div class="col-md-6">
+              
+              <div class="col-md-8">
                 <div class="form-group">
-                  <label>Estado</label>
+                  <label><i class="fas fa-id-card"></i> Nombre Completo *</label>
+                  <input v-model="data.name" type="text" class="form-control" placeholder="Nombre completo" required>
+                </div>
+              </div>
+              
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label><i class="fas fa-toggle-on"></i> Estado *</label>
                   <select v-model="data.status" class="form-control" required>
-                    <option disabled value="">seleccione una opcion</option>
-                    <option value="0">Inactivo</option>
+                    <option value="">Seleccione...</option>
                     <option value="1">Activo</option>
+                    <option value="0">Inactivo</option>
                   </select>
                 </div>
               </div>
             </div>
           </div>
-          <div class="modal-footer justify-content-between">
-            <button type="button" class="btn btn-default" @click="cancel"><i class="fas fa-ban"></i></button>
-            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i></button>
+          
+          <div class="card-footer">
+            <button type="submit" class="btn btn-primary float-right">
+              <i class="fas fa-save"></i> Guardar
+            </button>
+            <button type="button" @click="cancel" class="btn btn-default">
+              <i class="fas fa-ban"></i> Cancelar
+            </button>
           </div>
-          </form>
-        </div>
+        </form>
       </div>
     </div>
   </div>
-  <!-- /modulo add and edit -->
+
+  <!-- GESTIÓN DE PERMISOS -->
+  <div v-if="permisosView == true" class="col-12">
+    <div class="card card-info">
+      <div class="card-header">
+        <h3 class="card-title">
+          <i class="fas fa-key"></i> Permisos de {{ permisos.nombre_usuario }}
+        </h3>
+        <button @click="cancel" class="btn btn-sm btn-default float-right">
+          <i class="fas fa-times"></i> Cerrar
+        </button>
+      </div>
+      
+      <div class="card-body">
+        <div class="alert alert-info">
+          <i class="fas fa-info-circle"></i>
+          <strong>Información:</strong>
+          <ul class="mb-0 mt-2">
+            <li><strong>Ver:</strong> Permite acceder al módulo</li>
+            <li><strong>Crear:</strong> Permite crear nuevos registros</li>
+            <li><strong>Editar:</strong> Permite modificar registros existentes</li>
+            <li><strong>Eliminar:</strong> Permite eliminar registros</li>
+          </ul>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-bordered table-striped table-hover">
+            <thead class="bg-info">
+              <tr class="text-center">
+                <th style="width: 40%;">Módulo</th>
+                <th style="width: 15%;">
+                  <i class="fas fa-eye"></i><br>Ver
+                </th>
+                <th style="width: 15%;">
+                  <i class="fas fa-plus"></i><br>Crear
+                </th>
+                <th style="width: 15%;">
+                  <i class="fas fa-edit"></i><br>Editar
+                </th>
+                <th style="width: 15%;">
+                  <i class="fas fa-trash"></i><br>Eliminar
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(modulo, index) in permisos.lista" :key="modulo.id_modulo">
+                <td>
+                  <i class="fas fa-folder text-primary"></i>
+                  <strong>{{ modulo.titulo }}</strong>
+                  <br>
+                  <small class="text-muted">{{ modulo.descripcion }}</small>
+                </td>
+                <td class="text-center">
+                  <div class="icheck-primary d-inline">
+                    <input 
+                      type="checkbox" 
+                      :id="'view_' + modulo.id_modulo" 
+                      v-model="modulo.view"
+                      @change="toggleAllPermisos(modulo, 'view')">
+                    <label :for="'view_' + modulo.id_modulo"></label>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <div class="icheck-success d-inline">
+                    <input 
+                      type="checkbox" 
+                      :id="'insert_' + modulo.id_modulo" 
+                      v-model="modulo.insert"
+                      @change="toggleAllPermisos(modulo, 'insert')">
+                    <label :for="'insert_' + modulo.id_modulo"></label>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <div class="icheck-warning d-inline">
+                    <input 
+                      type="checkbox" 
+                      :id="'update_' + modulo.id_modulo" 
+                      v-model="modulo.update"
+                      @change="toggleAllPermisos(modulo, 'update')">
+                    <label :for="'update_' + modulo.id_modulo"></label>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <div class="icheck-danger d-inline">
+                    <input 
+                      type="checkbox" 
+                      :id="'delete_' + modulo.id_modulo" 
+                      v-model="modulo.delete"
+                      @change="toggleAllPermisos(modulo, 'delete')">
+                    <label :for="'delete_' + modulo.id_modulo"></label>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <div class="card-footer">
+        <button @click="savePermisos" class="btn btn-primary float-right">
+          <i class="fas fa-save"></i> Guardar Permisos
+        </button>
+        <button @click="cancel" class="btn btn-default">
+          <i class="fas fa-ban"></i> Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+
 </div>
+
+<style>
+/* Estilos personalizados */
+.table td {
+  vertical-align: middle;
+}
+
+.icheck-primary input[type="checkbox"]:checked + label::before,
+.icheck-success input[type="checkbox"]:checked + label::before,
+.icheck-warning input[type="checkbox"]:checked + label::before,
+.icheck-danger input[type="checkbox"]:checked + label::before {
+  border-width: 2px;
+}
+
+.alert-info {
+  background-color: #d1ecf1;
+  border-color: #bee5eb;
+}
+
+.card-header {
+  font-weight: 600;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(0,0,0,.03);
+}
+</style>

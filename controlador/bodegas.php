@@ -16,8 +16,18 @@ require_once '../modelo/bodegas.php';
           $rtn = AllConsult($bd->listarBodega());
           $A = array();
           foreach ($rtn as $row) {
+            $botones = '
+                <div class="btn-group">
+                    <button id="edit" value="'.$row->id_bodega.'" class="btn btn-primary btn-sm" title="Editar">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button id="delete" value="'.$row->id_bodega.'" class="btn btn-danger btn-sm" title="Eliminar">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            ';
             $A[] = array(
-              ($row->id_bodega)?'<button id="edit" value="'.$row->id_bodega.'" class="btn btn-primary"><i class="fas fa-edit"></i></button>':'<button id="edit" value="'.$row->id_bodega.'" class="btn btn-primary"><i class="fas fa-edit"></i></button>',
+              $botones, 
               '#('.$row->id_bodega.') '.$row->nombre,
               $row->descripcion,
               ($row->status == 1)?
@@ -86,6 +96,16 @@ require_once '../modelo/bodegas.php';
         }
       }
       break;
+    case 'eliminar':
+        if (isset($_POST['id'])) {
+            $id = intval($_POST['id']); // Aseguramos que sea un entero
+            if($bd->eliminar($id)){
+                echo json_encode(['status' => true, 'msg' => 'Bodega y todos sus registros asociados eliminados correctamente.']);
+            } else {
+                echo json_encode(['status' => false, 'msg' => 'Error al eliminar la bodega.']);
+            }
+        }
+        break;
     default:
       // code...
       break;
